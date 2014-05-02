@@ -25,7 +25,7 @@ namespace DBConnectionLayer
         /// </summary>
         public DBClient()
         {
-            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
+            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=pass; Database=Przychodnia");
 
             db = new Przychodnia.Przychodnia(connection);
         }
