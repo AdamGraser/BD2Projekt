@@ -1,0 +1,5 @@
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\DBConnectionLayer\bin\Debug\DBConnectionLayer.dll
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\DBConnectionLayer\bin\Debug\DBConnectionLayer.pdb
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\DBConnectionLayer\obj\Debug\DBConnectionLayer.csprojResolveAssemblyReference.cache
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\DBConnectionLayer\obj\Debug\DBConnectionLayer.dll
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\DBConnectionLayer\obj\Debug\DBConnectionLayer.pdb

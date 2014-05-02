@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test-client", "test-client\test-client.csproj", "{B7DE2411-5689-4512-8CE3-947C45ADB618}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3769AA43-B400-47D4-8F14-8FD87A969092} = {3769AA43-B400-47D4-8F14-8FD87A969092}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBConnectionLayer", "DBConnectionLayer\DBConnectionLayer.csproj", "{3769AA43-B400-47D4-8F14-8FD87A969092}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7DE2411-5689-4512-8CE3-947C45ADB618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7DE2411-5689-4512-8CE3-947C45ADB618}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7DE2411-5689-4512-8CE3-947C45ADB618}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7DE2411-5689-4512-8CE3-947C45ADB618}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3769AA43-B400-47D4-8F14-8FD87A969092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3769AA43-B400-47D4-8F14-8FD87A969092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3769AA43-B400-47D4-8F14-8FD87A969092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3769AA43-B400-47D4-8F14-8FD87A969092}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

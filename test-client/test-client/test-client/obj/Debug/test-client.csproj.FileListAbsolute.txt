@@ -1,0 +1,11 @@
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\bin\Debug\test-client.exe.config
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\bin\Debug\test-client.exe
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\bin\Debug\test-client.pdb
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\bin\Debug\DBConnectionLayer.dll
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\bin\Debug\DBConnectionLayer.pdb
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\obj\Debug\test-client.csprojResolveAssemblyReference.cache
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\obj\Debug\test_client.Form1.resources
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\obj\Debug\test_client.Properties.Resources.resources
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\obj\Debug\test-client.csproj.GenerateResource.Cache
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\obj\Debug\test-client.exe
+E:\Adam\House of dog\studia\bd-projekt\test-client\test-client\test-client\obj\Debug\test-client.pdb
