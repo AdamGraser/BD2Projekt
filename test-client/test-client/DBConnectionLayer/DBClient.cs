@@ -25,7 +25,7 @@ namespace DBConnectionLayer
         /// </summary>
         public DBClient()
         {
-            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=pass; Database=Przychodnia");
+            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
 
             db = new Przychodnia.Przychodnia(connection);
         }
@@ -87,7 +87,12 @@ namespace DBConnectionLayer
                 Console.WriteLine(sqlEx.HelpLink);
                 Console.WriteLine(sqlEx.StackTrace);
                 retval = "Nieprawidłowe dane wejściowe.";
+                
                 transaction.Rollback();
+
+                db.Dispose();
+
+                db = new Przychodnia.Przychodnia(connection);
             }
             catch (Exception ex)
             {
