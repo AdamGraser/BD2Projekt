@@ -1,0 +1,57 @@
+﻿<Window x:Class="Laborant.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <DockPanel LastChildFill="True">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem x:Name="logoutMenuItem" Header="Wyloguj się" Click="logoutMenuItem_Click" />
+            <MenuItem Header="Pomoc">
+                <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65" >
+            <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
+                <Button Name="Lab_Save" Content="Zatwierdź" Height="26" Padding="4,0,4,0" Margin="0,0,40,0" Click="Lab_Save_Click" />
+                <Button Name="Lab_Cancel" Content="Anuluj" Height="26" Padding="4,0,4,0" Margin="0,0,40,0" Click="Lab_Save_Click" />
+                <Button Name="Lab_Back" Content="Powrót" Height="26" Padding="4,0,4,0" Click="Lab_Back_Click" />
+            </StackPanel>
+        </StackPanel>
+        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <ListBox Name="Lab_LabTestsList" HorizontalAlignment="Stretch" Height="76" MinHeight="76" MaxHeight="76" Margin="5,5,5,10" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="2" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />                        
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Pierwszy wiersz -->
+                    <TextBlock Name="Lab_LabTestOrderDate" Grid.Row="0" Grid.Column="0" Width="auto" Height="26" Margin="5,0,5,5"></TextBlock>
+                    <TextBlock Name="Lab_LabTestName" Grid.Row="0" Grid.Column="1" Width="auto" Height="26" Margin="0,0,5,5"></TextBlock>
+
+                    <!-- Drugi wiersz -->
+                    <TextBlock Name="Lab_LabTestDoctorName" Grid.Row="1" Grid.Column="0" Width="auto" Height="26" Margin="5,0,5,5"></TextBlock>
+                    <TextBlock Name="Lab_LabTestDescription" Grid.Row="1" Grid.Column="1" Width="auto" MinHeight="26" Height="auto" Margin="0,0,5,5"></TextBlock>
+
+                    <!-- Trzeci wiersz -->
+                    <TextBox Name="Lab_LabTestResult" ToolTip="Wynik badania" Grid.Row="2" Grid.ColumnSpan="2" Height="auto" MinHeight="26" HorizontalAlignment="Stretch" Margin="5,0,5,5" TextWrapping="Wrap"></TextBox>
+
+                    <!-- Czwarty wiersz -->
+                    
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

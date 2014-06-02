@@ -1,0 +1,17 @@
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\Laborant.exe.config
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\Laborant.csprojResolveAssemblyReference.cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\MainWindow.baml
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\MainWindow.g.cs
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\App.g.cs
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\Laborant_MarkupCompile.cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\Laborant.g.resources
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\Laborant.Properties.Resources.resources
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\Laborant.csproj.GenerateResource.Cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\Laborant.exe
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\Laborant.pdb
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\Laborant.exe
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\Laborant.pdb
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\LoginWindow.baml
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\LoginWindow.g.cs
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\AboutDialog.baml
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\AboutDialog.g.cs
