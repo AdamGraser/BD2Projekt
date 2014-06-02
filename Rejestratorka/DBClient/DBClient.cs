@@ -44,9 +44,14 @@ namespace DBClient
 
             try
             {
+                string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
+                
                 //Utworzenie zapytania.
                 bool userExistsInDb = (from Rejestratorka in db.Rejestratorkas
-                            where Rejestratorka.Login == login && Rejestratorka.Haslo == System.Text.Encoding.ASCII.GetString(passwordHash)
+                            //where Rejestratorka.Login == login && Rejestratorka.Haslo == System.Text.Encoding.ASCII.GetString(passwordHash)
+                            where Rejestratorka.Login == login &&
+                                  Rejestratorka.Haslo.StartsWith(temp) &&
+                                  Rejestratorka.Haslo.EndsWith(temp)
                             select new
                             {
                                 login = Rejestratorka.Login,
