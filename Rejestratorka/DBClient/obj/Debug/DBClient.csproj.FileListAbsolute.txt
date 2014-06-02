@@ -1,0 +1,10 @@
+E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\bin\Debug\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\bin\Debug\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\obj\Debug\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\obj\Debug\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\DBClient\bin\Debug\DBClient.dll
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\DBClient\bin\Debug\DBClient.pdb
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\DBClient\obj\Debug\DBClient.dll
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
