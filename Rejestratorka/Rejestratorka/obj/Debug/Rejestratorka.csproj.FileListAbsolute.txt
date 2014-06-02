@@ -31,3 +31,7 @@ C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\Rejestratorka\bin\Debug\zh
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.csprojResolveAssemblyReference.cache
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\Rejestratorka\bin\Debug\DBClient.dll
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\Rejestratorka\bin\Debug\DBClient.pdb
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\Rejestratorka\obj\Debug\LoginWindow.baml
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\Rejestratorka\obj\Debug\LoginWindow.g.cs
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\Rejestratorka\obj\Debug\AboutDialog.baml
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Rejestratorka\Rejestratorka\obj\Debug\AboutDialog.g.cs

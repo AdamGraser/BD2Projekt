@@ -27,38 +27,45 @@ namespace Rejestratorka
         public MainWindow()
         {
             InitializeComponent();
-            /*
-            db = new DBClient.DBClient();
-            // --> Tworzenie listy pacjentów.
-            List<string> patients = db.GetPatients();
-
-            if (patients != null && patients.Count > 0)
+            LoginWindow loginWindow = new LoginWindow();
+            if (LogIn() == true)
             {
-                foreach (string p in patients)
+                this.Title += " - " + loginWindow.Login;                
+                db = new DBClient.DBClient();
+                // --> Tworzenie listy pacjentów.
+                List<string> patients = db.GetPatients();
+
+                if (patients != null && patients.Count > 0)
                 {
-                    PatientsList.Items.Add(new ComboBoxItem().Content = p);
+                    foreach (string p in patients)
+                    {
+                        PatientsList.Items.Add(new ComboBoxItem().Content = p);
+                    }
                 }
+                else
+                    System.Windows.MessageBox.Show("Brak pacjentów w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
+                                    "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                // <-- Tworzenie listy pacjentów.
+
+                // --> Tworzenie listy lekarzy.
+                List<string> doctors = db.GetDoctors();
+
+                if (doctors != null && doctors.Count > 0)
+                {
+                    foreach (string d in doctors)
+                    {
+                        DoctorsList.Items.Add(new ComboBoxItem().Content = d);
+                    }
+                }
+                else
+                    System.Windows.MessageBox.Show("Brak lekarzy w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
+                                    "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                // <-- Tworzenie listy lekarzy.                  
             }
             else
-                System.Windows.MessageBox.Show("Brak pacjentów w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
-                                "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            // <-- Tworzenie listy pacjentów.
-
-            // --> Tworzenie listy lekarzy.
-            List<string> doctors = db.GetDoctors();
-
-            if (doctors != null && doctors.Count > 0)
             {
-                foreach (string d in doctors)
-                {
-                    DoctorsList.Items.Add(new ComboBoxItem().Content = d);
-                }
+                Environment.Exit(0);
             }
-            else
-                System.Windows.MessageBox.Show("Brak lekarzy w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
-                                "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            // <-- Tworzenie listy lekarzy.
-             */ 
         }
 
         private void AddPatient_Click(object sender, RoutedEventArgs e)
@@ -249,6 +256,34 @@ namespace Rejestratorka
                 cancelVisitButton.IsEnabled = false;
             }
         }
-        
+
+        private bool LogIn()
+        {
+            LoginWindow loginWindow = new LoginWindow();
+            if (loginWindow.ShowDialog() == true)
+                return true;
+            return false;
+        }
+
+        private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = System.Windows.Visibility.Hidden;
+            //TODO: wylogowanie z bazy danych            
+            if (LogIn() == true)
+            {
+                //TODO: ponowne zalogowanie
+                this.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                Environment.Exit(0);
+            }
+        }
+
+        private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AboutDialog aboutDialog = new AboutDialog();
+            aboutDialog.ShowDialog();
+        }
     }
 }

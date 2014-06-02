@@ -1,0 +1,27 @@
+﻿<Window x:Class="Rejestratorka.AboutDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="O programie" Height="334.328" Width="300" ResizeMode="NoResize">
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65" >
+            <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
+                <Button x:Name="okButton" Content="OK" Padding="4,0,4,0" Height="28" Margin="0,5,0,0" Click="okButton_Click" Width="75" IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Top" Background="#FFE5E4E2" Height="65">
+            <Label Content="System zarządzania przychodnią" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Margin="0,10,0,0"/>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <StackPanel>
+                <Label Content="Autorzy:" HorizontalAlignment="Center"/>
+                <Label Content="Michał Basak" HorizontalAlignment="Center"/>
+                <Label Content="Marek Dowlaszewicz" HorizontalAlignment="Center" />
+                <Label Content="Bartosz Fertała" HorizontalAlignment="Center" />
+                <Label Content="Wojciech Gancarz" HorizontalAlignment="Center" />
+                <Label Content="Adam Gräser" HorizontalAlignment="Center" />
+            </StackPanel>
+
+
+        </StackPanel>
+    </DockPanel>
+</Window>

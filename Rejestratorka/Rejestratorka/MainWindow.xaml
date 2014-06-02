@@ -5,8 +5,10 @@
         Title="Rejestracja" Height="547" Width="525">
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Wyloguj się" />
-            <MenuItem Header="Pomoc" />
+            <MenuItem x:Name="logoutMenuItem" Header="Wyloguj się" Click="logoutMenuItem_Click" />
+            <MenuItem Header="Pomoc">
+                <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"></MenuItem>
+            </MenuItem>
         </Menu>
         <TabControl DockPanel.Dock="Top">
         <TabItem Header="Rejestracja wizyty" >
