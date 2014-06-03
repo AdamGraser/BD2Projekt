@@ -48,14 +48,12 @@ namespace DBClient
 
                 //Utworzenie zapytania.
                 bool userExistsInDb = (from Administrator in db.Administrators
-                                       //where Rejestratorka.Login == login && Rejestratorka.Haslo == System.Text.Encoding.ASCII.GetString(passwordHash)
                                        where Administrator.Login == login &&
                                              Administrator.Haslo.StartsWith(temp) &&
-                                             Administrator.Haslo.EndsWith(temp)
+                                             Administrator.Haslo.Length == temp.Length
                                        select new
                                        {
-                                           login = Administrator.Login,
-                                           password = Administrator.Haslo
+                                           id_adm = Administrator.Id_adm
                                        }).Count() == 1;
                 retval = userExistsInDb;
             }
