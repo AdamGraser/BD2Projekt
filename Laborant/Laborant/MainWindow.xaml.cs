@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DBClient;
 
 namespace Laborant
 {
@@ -20,17 +21,20 @@ namespace Laborant
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DBClient.DBClient db;
         public MainWindow()
         {
             InitializeComponent();
-            LoginWindow loginWindow = new LoginWindow();
-            if (LogIn() == true)
-            {
 
-            }
-            else
+            while (true)
             {
+                if (LogIn() == true)
+                {
+                    db = new DBClient.DBClient();
 
+                    //TODO: dopisać resztę (podobnie jak w kliencie rejestratorki i lekarza).
+                    break;
+                }                
             }
         }
 
@@ -68,8 +72,15 @@ namespace Laborant
         private bool LogIn()
         {
             LoginWindow loginWindow = new LoginWindow();
-            if (loginWindow.ShowDialog() == true)
+            bool? result = loginWindow.ShowDialog();
+            if (result == true)
+            {
                 return true;
+            }
+            else if (result == null) //zamknięcie okna logowania, lub poważny błąd
+            {
+                Environment.Exit(0);
+            }
             return false;
         }
     }

@@ -15,3 +15,5 @@ C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\LoginWindow.
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\LoginWindow.g.cs
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\AboutDialog.baml
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\AboutDialog.g.cs
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\DBClient.dll
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\DBClient.pdb
