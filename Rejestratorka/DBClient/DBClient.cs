@@ -296,9 +296,9 @@ namespace DBClient
             return visitsList;
         }
 
-        public Dictionary<int, VisitData> GetVisits(string patientName, string patientSurname, string doctor)
+        public List<VisitData> GetVisits(string patientName, string patientSurname, string doctor)
         {
-            Dictionary<int, VisitData> visitsList = new Dictionary<int, VisitData>();
+            List<VisitData> visitsList = new List<VisitData>();
             string doctorName = null;
             string doctorSurname = null;
             if (doctor != null)
@@ -343,7 +343,7 @@ namespace DBClient
                     visData.PatientPesel = vis.pesel.ToString();
                     visData.Date = vis.dataRej.ToString();
                     visData.Doctor = vis.imie_lekarza + " " + vis.nazwisko_lekarza;
-                    visitsList.Add(vis.id, visData);
+                    visitsList.Add(visData);
                 }                                                    
             }
             catch (Exception e)

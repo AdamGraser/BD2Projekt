@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit;
 using DBClient;
+using System.Data;
 
 
 namespace Rejestratorka
@@ -109,13 +110,20 @@ namespace Rejestratorka
 
         private void RegisterVisit_Click(object sender, RoutedEventArgs e)
         {
+            DateTime? timeOfVisit = visitTime.Value;
             if (VisitDate.SelectedDate == null)
             {
                 System.Windows.MessageBox.Show("Nie podano daty odbycia się wizyty!", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+            else if (timeOfVisit == null)
+            {
+                System.Windows.MessageBox.Show("Nie podano godziny odbyczia się wizyty!", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
             else
             {
-                if (db.AddVisit((DateTime)VisitDate.SelectedDate, (byte)(DoctorsList.SelectedIndex + 1), PatientsList.SelectedIndex + 1))
+                DateTime dateOfVisit = (DateTime)VisitDate.SelectedDate;
+                DateTime dateToSaveInDB = new DateTime(dateOfVisit.Year, dateOfVisit.Month, dateOfVisit.Day, timeOfVisit.Value.Hour, timeOfVisit.Value.Minute, timeOfVisit.Value.Second);
+                if (db.AddVisit(dateToSaveInDB, (byte)(DoctorsList.SelectedIndex + 1), PatientsList.SelectedIndex + 1))
                 {
                     System.Windows.MessageBox.Show("Zarejestrowano nową wizytę.", "Informacja", MessageBoxButton.OK, MessageBoxImage.Information);
                     PatientsList.SelectedIndex = -1;
@@ -219,8 +227,31 @@ namespace Rejestratorka
         {
             if (patientNameTextBox.Text != "" && patientNameTextBox.Text != "" && DoctorsList2.SelectedItem != null)
             {
-                visitsDataGrid.ItemsSource = db.GetVisits(patientNameTextBox.Text, patientSurnameTextBox.Text, DoctorsList2.SelectedItem.ToString()); ;
-            }
+                DataTable queryResult = new DataTable();
+                List<VisitData> visits = db.GetVisits(patientNameTextBox.Text, patientSurnameTextBox.Text, DoctorsList2.SelectedItem.ToString());
+                
+                //kolumny tabeli:
+                DataColumn patientNameColumn = new DataColumn("Imię", typeof(string));
+                DataColumn patientSurnameColumn = new DataColumn("Nazwisko", typeof(string));
+                DataColumn patientDateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
+                DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
+                DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
+                DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
+
+                //wiersze:
+                foreach (VisitData visit in visits)
+                {
+                    DataRow newRow = queryResult.NewRow();
+                    newRow["Imię"] = visit.PatientName;
+                    newRow["Nazwisko"] = visit.PatientSurname;
+                    newRow["Data urodzenia"] = visit.Date;
+                    newRow["PESEL"] = visit.PatientPesel;
+                    newRow["Data wizyty"] = visit.Date;
+                    newRow["Lekarz"] = visit.Doctor;
+                    queryResult.Rows.Add(newRow);
+                }
+                visitsDataGrid.ItemsSource = queryResult.DefaultView;
+            }            
         }
 
         private void cancelVisitButton_Click(object sender, RoutedEventArgs e)

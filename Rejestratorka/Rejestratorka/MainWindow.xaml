@@ -37,7 +37,7 @@
                             </StackPanel>
                             <StackPanel Margin="20,10,20,10" Orientation="Horizontal">
                                 <Label Content="Godzina:" Width="100" />
-                                <xctk:TimePicker Height="28" Width="100" Value="{Binding CurrentDateTime}"/>
+                                <xctk:TimePicker x:Name="visitTime" Height="28" Width="100" Value="{Binding CurrentDateTime}"/>
                             </StackPanel>
                             <Expander Name="PatientDetails" Header="Szczegółowe dane pacjenta" Margin="20,10,20,10" IsEnabled="False" Expanded="PatientDetails_Expanded" Collapsed="PatientDetails_Collapsed">
                                 <Grid>
