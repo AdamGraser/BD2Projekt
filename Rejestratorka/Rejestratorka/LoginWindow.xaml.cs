@@ -55,7 +55,7 @@ namespace Rejestratorka
             _login = loginTextBox.Text;
 
             //Sprawdzanie czy w bazie istnieje podany użytkownik
-            if (db.FindUser(_login, _hash))
+            if (db.FindUser(_login, _hash) == true)
             {
                 this.DialogResult = true;
             }

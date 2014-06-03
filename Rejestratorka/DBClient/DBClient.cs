@@ -32,7 +32,7 @@ namespace DBClient
             db = new Przychodnia.Przychodnia(connection);
         }
 
-        public bool FindUser(string login, byte[] passwordHash)
+        public bool? FindUser(string login, byte[] passwordHash)
         {
             bool retval = false;
             //Łączenie się z bazą danych.
@@ -45,18 +45,18 @@ namespace DBClient
             try
             {
                 string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
-                
+
                 //Utworzenie zapytania.
                 bool userExistsInDb = (from Rejestratorka in db.Rejestratorkas
-                            //where Rejestratorka.Login == login && Rejestratorka.Haslo == System.Text.Encoding.ASCII.GetString(passwordHash)
-                            where Rejestratorka.Login == login &&
-                                  Rejestratorka.Haslo.StartsWith(temp) &&
-                                  Rejestratorka.Haslo.EndsWith(temp)
-                            select new
-                            {
-                                login = Rejestratorka.Login,
-                                password = Rejestratorka.Haslo
-                            }).Count() == 1;
+                                       //where Rejestratorka.Login == login && Rejestratorka.Haslo == System.Text.Encoding.ASCII.GetString(passwordHash)
+                                       where Rejestratorka.Login == login &&
+                                             Rejestratorka.Haslo.StartsWith(temp) &&
+                                             Rejestratorka.Haslo.EndsWith(temp)
+                                       select new
+                                       {
+                                           login = Rejestratorka.Login,
+                                           password = Rejestratorka.Haslo
+                                       }).Count() == 1;
                 retval = userExistsInDb;
             }
             catch (Exception e)
@@ -64,7 +64,7 @@ namespace DBClient
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.Source);
                 Console.WriteLine(e.HelpLink);
-                Console.WriteLine(e.StackTrace);                
+                Console.WriteLine(e.StackTrace);
             }
             finally
             {

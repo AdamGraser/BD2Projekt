@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Security.Cryptography;
 
 namespace Lekarz
 {
@@ -19,14 +20,39 @@ namespace Lekarz
     /// </summary>
     public partial class LoginWindow : Window
     {
+        private byte[] _hash;
+        private string _login = "";
+
         public LoginWindow()
         {
             InitializeComponent();
         }
 
+        public string Login
+        {
+            get
+            {
+                return _login;
+            }
+        }
+
         private void LogInButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            DBClient.DBClient db = new DBClient.DBClient();  // klient bazy danych
+            HashAlgorithm sha = HashAlgorithm.Create("SHA512");
+            byte[] passwordBytes = System.Text.Encoding.ASCII.GetBytes(passwordBox.Password);
+            _hash = sha.ComputeHash(passwordBytes);
+            _login = loginTextBox.Text;
+
+            //Sprawdzanie czy w bazie istnieje podany użytkownik
+            if (db.FindUser(_login, _hash) == true)
+            {
+                this.DialogResult = true;
+            }
+            else
+            {
+                this.DialogResult = false;
+            }   
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)

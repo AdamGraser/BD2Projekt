@@ -32,7 +32,47 @@ namespace DBClient
             db = new Przychodnia.Przychodnia(connection);
         }
 
+        public bool? FindUser(string login, byte[] passwordHash)
+        {
+            bool retval = false;
+            //Łączenie się z bazą danych.
+            connection.Open();
 
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {
+                string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
+
+                //Utworzenie zapytania.
+                bool userExistsInDb = (from Lekarz in db.Lekarzs
+                                       //where Rejestratorka.Login == login && Rejestratorka.Haslo == System.Text.Encoding.ASCII.GetString(passwordHash)
+                                       where Lekarz.Login == login &&
+                                             Lekarz.Haslo.StartsWith(temp) &&
+                                             Lekarz.Haslo.EndsWith(temp)
+                                       select new
+                                       {
+                                           login = Lekarz.Login,
+                                           password = Lekarz.Haslo
+                                       }).Count() == 1;
+                retval = userExistsInDb;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+            return retval;
+        }
 
         /// <summary>
         /// Pobiera z tabeli Pacjent imiona i nazwiska wszystkich pacjentów.

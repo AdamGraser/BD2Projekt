@@ -63,12 +63,11 @@
                     <Button Name="ChangeVisitState" Content="Przyjmij wizytę" Padding="4,0,4,0" Height="26" Click="ChangeVisitState_Click" />
                 </StackPanel>
                 <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
-                    <TextBox Name="opis" Height="auto" MinHeight="26" Width="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"></TextBox>
-                    <CheckBox Name="PhysicalTestDone" Content="Wykonano badania fizykalne" />
+                    <TextBox Name="opis" Height="auto" MinHeight="26" Width="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"></TextBox>                   
                 </StackPanel>                              
             </Grid>
             </Expander>
-            <Expander Name="diagnosisExpander" Header="Diagnoza" Margin="20,10,20,10" IsEnabled="True" IsExpanded="True" >
+            <Expander Name="diagnosisExpander" Header="Diagnoza" Margin="20,10,20,10" IsEnabled="True" >
                 <Grid Margin="20,10,20,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />                        
@@ -81,7 +80,7 @@
                     <TextBox Grid.Row="0" Grid.Column="1" Name="diagnoza" Height="auto" Width="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True"></TextBox>
                 </Grid>
             </Expander>
-            <Expander Name="laboratoryTestsExpander" Header="Badania laboratoryjne" Margin="20,10,20,10" IsEnabled="True" IsExpanded="True" >
+            <Expander Name="laboratoryTestsExpander" Header="Badania laboratoryjne" Margin="20,10,20,10" IsEnabled="True" >
                 <Grid Margin="20,10,20,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -110,8 +109,36 @@
                     </StackPanel>
                 </Grid>
             </Expander>
-            
-        </StackPanel>
+                <Expander Name="phisicalTestsExpander" Header="Badania fizykalne" Margin="20,10,20,10" IsEnabled="True" >
+                    <Grid Margin="20,10,20,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Zleć badania fiz." Margin="0,0,0,5" />
+                        <StackPanel Grid.Row="0" Grid.Column="1" Name="PhisicalTests">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox Grid.Row="0" Grid.Column="0" Name="PhiTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26"></ComboBox>
+                                <Label Grid.Row="0" Grid.Column="1" Content="Opis" Margin="5,0,0,0" />
+                                <TextBox Grid.Row="0" Grid.Column="2" Name="PhiTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"></TextBox>
+                            </Grid>
+                            <Button Name="OrderPhisicalTest" Content="Zleć nowe badanie fiz." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="OrderLaboratoryTest_Click" />
+                        </StackPanel>
+                    </Grid>
+                </Expander>
+            </StackPanel>
     </ScrollViewer>        
     </DockPanel>
 </Window>

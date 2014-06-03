@@ -3,3 +3,8 @@ E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\bin\Debug\DBClie
 E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\obj\Debug\DBClient.dll
 E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\obj\Debug\DBClient.pdb
 E:\Adam\House of dog\studia\bd-projekt\test-client-wpf\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\DBClient\bin\Debug\DBClient.dll
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\DBClient\bin\Debug\DBClient.pdb
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\DBClient\obj\Debug\DBClient.dll
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\DBClient\obj\Debug\DBClient.pdb

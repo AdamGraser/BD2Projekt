@@ -17,3 +17,6 @@ C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\AboutDialog.
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\AboutDialog.g.cs
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\DBClient.dll
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\DBClient.pdb
+C:\Users\Michał\Documents\GitHub\BD2Projekt\Laborant\Laborant\bin\Debug\Laborant.exe.config
+C:\Users\Michał\Documents\GitHub\BD2Projekt\Laborant\Laborant\obj\Debug\Laborant.exe
+C:\Users\Michał\Documents\GitHub\BD2Projekt\Laborant\Laborant\obj\Debug\Laborant.pdb

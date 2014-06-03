@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KierownikLaboratorium", "KierownikLaboratorium\KierownikLaboratorium.csproj", "{AC75D030-86BD-49DE-92CC-FB5D79A79C8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBClient", "DBClient\DBClient.csproj", "{D78AB190-1053-4656-B05E-2A8AF2F9D061}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC75D030-86BD-49DE-92CC-FB5D79A79C8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC75D030-86BD-49DE-92CC-FB5D79A79C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC75D030-86BD-49DE-92CC-FB5D79A79C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC75D030-86BD-49DE-92CC-FB5D79A79C8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D78AB190-1053-4656-B05E-2A8AF2F9D061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D78AB190-1053-4656-B05E-2A8AF2F9D061}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D78AB190-1053-4656-B05E-2A8AF2F9D061}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D78AB190-1053-4656-B05E-2A8AF2F9D061}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

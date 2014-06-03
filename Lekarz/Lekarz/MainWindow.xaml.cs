@@ -31,6 +31,7 @@ namespace Lekarz
             LoginWindow loginWindow = new LoginWindow();
             if (LogIn() == true)
             {
+                this.Title += " - " + loginWindow.Login;
                 db = new DBClient.DBClient();
                 currentVisitID = -1;
                 currentRow = 0;
@@ -59,7 +60,7 @@ namespace Lekarz
                     if (visits == null)
                         MessageBox.Show("Wystąpił błąd podczas pobierania listy wizyt.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-                // <-- Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.
+                // <-- Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.                 
             }
             else
             {
@@ -144,6 +145,7 @@ namespace Lekarz
         {
             if (currentVisitID > -1 && currentLabTestID == 0)
             {
+                /*
                 if (db.SaveVisit(currentVisitID, opis.Text, (bool)PhysicalTestDone.IsChecked, diagnoza.Text))
                 {
                     data_rej.Text = nazwa_pac.Text = stan.Text = "";
@@ -164,6 +166,7 @@ namespace Lekarz
                 }
                 else
                     MessageBox.Show("Wystąpił błąd podczas zapisu szczegółów wizyty i nie zostały one zapisane.", "Błąd aktualizacji wizyty", MessageBoxButton.OK, MessageBoxImage.Warning);
+                 */
             }
         }
 
