@@ -243,21 +243,13 @@ namespace DBClient
         }
         
         /// <summary>
-        /// 
+        /// Wyszukuje w bazie danych wizyty, które się nie odbyły.
         /// </summary>
         /// <returns></returns>
-        public List<VisitData> GetVisits()
+        public List<VisitData> GetUndoneVisits()
         {
             List<VisitData> visitsList = new List<VisitData>();
-            //string doctorName = null;
-            //string doctorSurname = null;
-            /*
-            if (doctor != null)
-            {
-                doctorName = doctor.Substring(0, doctor.IndexOf(" "));
-                doctorSurname = doctor.Substring(doctor.IndexOf(" ") + 1);
-            }
-            */
+            
             //Łączenie się z bazą danych.
             connection.Open();
 

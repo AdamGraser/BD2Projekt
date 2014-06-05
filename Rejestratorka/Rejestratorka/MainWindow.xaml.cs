@@ -226,13 +226,13 @@ namespace Rejestratorka
             //tworzenia filtra:
             string filterString = "";
 
-            if (patientNameTextBox.Text != "")
+            if (patientNameTextBox.Text.Length != 0)
             {
                 filterString += string.Format("Imię = '{0}'", patientNameTextBox.Text);
             }
-            if (patientSurnameTextBox.Text != "")
+            if (patientSurnameTextBox.Text.Length != 0)
             {
-                if (patientNameTextBox.Text != "")
+                if (patientNameTextBox.Text.Length != 0)
                 {
                     filterString += " && ";
                 }
@@ -240,7 +240,7 @@ namespace Rejestratorka
             }
             if (DoctorsList2.SelectedIndex != -1)
             {
-                if (patientNameTextBox.Text != "" || patientSurnameTextBox.Text != "")
+                if (patientNameTextBox.Text.Length != 0 || patientSurnameTextBox.Text.Length != 0)
                 {
                     filterString += " && ";
                 }
@@ -427,7 +427,7 @@ namespace Rejestratorka
 
             //wypełnianie tabeli z wizytami:
             registeredVisitsTable = new DataTable();
-            List<VisitData> visits = db.GetVisits();
+            List<VisitData> visits = db.GetUndoneVisits();
 
             //kolumny tabeli:
             DataColumn patientNameColumn = new DataColumn("Imię", typeof(string));
@@ -445,7 +445,7 @@ namespace Rejestratorka
                 DataRow newRow = registeredVisitsTable.NewRow();
                 newRow["Imię"] = visit.PatientName;
                 newRow["Nazwisko"] = visit.PatientSurname;
-                newRow["Data urodzenia"] = visit.Date;
+                newRow["Data urodzenia"] = visit.PatientDateOfBirth;
                 newRow["PESEL"] = visit.PatientPesel;
                 newRow["Data wizyty"] = visit.Date;
                 newRow["Lekarz"] = visit.Doctor;
