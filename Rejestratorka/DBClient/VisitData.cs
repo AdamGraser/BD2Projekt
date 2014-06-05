@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DBClient
-{    
+{   
+    /// <summary>
+    /// Klasa przechowująca dane wizyty.
+    /// </summary>
     public class VisitData
     {
         private string _patientName;
@@ -15,6 +18,9 @@ namespace DBClient
         private string _date;
         private string _doctor;
 
+        /// <summary>
+        /// Właściwość zwracająca imię pacjenta.
+        /// </summary>
         public string PatientName
         {
             get
@@ -27,6 +33,9 @@ namespace DBClient
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca nazwisko pacjenta.
+        /// </summary>
         public string PatientSurname
         {
             get
@@ -39,6 +48,9 @@ namespace DBClient
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca PESEL pacjenta.
+        /// </summary>
         public string PatientPesel
         {
             get
@@ -51,6 +63,9 @@ namespace DBClient
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca datę urodzenia pacjenta.
+        /// </summary>
         public string PatientDateOfBirth
         {
             get
@@ -63,6 +78,9 @@ namespace DBClient
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca datę wizyty.
+        /// </summary>
         public string Date
         {
             get
@@ -74,6 +92,10 @@ namespace DBClient
                 _date = value;
             }
         }
+
+        /// <summary>
+        /// Właściwość zwracająca imię i nazwisko lekarza, u którego ma odbyć się wizyta.
+        /// </summary>
         public string Doctor
         {
             get
