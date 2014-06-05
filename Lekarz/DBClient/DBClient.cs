@@ -32,6 +32,12 @@ namespace DBClient
             db = new Przychodnia.Przychodnia(connection);
         }
 
+        /// <summary>
+        /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
+        /// </summary>
+        /// <param name="login">Login do wyszukania w bazie</param>
+        /// <param name="passwordHash">Hash hasła</param>
+        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy.</returns>
         public bool? FindUser(string login, byte[] passwordHash)
         {
             bool retval = false;
@@ -54,8 +60,7 @@ namespace DBClient
                                              Lekarz.Haslo.EndsWith(temp)
                                        select new
                                        {
-                                           login = Lekarz.Login,
-                                           password = Lekarz.Haslo
+                                           id = Lekarz.Id_lek
                                        }).Count() == 1;
                 retval = userExistsInDb;
             }
@@ -73,173 +78,7 @@ namespace DBClient
             }
             return retval;
         }
-
-        /// <summary>
-        /// Pobiera z tabeli Pacjent imiona i nazwiska wszystkich pacjentów.
-        /// </summary>
-        /// <returns>Zwraca listę imion i nazwisk oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>
-        public List<string> GetPatients()
-        {
-            List<string> patientsList = new List<string>();
-
-            //Łączenie się z bazą danych.
-            connection.Open();
-
-            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
-            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
-            db.Transaction = transaction;
-
-            try
-            {
-                //Utworzenie zapytania.
-                var query = from Pacjent in db.Pacjents
-                            select new
-                            {
-                                imie = Pacjent.Imie,
-                                nazwisko = Pacjent.Nazwisko
-                            };
-
-                //Wykonanie zapytania, rekord po rekordzie.
-                foreach (var pac in query)
-                {
-                    //Łączenie imion i nazwisk, zapisywanie ich.
-                    patientsList.Add(pac.imie + " " + pac.nazwisko);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.HelpLink);
-                Console.WriteLine(e.StackTrace);
-
-                patientsList = null;
-            }
-            finally
-            {
-                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
-                connection.Close();
-            }
-
-            return patientsList;
-        }
-
-
-
-        /// <summary>
-        /// Pobiera z tabeli Pacjent szczegółowe informacje o wskazanym pacjencie.
-        /// Zwrócona struktura następujące tekstowe indeksy: "pesel", "dataur", "adres".
-        /// </summary>
-        /// <param name="id_pac">ID pacjenta, którego szczegóły mają zostać zwrócone.</param>
-        /// <returns>Zestaw szczegółów o wskazanym pacjencie lub null, jeśli wystąpił błąd.</returns>
-        public Dictionary<string, string> GetPatientDetails(int id_pac)
-        {
-            Dictionary<string, string> patientDetails = new Dictionary<string, string>();
-
-            //Łączenie się z bazą danych.
-            connection.Open();
-
-            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
-            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
-            db.Transaction = transaction;
-
-            try
-            {
-                //Utworzenie zapytania.
-                var query = from Pacjent in db.Pacjents
-                            where Pacjent.Id_pac == id_pac
-                            select new
-                            {
-                                pesel = Pacjent.Pesel,
-                                dataUr = Pacjent.Data_ur,
-                                ulica = Pacjent.Ulica,
-                                nrBud = Pacjent.Nr_bud,
-                                nrMiesz = Pacjent.Nr_miesz,
-                                kodPocz = Pacjent.Kod_pocz,
-                                miasto = Pacjent.Miasto
-                            };
-
-                //Wykonanie zapytania.
-                foreach (var p in query)
-                {
-                    //Zapisanie wyników w odpowiednich elementach.
-                    patientDetails.Add("pesel", p.pesel.ToString());
-                    patientDetails.Add("dataur", p.dataUr.ToString());
-                    patientDetails.Add("adres", p.ulica + " " + p.nrBud.ToString() + (p.nrMiesz != null ? " " + p.nrMiesz.ToString() + ", " : ", ") + p.kodPocz + " " + p.miasto);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.HelpLink);
-                Console.WriteLine(e.StackTrace);
-
-                patientDetails = null;
-            }
-            finally
-            {
-                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
-                connection.Close();
-            }
-
-            return patientDetails;
-        }
-
-
-
-        /// <summary>
-        /// Pobiera z tabeli Lekarz imiona i nazwiska wszystkich lekarzy.
-        /// </summary>
-        /// <returns>Zwraca listę imion i nazwisk oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>
-        public List<string> GetDoctors()
-        {
-            List<string> doctorsList = new List<string>();
-
-            //Łączenie się z bazą danych.
-            connection.Open();
-
-            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
-            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
-            db.Transaction = transaction;
-
-            try
-            {
-                //Utworzenie zapytania.
-                var query = from Lekarz in db.Lekarzs
-                            select new
-                            {
-                                imie = Lekarz.Imie,
-                                nazwisko = Lekarz.Nazwisko
-                            };
-
-                //Wykonanie zapytania, rekord po rekordzie.
-                foreach (var lek in query)
-                {
-                    //Łączenie imion i nazwisk, zapisywanie ich.
-                    doctorsList.Add(lek.imie + " " + lek.nazwisko);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.HelpLink);
-                Console.WriteLine(e.StackTrace);
-
-                doctorsList = null;
-            }
-            finally
-            {
-                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
-                connection.Close();
-            }
-
-            return doctorsList;
-        }
-
-
-
+              
         /// <summary>
         /// Pobiera z tabeli Wizyta i Pacjent daty wizyt oraz imiona i nazwiska pacjentów, dla których te wizyty zostały zarejestrowane.
         /// Dotyczy to tylko wizyt nieodbytych, które jeszcze mogą się odbyć (Wizyta.Stan == null && Wizyta.Data_rej < DateTime.today)
@@ -296,8 +135,7 @@ namespace DBClient
             return visitsList;
         }
 
-
-
+       /*
         /// <summary>
         /// Pobiera z tabeli Sl_badan nazwy i opisy wszystkich badań laboratoryjnych.
         /// </summary>
@@ -350,7 +188,7 @@ namespace DBClient
 
             return labTests;
         }
-
+       */
 
 
         /// <summary>
@@ -435,8 +273,6 @@ namespace DBClient
 
             return retval;
         }
-
-
 
         /// <summary>
         /// Aktualizuje dane o wskazanej wizycie, zmienia jej stan na "zakończona".
@@ -532,8 +368,6 @@ namespace DBClient
             return retval;
         }
 
-
-
         /// <summary>
         /// Dodaje do tabeli Badanie nowy rekord z informacjami o badaniu laboratoryjnym, zleconym w trakcie wskazanej wizyty.
         /// </summary>
@@ -621,7 +455,7 @@ namespace DBClient
         }
 
 
-
+        /*
         /// <summary>
         /// Dodaje do tabeli Wizyta nowy rekord z informacjami o nowej wizycie.
         /// </summary>
@@ -705,9 +539,9 @@ namespace DBClient
 
             return retval;
         }
+        */
 
-
-
+        /*
         /// <summary>
         /// Pobiera z tabel Badanie i Sl_badan nazwy + opisy i daty zlecenia, zrealizowanych lub nie, badań laboratoryjnych.
         /// </summary>
@@ -1145,5 +979,6 @@ namespace DBClient
 
             return retval;
         }
+         */
     }
 }

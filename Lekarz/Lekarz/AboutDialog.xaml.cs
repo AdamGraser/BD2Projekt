@@ -15,15 +15,23 @@ using System.Windows.Shapes;
 namespace Lekarz
 {
     /// <summary>
-    /// Interaction logic for AboutDialog.xaml
+    /// Logika interakcji dla klasy AboutDialog.xaml
     /// </summary>
     public partial class AboutDialog : Window
     {
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
         public AboutDialog()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "OK".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

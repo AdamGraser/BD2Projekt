@@ -17,18 +17,23 @@ using DBClient;
 namespace Lekarz
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Logika interakcji dla klasy MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        DBClient.DBClient db;
+        DBClient.DBClient db; // klient bazy danych
         int currentVisitID; // przechowuje ID wizyty, która właśnie się odbywa lub -1, jeśli lekarz nie przyjmuje teraz żadnego pacjenta/podczas której zlecone zostało badanie currentLabTestID
         byte currentLabTestID; // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
         byte currentRow; // przechowuje nr wiersza listy zleconych badań laboratoryjnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co zlecone badanie
+        LoginWindow loginWindow; // okno logowania
+
+        /// <summary>
+        /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-            LoginWindow loginWindow = new LoginWindow();
+            loginWindow = new LoginWindow();
             if (LogIn() == true)
             {
                 this.Title += " - " + loginWindow.Login;
@@ -36,50 +41,28 @@ namespace Lekarz
                 currentVisitID = -1;
                 currentRow = 0;
                 currentLabTestID = 0;
-                // --> Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.
-                Dictionary<int, string> visits = db.GetVisits(1);
-
-                if (visits != null && visits.Count > 0)
-                {
-                    foreach (var v in visits)
-                    {
-                        ListBoxItem item = new ListBoxItem();
-                        item.Content = v.Value;
-                        item.Tag = v.Key;
-
-                        VisitsList.Items.Add(item);
-                    }
-                }
-                else
-                {
-                    VisitsList.IsEnabled = false;
-                    VisitsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-                    VisitsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
-                    VisitsList.Items.Add(new ListBoxItem().Content = "Brak wizyt do końca życia!");
-
-                    if (visits == null)
-                        MessageBox.Show("Wystąpił błąd podczas pobierania listy wizyt.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                // <-- Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.                 
-            }
-            else
-            {
-                Environment.Exit(0);
-            }
+                GetDataFromDB();                
+            }            
         }
 
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "Przyjmij wizytę".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ChangeVisitState_Click(object sender, RoutedEventArgs e)
         {
             if (currentVisitID == -1 && currentLabTestID == 0)
             {
-                ListBoxItem item = (ListBoxItem)VisitsList.SelectedItem;
+                ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
                 currentVisitID = (int)item.Tag;
 
                 if (db.ChangeVisitState(currentVisitID, false))
                 {
                     stan.Text = "W trakcie realizacji";
 
-                    VisitsList.Items.RemoveAt(VisitsList.SelectedIndex);
+                    visitsList.Items.RemoveAt(visitsList.SelectedIndex);
+                    changeVisitStateButton.IsEnabled = false;
                 }
                 else
                 {
@@ -89,6 +72,11 @@ namespace Lekarz
             }
         }
 
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "Zleć badanie lab.".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OrderLaboratoryTest_Click(object sender, RoutedEventArgs e)
         {
             DateTime lTT = DateTime.Now;
@@ -141,18 +129,22 @@ namespace Lekarz
                 MessageBox.Show("Wystąpił błąd podczas zapisu zlecenia badania laboratoryjnego i nie zostało ono zapisane.", "Błąd zapisu zlecenia", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku zapisz.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveVisit_Click(object sender, RoutedEventArgs e)
         {
             if (currentVisitID > -1 && currentLabTestID == 0)
             {
-                /*
-                if (db.SaveVisit(currentVisitID, opis.Text, (bool)PhysicalTestDone.IsChecked, diagnoza.Text))
+                bool physicalTestIsDone = false; //tymczasowo
+                if (db.SaveVisit(currentVisitID, opis.Text, physicalTestIsDone, diagnoza.Text))
                 {
                     data_rej.Text = nazwa_pac.Text = stan.Text = "";
 
                     opis.Clear();
-                    diagnoza.Clear();
-                    PhysicalTestDone.IsChecked = false;
+                    diagnoza.Clear();                    
 
                     LabTestDesc.Clear();
                     LabTestsList.SelectedIndex = -1;
@@ -162,19 +154,24 @@ namespace Lekarz
 
                     currentVisitID = -1;
 
-                    VisitsList.SelectedIndex = -1;
+                    visitsList.SelectedIndex = -1;
                 }
                 else
                     MessageBox.Show("Wystąpił błąd podczas zapisu szczegółów wizyty i nie zostały one zapisane.", "Błąd aktualizacji wizyty", MessageBoxButton.OK, MessageBoxImage.Warning);
-                 */
+                 
             }
         }
 
-        private void VisitsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        /// <summary>
+        /// Metoda obsługująca zmianę selekcji wizyty w listboksie.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void visitsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (currentVisitID == -1 && currentLabTestID == 0)
             {
-                ListBoxItem item = (ListBoxItem)VisitsList.SelectedItem;
+                ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
                 string temp = (string)item.Content;
 
                 string[] visit = temp.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -182,47 +179,115 @@ namespace Lekarz
                 data_rej.Text = visit[0];
                 nazwa_pac.Text = visit[1];
                 stan.Text = "Nierozpoczęta";
+                changeVisitStateButton.IsEnabled = true;
             }
         }
 
-        private void findVisitButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "Wyloguj się" na pasku menu.
+        /// Powoduje ukrycie okna głównego i wyświetlenie okna logowania.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.Visibility = System.Windows.Visibility.Hidden;
-            //TODO: wylogowanie z bazy danych            
-            if (LogIn() == true)
+            db = null;
+            //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
+            visitsList.Items.Clear();
+            data_rej.Text = "";
+            nazwa_pac.Text = "";
+            stan.Text = "";
+            opis.Text = "";
+            diagnoza.Text = "";
+            LabTestsList.SelectedItem = null;
+            LabTestsList.SelectedIndex = -1;
+            LabTestDesc.Text = "";
+            PhiTestsList.SelectedItem = null;
+            PhiTestsList.SelectedIndex = -1;
+            PhiTestDesc.Text = "";
+
+            while (true)
             {
-                //TODO: ponowne zalogowanie
-                this.Visibility = System.Windows.Visibility.Visible;
+                if (LogIn() == true)
+                {
+                    db = new DBClient.DBClient();
+                    GetDataFromDB();
+                    this.Visibility = System.Windows.Visibility.Visible;
+                    break;
+                }
             }
-            else
+        }
+
+        /// <summary>
+        /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
+        /// </summary>
+        /// <returns></returns>
+        private bool LogIn()
+        {
+            bool? result = loginWindow.ShowDialog();
+            if (result == true)
+                return true;
+            else if (result == false) //zamknięcie okna logowania
             {
                 Environment.Exit(0);
             }
-        }
-
-        private bool LogIn()
-        {
-            LoginWindow loginWindow = new LoginWindow();
-            if (loginWindow.ShowDialog() == true)
-                return true;
             return false;
         }
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            //TODO: wylogowanie z bazy danych
-            Environment.Exit(0);
-        }
-
+        /// <summary>
+        /// Metoda wywoływana po kliknięciu przycisku "O programie".
+        /// Wyświetala okno dialogowe prezentujące informacje o autorach programu.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             AboutDialog aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
+        }
+
+        /// <summary>
+        /// Metoda obsługująca klikniecie przycisku "Odśwież dane".
+        /// Klikniecie przycisku powoduje pobranie aktualnych danych z bazy.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void refreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            GetDataFromDB();
+        }
+
+        /// <summary>
+        /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.
+        /// </summary>
+        private void GetDataFromDB()
+        {
+            // --> Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.
+            Dictionary<int, string> visits = db.GetVisits(1);
+
+            if (visits != null && visits.Count > 0)
+            {
+                foreach (var v in visits)
+                {
+                    ListBoxItem item = new ListBoxItem();
+                    item.Content = v.Value;
+                    item.Tag = v.Key;
+
+                    visitsList.Items.Add(item);
+                }
+            }
+            else
+            {
+                visitsList.IsEnabled = false;
+                visitsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+                visitsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
+                visitsList.Items.Add(new ListBoxItem().Content = "Brak wizyt do końca życia!");
+
+                if (visits == null)
+                    MessageBox.Show("Wystąpił błąd podczas pobierania listy wizyt.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            // <-- Tworzenie listy wizyt dla bieżąco zalogowanego lekarza. 
         }
     }
 }
