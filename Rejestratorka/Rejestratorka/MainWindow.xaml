@@ -11,108 +11,110 @@
             </MenuItem>
         </Menu>
         <TabControl DockPanel.Dock="Top">
-            <TabItem Header="Rejestracja wizyty" >
+        <TabItem Header="Rejestracja wizyty" >
                 <DockPanel LastChildFill="True">
                     <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65">
                         <Button Name="RegisterVisit" HorizontalAlignment="Center" Margin="0,10,0,0" Padding="4,0,4,0" Content="Rejestruj wizytę" Height="28" Click="RegisterVisit_Click"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
-                        <ScrollViewer Name="TabRejScrollViewer" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                            <StackPanel>
-                                <StackPanel Margin="20,10,20,0" Orientation="Horizontal">                                
-                                    <Label Content="Pacjent" Width="100" />                                
-                                    <ComboBox Name="PatientsList" Width="200" Height="28" SelectionChanged="PatientsList_SelectionChanged"></ComboBox>
-                                    <Button Name="AddPatient" Margin="20,0,0,0" Padding="4,0,4,0" Width="90" Height="28" Content="Dodaj pacjenta" Click="AddPatient_Click" />
-                                </StackPanel>
-                                <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
-                                    <Label Content="Lekarz:" Width="100" />
-                                    <ComboBox Name="DoctorsList" Width="200" Height="28"></ComboBox>
-                                    <Button x:Name="refreshButton" Margin="20,0,0,0" Padding="4,0,4,0" Content="Odśwież dane" Width="90" Height="28" Click="refreshButton_Click"/>
-                                </StackPanel>
-                                <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
-                                    <Label Content="Data wizyty:" Width="100" />
-                                    <DatePicker Name="VisitDate" Height="28"></DatePicker>
-                                </StackPanel>
-                                <StackPanel Margin="20,10,20,10" Orientation="Horizontal">
-                                    <Label Content="Godzina:" Width="100" />
-                                    <xctk:TimePicker x:Name="visitTime" Height="28" Width="100" Value="{Binding CurrentDateTime}"/>
-                                </StackPanel>
-                                <Expander Name="PatientDetails" Header="Szczegółowe dane pacjenta" Margin="20,10,20,10" IsEnabled="False" Expanded="PatientDetails_Expanded" Collapsed="PatientDetails_Collapsed">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="auto" />
-                                            <RowDefinition Height="auto" />
-                                            <RowDefinition Height="auto" />
-                                            <RowDefinition Height="auto" />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <!-- Pierwsza kolumna -->
-                                        <Label Grid.Row="0" Grid.Column="0" Content="Imię i nazwisko" />
-                                        <Label Grid.Row="1" Grid.Column="0" Content="PESEL" />
-                                        <Label Grid.Row="2" Grid.Column="0" Content="Data urodzenia" />
-                                        <Label Grid.Row="3" Grid.Column="0" Content="Adres" />
-
-                                        <!-- Druga kolumna -->
-                                        <TextBlock Grid.Row="0" Grid.Column="1" Name="PatientName"></TextBlock>
-                                        <TextBlock Grid.Row="1" Grid.Column="1" Name="PatientPesel"></TextBlock>
-                                        <TextBlock Grid.Row="2" Grid.Column="1" Name="PatientBirthDate"></TextBlock>
-                                        <TextBlock Grid.Row="3" Grid.Column="1" Name="PatientAddress"></TextBlock>
-                                    </Grid>
-                                </Expander>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </StackPanel>                    
-                </DockPanel>
-            </TabItem>
-            <TabItem x:Name="registeredVisitsTab" Header="Zarejestrowane wizyty">            
-                <DockPanel LastChildFill="True">
-                    <StackPanel DockPanel.Dock="Top" Background="#FFE5E4E2">
+                    <ScrollViewer Name="TabRejScrollViewer" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <Label Content="Filtr:"/>
-                            <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
-                                <Label Content="Imię:" Width="100"/>
-                                <TextBox x:Name="patientNameTextBox" Width="300" Height="28"></TextBox>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
-                                <Label Content="Nazwisko:" Width="100"/>
-                                <TextBox x:Name="patientSurnameTextBox" Width="300" Height="28"></TextBox>
+
+                            <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
+                                <!-- Wszystkie elementy niebędące kontenerami można zapisywać zarówno jako elementy z domknięciami i atrybutem content: -->
+                                <Label Content="Pacjent" Width="100" />
+                                <!-- jak i ze znacznikami zamykającymi i treścią pomiędzy: <Label>Pacjent</Label> -->
+                                <ComboBox Name="PatientsList" Width="200" Height="28" SelectionChanged="PatientsList_SelectionChanged"></ComboBox>
+                                <Button Name="AddPatient" Margin="20,0,0,0" Padding="4,0,4,0" Height="28" Content="Dodaj pacjenta..." Click="AddPatient_Click" />
                             </StackPanel>
                             <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
                                 <Label Content="Lekarz:" Width="100" />
-                                <ComboBox Name="DoctorsList2" Width="300" Height="28" SelectionChanged="DoctorsList2_SelectionChanged"></ComboBox>
+                                <ComboBox Name="DoctorsList" Width="200" Height="28"></ComboBox>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="20,10,0,20">
-                                <Button x:Name="findVisitButton" Content="Szukaj" Width="90" Height="28" Click="findVisitButton_Click" />
-                                <Button x:Name="refreshButton2" Content="Odśwież dane" Width="90" Height="28" Margin="10,0,0,0" Click="refreshButton_Click"/>
-                                <Button x:Name="clearFilterButton" Content="Wyczyść filtr" Width="90" Height="28" Margin="10,0,0,0" Click="clearFilterButton_Click" IsEnabled="False" />
+                            <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
+                                <Label Content="Data wizyty:" Width="100" />
+                                <DatePicker Name="VisitDate" Height="28"></DatePicker>
                             </StackPanel>
+                            <StackPanel Margin="20,10,20,10" Orientation="Horizontal">
+                                <Label Content="Godzina:" Width="100" />
+                                <xctk:TimePicker x:Name="visitTime" Height="28" Width="100" Value="{Binding CurrentDateTime}"/>
+                            </StackPanel>
+                            <Expander Name="PatientDetails" Header="Szczegółowe dane pacjenta" Margin="20,10,20,10" IsEnabled="False" Expanded="PatientDetails_Expanded" Collapsed="PatientDetails_Collapsed">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Pierwsza kolumna -->
+                                    <Label Grid.Row="0" Grid.Column="0" Content="Imię i nazwisko" />
+                                    <Label Grid.Row="1" Grid.Column="0" Content="PESEL" />
+                                    <Label Grid.Row="2" Grid.Column="0" Content="Data urodzenia" />
+                                    <Label Grid.Row="3" Grid.Column="0" Content="Adres" />
+
+                                    <!-- Druga kolumna -->
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Name="PatientName"></TextBlock>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Name="PatientPesel"></TextBlock>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Name="PatientBirthDate"></TextBlock>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Name="PatientAddress"></TextBlock>
+                                </Grid>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                    </StackPanel>                    
+                </DockPanel>
+            </TabItem>
+        <TabItem x:Name="registeredVisitsTab" Header="Zarejestrowane wizyty" Loaded="registeredVisitsTab_Loaded">            
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Top" Background="#FFE5E4E2">
+                    <StackPanel>
+                        <Label Content="Filtr:"/>
+                        <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
+                            <Label Content="Imię:" Width="100"/>
+                            <TextBox x:Name="patientNameTextBox" Width="300" Height="28"></TextBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
+                            <Label Content="Nazwisko:" Width="100"/>
+                            <TextBox x:Name="patientSurnameTextBox" Width="300" Height="28"></TextBox>
+                        </StackPanel>
+                        <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
+                            <Label Content="Lekarz:" Width="100" />
+                            <ComboBox Name="DoctorsList2" Width="300" Height="28"></ComboBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="20,10,0,20">
+                            <Button x:Name="findVisitButton" Content="Szukaj" Width="75" Height="28" Click="findVisitButton_Click" />
                         </StackPanel>
                     </StackPanel>
+                 </StackPanel>
                     <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65">
                         <Button x:Name="cancelVisitButton" Content="Anuluj wizytę" Margin="0,10,0,0" Width="75" Height="28" Click="cancelVisitButton_Click" IsEnabled="False" />
                     </StackPanel>
-                    <StackPanel DockPanel.Dock="Top">                    
-                        <ScrollViewer x:Name="visitsScrollViewer" Height="240" >
-                            <StackPanel>
-                                <DataGrid x:Name="visitsDataGrid" SelectionChanged="visitsDataGrid_SelectionChanged" SelectionMode="Single">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Imię"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Nazwisko"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Data urodzenia"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="PESEL"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Data wizyty"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Lekarz"></DataGridTextColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </ScrollViewer>                    
-                    </StackPanel >                
-                </DockPanel>            
-            </TabItem>
-        </TabControl>
+                        <StackPanel DockPanel.Dock="Top">                    
+                    <ScrollViewer x:Name="visitsScrollViewer" Height="240" >
+                        <StackPanel>
+                            
+                        
+                        <DataGrid x:Name="visitsDataGrid" SelectionChanged="visitsDataGrid_SelectionChanged" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Imię"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Nazwisko"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Data urodzenia"></DataGridTextColumn>
+                                <DataGridTextColumn Header="PESEL"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Data wizyty"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Lekarz"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        </StackPanel>
+                    </ScrollViewer>                    
+                </StackPanel >                
+            </DockPanel>            
+        </TabItem>
+    </TabControl>
     </DockPanel>        
 </Window>

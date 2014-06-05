@@ -20,39 +20,55 @@ using System.Data;
 namespace Rejestratorka
 {
     /// <summary>
-    /// Logika interakcji dla klasy MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         private DBClient.DBClient db;  // klient bazy danych
-        private LoginWindow loginWindow; //okno logowania
-        private DataTable registeredVisitsTable; //zawiera dane wyświetlane w tabeli z zarejestrowanymi wizytami.
-
-        /// <summary>
-        /// Domyślny konstruktor. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
-        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-            loginWindow = new LoginWindow();
-            while (true)
+            LoginWindow loginWindow = new LoginWindow();
+            if (LogIn() == true)
             {
-                if (LogIn() == true)
-                {
+                this.Title += " - " + loginWindow.Login;                
+                db = new DBClient.DBClient();
+                // --> Tworzenie listy pacjentów.
+                List<string> patients = db.GetPatients();
 
-                    this.Title += " - " + loginWindow.Login;
-                    db = new DBClient.DBClient();
-                    GetDataFromDB();
-                    break;
-                }                
+                if (patients != null && patients.Count > 0)
+                {
+                    foreach (string p in patients)
+                    {
+                        PatientsList.Items.Add(new ComboBoxItem().Content = p);
+                    }
+                }
+                else
+                    System.Windows.MessageBox.Show("Brak pacjentów w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
+                                    "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                // <-- Tworzenie listy pacjentów.
+
+                // --> Tworzenie listy lekarzy.
+                List<string> doctors = db.GetDoctors();
+
+                if (doctors != null && doctors.Count > 0)
+                {
+                    foreach (string d in doctors)
+                    {
+                        DoctorsList.Items.Add(new ComboBoxItem().Content = d);
+                    }
+                }
+                else
+                    System.Windows.MessageBox.Show("Brak lekarzy w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
+                                    "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                // <-- Tworzenie listy lekarzy.                  
+            }
+            else
+            {
+                Environment.Exit(0);
             }
         }
 
-        /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "Dodaj pacjenta".
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void AddPatient_Click(object sender, RoutedEventArgs e)
         {
             bool? dialogResult;
@@ -75,9 +91,6 @@ namespace Rejestratorka
             RefreshPatientsList();
         }
 
-        /// <summary>
-        /// Metoda odświeżająca zawartość combobox'a zawierającego listę pacjentów.
-        /// </summary>
         private void RefreshPatientsList()
         {            
             // --> Tworzenie listy pacjentów.
@@ -95,11 +108,6 @@ namespace Rejestratorka
                                 "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "Zarejestruj wyzytę".
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void RegisterVisit_Click(object sender, RoutedEventArgs e)
         {
             DateTime? timeOfVisit = visitTime.Value;
@@ -127,11 +135,6 @@ namespace Rejestratorka
             }
         }
 
-        /// <summary>
-        /// Metoda obsługująca zwinięcie expandera zawierającego szczegółowe dane pacjenta.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void PatientDetails_Collapsed(object sender, RoutedEventArgs e)
         {
             PatientName.Text = "";
@@ -140,11 +143,6 @@ namespace Rejestratorka
             PatientAddress.Text = "";
         }
 
-        /// <summary>
-        /// Metoda obsługująca rozwinięcie expandera zawierającego szczegółowe dane pacjenta.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void PatientDetails_Expanded(object sender, RoutedEventArgs e)
         {
             Dictionary<string, string> patientDetails = db.GetPatientDetails(PatientsList.SelectedIndex + 1);
@@ -173,11 +171,6 @@ namespace Rejestratorka
             }
         }
 
-        /// <summary>
-        /// Metoda obsługująca zaznaczenie elementu na liście pacjentów.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void PatientsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (PatientsList.SelectedIndex > -1)
@@ -210,81 +203,69 @@ namespace Rejestratorka
             }
 
         }
-       
-        /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "Szukaj".
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
+        private void registeredVisitsTab_Loaded(object sender, RoutedEventArgs e)
+        {
+            /*
+            List<string> doctors = db.GetDoctors();
+
+            if (doctors != null && doctors.Count > 0)
+            {
+                foreach (string d in doctors)
+                {
+                    DoctorsList2.Items.Add(new ComboBoxItem().Content = d);
+                }
+            }
+            else
+                System.Windows.MessageBox.Show("Brak lekarzy w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
+                                "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+            // <-- Tworzenie listy lekarzy.
+             */ 
+        }
+
         private void findVisitButton_Click(object sender, RoutedEventArgs e)
         {
-            clearFilterButton.IsEnabled = true; 
-     
-            //wyczyszczenie dotychczasowej zawartości tabeli:
-            visitsDataGrid.Items.Clear();            
-
-            //tworzenia filtra:
-            string filterString = "";
-
-            if (patientNameTextBox.Text != "")
+            if (patientNameTextBox.Text != "" && patientNameTextBox.Text != "" && DoctorsList2.SelectedItem != null)
             {
-                filterString += string.Format("Imię = '{0}'", patientNameTextBox.Text);
-            }
-            if (patientSurnameTextBox.Text != "")
-            {
-                if (patientNameTextBox.Text != "")
-                {
-                    filterString += " && ";
-                }
-                filterString += string.Format("Nazwisko = '{0}'", patientSurnameTextBox.Text);
-            }
-            if (DoctorsList2.SelectedIndex != -1)
-            {
-                if (patientNameTextBox.Text != "" || patientSurnameTextBox.Text != "")
-                {
-                    filterString += " && ";
-                }
-                filterString += string.Format("Lekarz = '{0}'", DoctorsList2.SelectedItem.ToString());
-            }
-
-            DataRow[] selectedRows = registeredVisitsTable.Select(filterString);
-            if (selectedRows.Count() > 0)
-            {
-                DataTable filteredTable = new DataTable();
+                DataTable queryResult = new DataTable();
+                List<VisitData> visits = db.GetVisits(patientNameTextBox.Text, patientSurnameTextBox.Text, DoctorsList2.SelectedItem.ToString());
+                
+                //kolumny tabeli:
                 DataColumn patientNameColumn = new DataColumn("Imię", typeof(string));
                 DataColumn patientSurnameColumn = new DataColumn("Nazwisko", typeof(string));
                 DataColumn patientDateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
                 DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
                 DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
                 DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
-                filteredTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
-                    patientPeselColumn, dateOfVisitColumn, doctorColumn});
-                
-                foreach (DataRow row in selectedRows)
-	            {
-	            	 filteredTable.Rows.Add(row);
-	            }
-                visitsDataGrid.ItemsSource = filteredTable.DefaultView;
-            }
+
+                //wiersze:
+                foreach (VisitData visit in visits)
+                {
+                    DataRow newRow = queryResult.NewRow();
+                    newRow["Imię"] = visit.PatientName;
+                    newRow["Nazwisko"] = visit.PatientSurname;
+                    newRow["Data urodzenia"] = visit.Date;
+                    newRow["PESEL"] = visit.PatientPesel;
+                    newRow["Data wizyty"] = visit.Date;
+                    newRow["Lekarz"] = visit.Doctor;
+                    queryResult.Rows.Add(newRow);
+                }
+                visitsDataGrid.ItemsSource = queryResult.DefaultView;
+            }            
         }
 
-        /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "Anuluj wizytę".
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cancelVisitButton_Click(object sender, RoutedEventArgs e)
         {
             System.Data.DataRowView selectedRow = (System.Data.DataRowView)visitsDataGrid.SelectedItem;
             object[] rowValues = selectedRow.Row.ItemArray;
             string patientName = (string)rowValues[0];
             string patientSurname = (string)rowValues[1];
-            //string patientDateOfBirth = (string)rowValues[2];
+            string patientDateOfBirth = (string)rowValues[2];
             string patientPesel = (string)rowValues[3];
             string dateOfVisit = (string)rowValues[4];
             string doctor = (string)rowValues[5];
 
-            if (db.DeleteVisit(patientName, patientSurname, patientPesel, dateOfVisit, (byte)DoctorsList2.SelectedIndex))
+            if (db.DeleteVisit(patientName, patientSurname, patientDateOfBirth, patientPesel, dateOfVisit, doctor))
             {
                 System.Windows.MessageBox.Show("Wizyta została anulowana");
             }
@@ -295,11 +276,6 @@ namespace Rejestratorka
              
         }
 
-        /// <summary>
-        /// Metoda obsługująca zmianę zaznaczenia wiersza w tabeli zawierającej zarejestrowane wizyty.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void visitsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (visitsDataGrid.SelectedItem != null)
@@ -312,175 +288,33 @@ namespace Rejestratorka
             }
         }
 
-        /// <summary>
-        /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
-        /// </summary>
-        /// <returns></returns>
         private bool LogIn()
         {
-            bool? result = loginWindow.ShowDialog();
-            if (result == true)
+            LoginWindow loginWindow = new LoginWindow();
+            if (loginWindow.ShowDialog() == true)
                 return true;
-            else if (result == false) //zamknięcie okna logowania
-            {
-                Environment.Exit(0);
-            }
             return false;
         }
 
-        /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "Wyloguj się" na pasku menu.
-        /// Powoduje ukrycie okna głównego i wyświetlenie okna logowania.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.Visibility = System.Windows.Visibility.Hidden;
-            db = null;
-            //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
-            PatientsList.Items.Clear();
-            DoctorsList.Items.Clear();
-            DoctorsList2.Items.Clear();
-            patientNameTextBox.Text = "";
-            patientSurnameTextBox.Text = "";
-            visitsDataGrid.Items.Clear();
-            PatientName.Text = "";
-            PatientPesel.Text = "";
-            PatientBirthDate.Text = "";
-            PatientAddress.Text = "";
-            registeredVisitsTable.Dispose();
-            VisitDate.SelectedDate = null;
-            VisitDate.DisplayDate = DateTime.Today;
-            visitTime.Value = null;
-
-            while (true)
+            //TODO: wylogowanie z bazy danych            
+            if (LogIn() == true)
             {
-                if (LogIn() == true)
-                {                    
-                    db = new DBClient.DBClient();
-                    GetDataFromDB();
-                    this.Visibility = System.Windows.Visibility.Visible;
-                    break;
-                }                
+                //TODO: ponowne zalogowanie
+                this.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                Environment.Exit(0);
             }
         }
 
-        /// <summary>
-        /// Metoda wywoływana po kliknięciu przycisku "O programie".
-        /// Wyświetala okno dialogowe prezentujące informacje o autorach programu.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             AboutDialog aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
-        }
-
-        /// <summary>
-        /// Metoda obsługująca klikniecie przycisku "Odśwież dane".
-        /// Klikniecie przycisku powoduje pobranie aktualnych danych z bazy.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void refreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            GetDataFromDB();
-        }
-
-        /// <summary>
-        /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.
-        /// </summary>
-        private void GetDataFromDB()
-        {
-            // --> Tworzenie listy pacjentów.
-            List<string> patients = db.GetPatients();
-
-            if (patients != null && patients.Count > 0)
-            {
-                foreach (string p in patients)
-                {
-                    PatientsList.Items.Add(new ComboBoxItem().Content = p);
-                }
-            }
-            else
-                System.Windows.MessageBox.Show("Brak pacjentów w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
-                                "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            // <-- Tworzenie listy pacjentów.
-
-            // --> Tworzenie listy lekarzy.
-            List<string> doctors = db.GetDoctors();
-
-            if (doctors != null && doctors.Count > 0)
-            {
-                foreach (string d in doctors)
-                {
-                    DoctorsList.Items.Add(new ComboBoxItem().Content = d);
-                    DoctorsList2.Items.Add(new ComboBoxItem().Content = d);
-                }
-            }
-            else
-                System.Windows.MessageBox.Show("Brak lekarzy w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
-                                "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            // <-- Tworzenie listy lekarzy.  
-
-            //wypełnianie tabeli z wizytami:
-            registeredVisitsTable = new DataTable();
-            List<VisitData> visits = db.GetVisits();
-
-            //kolumny tabeli:
-            DataColumn patientNameColumn = new DataColumn("Imię", typeof(string));
-            DataColumn patientSurnameColumn = new DataColumn("Nazwisko", typeof(string));
-            DataColumn patientDateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
-            DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
-            DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
-            DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
-            registeredVisitsTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
-                    patientPeselColumn, dateOfVisitColumn, doctorColumn});
-
-            //wiersze:
-            foreach (VisitData visit in visits)
-            {
-                DataRow newRow = registeredVisitsTable.NewRow();
-                newRow["Imię"] = visit.PatientName;
-                newRow["Nazwisko"] = visit.PatientSurname;
-                newRow["Data urodzenia"] = visit.Date;
-                newRow["PESEL"] = visit.PatientPesel;
-                newRow["Data wizyty"] = visit.Date;
-                newRow["Lekarz"] = visit.Doctor;
-                registeredVisitsTable.Rows.Add(newRow);
-            }
-
-            if (registeredVisitsTable.DefaultView.Count > 0)
-            {
-                visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
-            }
-        }
-
-        /// <summary>
-        /// Metoda wywoływana po kliknięciu przycisku "Wyczyść filtr".
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void clearFilterButton_Click(object sender, RoutedEventArgs e)
-        {
-            //wyczyszczenie pól filtra:
-            patientNameTextBox.Text = "";
-            patientSurnameTextBox.Text = "";
-            DoctorsList2.SelectedIndex = -1; 
-           
-            //przywrócenie zawartości tabeli:
-            if (registeredVisitsTable.DefaultView.Count > 0)
-            {
-                visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
-            }
-            clearFilterButton.IsEnabled = false;
-        }
-
-        private void DoctorsList2_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            clearFilterButton.IsEnabled = true;
         }
     }
 }
