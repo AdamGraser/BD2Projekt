@@ -20,7 +20,7 @@ namespace Rejestratorka
     public partial class AboutDialog : Window
     {
         /// <summary>
-        /// 
+        /// Konstruktor.
         /// </summary>
         public AboutDialog()
         {
@@ -28,7 +28,7 @@ namespace Rejestratorka
         }
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca kliknięcie przycisku "OK".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

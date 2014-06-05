@@ -17,7 +17,7 @@ using System.Security;
 namespace Rejestratorka
 {
     /// <summary>
-    /// Logika interakcji dla klasy .xaml
+    /// Logika interakcji dla klasy LoginWindow.xaml
     /// </summary>
     public partial class LoginWindow : Window
     {

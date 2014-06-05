@@ -98,15 +98,7 @@
                     <StackPanel DockPanel.Dock="Top">                    
                         <ScrollViewer x:Name="visitsScrollViewer" Height="240" >
                             <StackPanel>
-                                <DataGrid x:Name="visitsDataGrid" SelectionChanged="visitsDataGrid_SelectionChanged" SelectionMode="Single">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Imię"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Nazwisko"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Data urodzenia"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="PESEL"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Data wizyty"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Lekarz"></DataGridTextColumn>
-                                    </DataGrid.Columns>
+                                <DataGrid x:Name="visitsDataGrid" SelectionChanged="visitsDataGrid_SelectionChanged" SelectionMode="Single">                                    
                                 </DataGrid>
                             </StackPanel>
                         </ScrollViewer>                    
