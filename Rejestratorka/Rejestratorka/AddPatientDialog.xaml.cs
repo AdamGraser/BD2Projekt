@@ -15,17 +15,24 @@ using System.Windows.Shapes;
 namespace Rejestratorka
 {
     /// <summary>
-    /// Interaction logic for AddPatienDialog.xaml
+    /// Logika interakcji dla klasy AddPatienDialog.xaml
     /// </summary>
     public partial class AddPatientDialog : Window
     {
         DateTime? dateOfBirth;
 
+        /// <summary>
+        /// Konstruktor
+        /// </summary>
         public AddPatientDialog()
         {
             InitializeComponent();
+            nameTextBox.Focus();
         }
 
+        /// <summary>
+        /// Właściwość zwracająca imię pacjenta.
+        /// </summary>
         public string PatientName
         {
             get
@@ -34,6 +41,9 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca nazwisko pacjenta.
+        /// </summary>
         public string PatientSurname
         {
             get
@@ -42,6 +52,9 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca PESEL pacjenta.
+        /// </summary>
         public string PatientPesel
         {
             get
@@ -50,6 +63,9 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca datę urodzenia pacjenta.
+        /// </summary>
         public DateTime PatientDateOfBirth
         {
             get
@@ -58,6 +74,9 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca numer domu pacjenta.
+        /// </summary>
         public string PatientHouseNumber
         {
             get
@@ -66,6 +85,9 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca numer mieszkania pacjenta.
+        /// </summary>
         public string PatientFlatNumber
         {
             get
@@ -74,6 +96,9 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca nazwę ulicy pacjenta.
+        /// </summary>
         public string PatientStreet
         {
             get
@@ -82,6 +107,9 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca kod pocztowy miasta pacjenta.
+        /// </summary>
         public string PatientPostCode
         {
             get
@@ -90,6 +118,9 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Właściwość zwracająca miasto pacjenta.
+        /// </summary>
         public string PatientCity
         {
             get
@@ -98,12 +129,22 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "Anuluj".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
             Close();
         }
 
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "OK".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
             if (isPeselValid())
@@ -117,6 +158,11 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (IsFormCompleted())
@@ -130,6 +176,11 @@ namespace Rejestratorka
             }
         }               
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dateOfBirthTextBox_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             if (IsFormCompleted())
@@ -143,6 +194,10 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Metoda sprawdzająca czy formularz dodawania nowego pacjenta zawiera wszystkie niezbędne dane.
+        /// </summary>
+        /// <returns>true jeżeli formularz jest wypełniony prawidłowo, false w przeciwnym przypadku.</returns>
         private bool IsFormCompleted()
         {
             if (nameTextBox.Text != "" && surnameTextBox.Text != "" 
@@ -152,12 +207,7 @@ namespace Rejestratorka
                 return true;
             return false;
         }
-
-        private void addPatientDialog_Loaded(object sender, RoutedEventArgs e)
-        {
-            nameTextBox.Focus();
-        }
-
+        
         /// <summary>
         /// Sprawdza czy PESEL zgadza się z podaną datą urodzenia.
         /// </summary>

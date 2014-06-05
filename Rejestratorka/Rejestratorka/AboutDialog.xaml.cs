@@ -15,15 +15,23 @@ using System.Windows.Shapes;
 namespace Rejestratorka
 {
     /// <summary>
-    /// Interaction logic for AboutDialog.xaml
+    /// Logika interakcji dla klasy AboutDialog.xaml
     /// </summary>
     public partial class AboutDialog : Window
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public AboutDialog()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

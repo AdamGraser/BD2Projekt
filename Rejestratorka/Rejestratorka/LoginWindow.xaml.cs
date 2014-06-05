@@ -12,22 +12,29 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Security.Cryptography;
+using System.Security;
 
 namespace Rejestratorka
 {
     /// <summary>
-    /// Interaction logic for LoginWindow.xaml
+    /// Logika interakcji dla klasy .xaml
     /// </summary>
     public partial class LoginWindow : Window
     {
         private byte[] _hash;
-        private string _login = "";
+        private string _login;
 
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
         public LoginWindow()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Właściwość zwracająca login zalogowanego użytkownika.
+        /// </summary>
         public string Login
         {
             get
@@ -35,17 +42,12 @@ namespace Rejestratorka
                 return _login;
             }
         }
-
-        /*
-        public byte[] PasswordHash
-        {
-            get
-            {
-                return _hash;
-            }
-        }
-        */
-
+        
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "OK".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LogInButton_Click(object sender, RoutedEventArgs e)
         {
             DBClient.DBClient db = new DBClient.DBClient();  // klient bazy danych
@@ -62,9 +64,16 @@ namespace Rejestratorka
             else
             {
                 this.DialogResult = false;
-            }           
+            }
+            //wyczyszczenie hashu (dla bezpieczeństwa)
+            _hash = new byte[1];
         }
 
+        /// <summary>
+        /// Metoda wywoływana przy zmianie tekstu w textboksie zawierającym login użytkownika.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (loginTextBox.Text != "" && passwordBox.Password != "")
@@ -77,6 +86,11 @@ namespace Rejestratorka
             }
         }
 
+        /// <summary>
+        /// Metoda wywoływana przy zmianie tekstu w passwordboxie zawierającym hasło użytkownika.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PasswordBox_TextChanged(object sender, RoutedEventArgs e)
         {
             if (loginTextBox.Text != "" && passwordBox.Password != "")
