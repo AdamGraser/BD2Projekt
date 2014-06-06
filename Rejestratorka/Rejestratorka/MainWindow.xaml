@@ -98,7 +98,7 @@
                     <StackPanel DockPanel.Dock="Top">                    
                         <ScrollViewer x:Name="visitsScrollViewer" Height="240" >
                             <StackPanel>
-                                <DataGrid x:Name="visitsDataGrid" SelectionChanged="visitsDataGrid_SelectionChanged" SelectionMode="Single">                                    
+                                <DataGrid x:Name="visitsDataGrid" SelectionChanged="visitsDataGrid_SelectionChanged" SelectionMode="Single" CanUserAddRows="false">                                    
                                 </DataGrid>
                             </StackPanel>
                         </ScrollViewer>                    

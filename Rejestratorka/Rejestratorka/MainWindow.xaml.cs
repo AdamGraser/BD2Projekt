@@ -39,7 +39,6 @@ namespace Rejestratorka
             {
                 if (LogIn() == true)
                 {
-
                     this.Title += " - " + loginWindow.Login;
                     db = new DBClient.DBClient();
                     GetDataFromDB();
