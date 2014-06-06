@@ -32,6 +32,12 @@ namespace DBClient
             db = new Przychodnia.Przychodnia(connection);
         }
 
+        /// <summary>
+        /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
+        /// </summary>
+        /// <param name="login">Login do wyszukania w bazie</param>
+        /// <param name="passwordHash">Hash hasła</param>
+        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy.</returns>
         public bool? FindUser(string login, byte[] passwordHash)
         {
             bool retval = false;
@@ -54,8 +60,7 @@ namespace DBClient
                                              Laborant.Haslo.EndsWith(temp)
                                        select new
                                        {
-                                           login = Laborant.Login,
-                                           password = Laborant.Haslo
+                                           id = Laborant.Id_lab
                                        }).Count() == 1;
                 retval = userExistsInDb;
             }

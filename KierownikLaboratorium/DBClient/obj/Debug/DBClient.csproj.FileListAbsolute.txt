@@ -8,3 +8,8 @@ C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\DBClient\bin\Debug\DBClient.pdb
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\DBClient\obj\Debug\DBClient.dll
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\DBClient\bin\Debug\DBClient.dll
+C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\DBClient\bin\Debug\DBClient.pdb
+C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\DBClient\obj\Debug\DBClient.dll
+C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\DBClient\obj\Debug\DBClient.pdb

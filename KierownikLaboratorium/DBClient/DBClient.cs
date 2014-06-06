@@ -32,6 +32,12 @@ namespace DBClient
             db = new Przychodnia.Przychodnia(connection);
         }
 
+        /// <summary>
+        /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
+        /// </summary>
+        /// <param name="login">Login do wyszukania w bazie</param>
+        /// <param name="passwordHash">Hash hasła</param>
+        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy.</returns>
         public bool? FindUser(string login, byte[] passwordHash)
         {
             bool retval = false;
@@ -47,15 +53,13 @@ namespace DBClient
                 string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
 
                 //Utworzenie zapytania.
-                bool userExistsInDb = (from Laborant in db.Laborants
-                                       //where Rejestratorka.Login == login && Rejestratorka.Haslo == System.Text.Encoding.ASCII.GetString(passwordHash)
-                                       where Laborant.Login == login &&
-                                             Laborant.Haslo.StartsWith(temp) &&
-                                             Laborant.Haslo.EndsWith(temp)
+                bool userExistsInDb = (from Kierownik_laboratorium in db.Kierownik_laboratoriums                                       
+                                       where Kierownik_laboratorium.Login == login &&
+                                             Kierownik_laboratorium.Haslo.StartsWith(temp) &&
+                                             Kierownik_laboratorium.Haslo.EndsWith(temp)
                                        select new
                                        {
-                                           login = Laborant.Login,
-                                           password = Laborant.Haslo
+                                           id = Kierownik_laboratorium.Id_klab                                           
                                        }).Count() == 1;
                 retval = userExistsInDb;
             }
