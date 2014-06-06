@@ -56,17 +56,23 @@ namespace Rejestratorka
             _hash = sha.ComputeHash(passwordBytes);
             _login = loginTextBox.Text;
 
+            bool? userFound = db.FindUser(_login, _hash);
+
             //Sprawdzanie czy w bazie istnieje podany użytkownik
-            if (db.FindUser(_login, _hash) == true)
+            if (userFound == true)
             {
                 this.DialogResult = true;
             }
             else
             {
                 this.DialogResult = false;
+
+                if(userFound == null)
+                    System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
             //wyczyszczenie hashu (dla bezpieczeństwa)
-            _hash = new byte[1];
+            _hash = null;
         }
 
         /// <summary>

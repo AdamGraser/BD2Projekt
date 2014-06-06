@@ -24,9 +24,8 @@ namespace Rejestratorka
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DBClient.DBClient db;  // klient bazy danych
-        private LoginWindow loginWindow; //okno logowania
-        private DataTable registeredVisitsTable; //zawiera dane wyświetlane w tabeli z zarejestrowanymi wizytami.
+        DBClient.DBClient db;            // klient bazy danych
+        DataTable registeredVisitsTable; // zawiera dane wyświetlane w tabeli z zarejestrowanymi wizytami.
 
         /// <summary>
         /// Domyślny konstruktor. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
@@ -34,12 +33,10 @@ namespace Rejestratorka
         public MainWindow()
         {
             InitializeComponent();
-            loginWindow = new LoginWindow();
             while (true)
             {
                 if (LogIn() == true)
                 {
-                    this.Title += " - " + loginWindow.Login;
                     db = new DBClient.DBClient();
                     GetDataFromDB();
                     break;
@@ -237,7 +234,7 @@ namespace Rejestratorka
                 }
                 filterString += string.Format("Nazwisko = '{0}'", patientSurnameTextBox.Text);
             }
-            if (DoctorsList2.SelectedIndex != -1)
+            if (DoctorsList2.SelectedIndex > -1)
             {
                 if (patientNameTextBox.Text.Length != 0 || patientSurnameTextBox.Text.Length != 0)
                 {
@@ -283,13 +280,13 @@ namespace Rejestratorka
             string dateOfVisit = (string)rowValues[4];
             string doctor = (string)rowValues[5];
 
-            if (db.DeleteVisit(patientName, patientSurname, patientPesel, dateOfVisit, (byte)DoctorsList2.SelectedIndex))
+            if (db.DeleteVisit(patientName, patientSurname, patientPesel, dateOfVisit, (byte)(DoctorsList2.SelectedIndex + 1)))
             {
-                System.Windows.MessageBox.Show("Wizyta została anulowana");
+                System.Windows.MessageBox.Show("Wizyta została anulowana.", "Anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                System.Windows.MessageBox.Show("Nie udało się anulować wizyty", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show("Nie udało się anulować wizyty!", "Błąd - anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
              
         }
@@ -317,13 +314,18 @@ namespace Rejestratorka
         /// <returns></returns>
         private bool LogIn()
         {
+            LoginWindow loginWindow = new LoginWindow();
+
             bool? result = loginWindow.ShowDialog();
+
             if (result == true)
-                return true;
-            else if (result == false) //zamknięcie okna logowania
             {
-                Environment.Exit(0);
+                Title += " - " + loginWindow.Login;
+                return true;
             }
+            else if (result == false) //zamknięcie okna logowania
+                Environment.Exit(0);
+
             return false;
         }
 
@@ -335,15 +337,23 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = System.Windows.Visibility.Hidden;
+            Title = "Rejestracja";
+            Visibility = System.Windows.Visibility.Hidden;
+            db.ResetIdRej();
             db = null;
+
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
             PatientsList.Items.Clear();
             DoctorsList.Items.Clear();
             DoctorsList2.Items.Clear();
             patientNameTextBox.Text = "";
             patientSurnameTextBox.Text = "";
-            visitsDataGrid.Items.Clear();
+            // moja propozycja:
+            DataView src = (DataView)visitsDataGrid.ItemsSource;
+            src.Dispose();
+            visitsDataGrid.ItemsSource = null;
+            // oryginał:
+            //visitsDataGrid.Items.Clear();
             PatientName.Text = "";
             PatientPesel.Text = "";
             PatientBirthDate.Text = "";
@@ -359,7 +369,7 @@ namespace Rejestratorka
                 {                    
                     db = new DBClient.DBClient();
                     GetDataFromDB();
-                    this.Visibility = System.Windows.Visibility.Visible;
+                    Visibility = System.Windows.Visibility.Visible;
                     break;
                 }                
             }
@@ -385,6 +395,8 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
+            PatientsList.Items.Clear();
+            DoctorsList.Items.Clear();
             GetDataFromDB();
         }
 

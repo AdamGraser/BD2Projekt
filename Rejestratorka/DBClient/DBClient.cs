@@ -19,6 +19,9 @@ namespace DBClient
         SqlConnection connection;
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
+        static byte id_rej;   //ID rejestratorki obecnie zalogowanej w systemie
+
+
 
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
@@ -26,21 +29,33 @@ namespace DBClient
         public DBClient()
         {
             //Utworzenie połączenia do bazy danych.
-            connection = new SqlConnection(@"Server=\SQLEXPRESS; uid=sa; pwd=; Database=Przychodnia");
+            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
 
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
         }
+
+
+
+        /// <summary>
+        /// Przypisuje polu id_rej wartość 0 - jest to swoisty reset tego pola, który powinien dla bezpieczeństwa być wykonywany przy wylogowaniu.
+        /// </summary>
+        public void ResetIdRej()
+        {
+            id_rej = 0;
+        }
+
+
 
         /// <summary>
         /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
         /// </summary>
         /// <param name="login">Login do wyszukania w bazie</param>
         /// <param name="passwordHash">Hash hasła</param>
-        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy.</returns>
+        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy, null jeśli wystąpił błąd.</returns>
         public bool? FindUser(string login, byte[] passwordHash)
         {
-            bool retval = false;
+            bool? retval = false;
             //Łączenie się z bazą danych.
             connection.Open();
 
@@ -53,15 +68,26 @@ namespace DBClient
                 string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
 
                 //Utworzenie zapytania.
-                bool userExistsInDb = (from Rejestratorka in db.Rejestratorkas                                       
-                                       where Rejestratorka.Login == login &&
-                                             Rejestratorka.Haslo.StartsWith(temp) &&
-                                             Rejestratorka.Haslo.EndsWith(temp)
-                                       select new
-                                       {
-                                           rej_id = Rejestratorka.Id_rej
-                                       }).Count() == 1;
-                retval = userExistsInDb;
+                var query = from Rejestratorka in db.Rejestratorkas                                       
+                          where Rejestratorka.Login == login &&
+                                  Rejestratorka.Haslo.StartsWith(temp) &&
+                                  Rejestratorka.Haslo.Length == temp.Length
+                          select Rejestratorka.Id_rej;
+
+                foreach (byte q in query)
+                {
+                    if (id_rej == 0)
+                    {
+                        id_rej = q;
+                        retval = true;
+                    }
+                    else
+                    {
+                        id_rej = 0;
+                        retval = null;
+                        break;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -69,6 +95,8 @@ namespace DBClient
                 Console.WriteLine(e.Source);
                 Console.WriteLine(e.HelpLink);
                 Console.WriteLine(e.StackTrace);
+
+                retval = null;
             }
             finally
             {
@@ -77,6 +105,8 @@ namespace DBClient
             }
             return retval;
         }
+
+
 
         /// <summary>
         /// Pobiera z tabeli Pacjent imiona i nazwiska wszystkich pacjentów.
@@ -242,10 +272,12 @@ namespace DBClient
             return doctorsList;
         }
         
+
+
         /// <summary>
         /// Wyszukuje w bazie danych wizyty, które się nie odbyły.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Lista rekordów z tabeli Wizyta, które w kolumnie data_rej mają wartość mniejszą niż bieżący czas.</returns>
         public List<VisitData> GetUndoneVisits()
         {
             List<VisitData> visitsList = new List<VisitData>();
@@ -263,7 +295,7 @@ namespace DBClient
                 var query = from Wizyta in db.Wizytas
                             join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
                             join Lekarz in db.Lekarzs on Wizyta.Id_lek equals Lekarz.Id_lek
-                            where (Wizyta.Stan == null && Wizyta.Data_rej <= DateTime.Now)
+                            where (Wizyta.Stan == null && Wizyta.Data_rej < DateTime.Now)
                             select new
                             {
                                 id = Wizyta.Id_wiz,
@@ -305,6 +337,8 @@ namespace DBClient
             }
             return visitsList;
         }                      
+
+
 
         /// <summary>
         /// Zmienia stan wskazanej wizyty na nowy.
@@ -389,6 +423,8 @@ namespace DBClient
             return retval;
         }
        
+
+
         /// <summary>
         /// Dodaje do tabeli Wizyta nowy rekord z informacjami o nowej wizycie.
         /// </summary>
@@ -411,8 +447,7 @@ namespace DBClient
             Przychodnia.Wizyta wiz = new Przychodnia.Wizyta();
 
             wiz.Data_rej = data_rej;
-            //Niech będzie 1, ja się tu nie będę bawił w implementację logowania.
-            wiz.Id_rej = 1;
+            wiz.Id_rej = id_rej;
             wiz.Id_lek = id_lek;
             wiz.Id_pac = id_pac;
 
@@ -473,6 +508,8 @@ namespace DBClient
             return retval;
         }
 
+
+
         /// <summary>
         /// Metoda usuwająca wizytę z bazy.
         /// </summary>
@@ -485,7 +522,8 @@ namespace DBClient
         /// <returns></returns>
         public bool DeleteVisit(string patientName, string patientSurname, string patientPesel, string dateOfVisit, byte doctorID)
         {
-            bool retval = true;            
+            bool retval = true;
+
             //Łączenie się z bazą danych.
             connection.Open();
 
@@ -493,24 +531,27 @@ namespace DBClient
             transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
             db.Transaction = transaction;
 
-            //Encja, aby odwzorować tabelę Wizyta.
-            Przychodnia.Wizyta wiz = new Przychodnia.Wizyta();
-
             //Pobranie z bazy id pacjenta na podstawie imienia, nazwiska i PESEL-u.
             var patientIdQuery = from Pacjent in db.Pacjents
                         where Pacjent.Imie == patientName && Pacjent.Nazwisko == patientSurname && Pacjent.Pesel == long.Parse(patientPesel)
                         select Pacjent.Id_pac;
 
-            foreach (int patientId in patientIdQuery)
+            int patientId = -1; //inicjalizacja, ponieważ inaczej w poniższym zapytaniu patientId mogło być niezainicjalizowane
+            
+            foreach (int p in patientIdQuery)
             {
-                wiz.Id_pac = patientId;
+                patientId = p;
             }
 
-            wiz.Data_rej = Convert.ToDateTime(dateOfVisit);
-            wiz.Id_lek = doctorID;
-                                              
-            //Przygotowanie wszystkiego do wysłania.
-            db.Wizytas.DeleteOnSubmit(wiz);
+            var visit = from Wizyta in db.Wizytas
+                        where Wizyta.Id_pac == patientId && Wizyta.Id_lek == doctorID && Wizyta.Data_rej.CompareTo(dateOfVisit) == 0
+                        select Wizyta;
+
+            //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
+            foreach (Przychodnia.Wizyta wiz in visit)
+            {
+                db.Wizytas.DeleteOnSubmit(wiz);
+            }
 
             try
             {
@@ -562,8 +603,93 @@ namespace DBClient
                 //Zawsze należy zamknąć połączenie.
                 connection.Close();
             }
+
             return retval;
         }
+
+
+
+        /// <summary>
+        /// Usuwa z bazy wizytę o wskazanym ID.
+        /// </summary>
+        /// <param name="id_wiz">ID wizyty, która ma zostać usunięta.</param>
+        /// <returns>true jeśli wizyta została pomyślnie usunięta z bazy danych, false jeśli wystąpił błąd.</returns>
+        public bool DeleteVisit(int id_wiz)
+        {
+            bool retval = true;
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            var query = from Wizyta in db.Wizytas
+                        where Wizyta.Id_wiz == id_wiz
+                        select Wizyta;
+
+            //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
+            foreach (Przychodnia.Wizyta wiz in query)
+            {
+                db.Wizytas.DeleteOnSubmit(wiz);
+            }
+
+            try
+            {
+                //Wysłanie danych (wykonanie inserta). Rzuca SqlException, np. gdy klucz obcy nie odpowiada kluczowi głównemu w tabeli nadrzędnej.
+                db.SubmitChanges();
+
+                //Jeśli nie rzucił mięsem, dojdzie tutaj, czyli wszystko ok. Jeśli zostało już zacommitowane/rollbacknięte przez serwer, rzuci InvalidOper..., jeśli coś
+                //innego, rzuci Exception
+                transaction.Commit();
+            }
+            catch (InvalidOperationException invOper)
+            {
+                Console.WriteLine("Transakcja została już zaakceptowana/odrzucona LUB połączenie zostało zerwane.");
+                Console.WriteLine(invOper.Message);
+                Console.WriteLine(invOper.Source);
+                Console.WriteLine(invOper.HelpLink);
+                Console.WriteLine(invOper.StackTrace);
+                retval = false;
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine("Wystąpił błąd przy dodawaniu nowego rekordu, np. niezgodność klucza obcego w tabeli podrzędnej z kluczem głównym w tabeli nadrzędnej.");
+                Console.WriteLine(sqlEx.Message);
+                Console.WriteLine(sqlEx.Source);
+                Console.WriteLine(sqlEx.HelpLink);
+                Console.WriteLine(sqlEx.StackTrace);
+                retval = false;
+
+                //Rollback, bo coś poszło nie tak.
+                transaction.Rollback();
+
+                //Zwolnienie zasobów, bo po co je zajmować.
+                db.Dispose();
+
+                //Utworzenie od razu nowego obiektu do użycia następnym razem.
+                db = new Przychodnia.Przychodnia(connection);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Wystąpił błąd podczas próby zaakceptowania transakcji.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.HelpLink);
+                Console.WriteLine(ex.StackTrace);
+                retval = false;
+            }
+            finally
+            {
+                //Zawsze należy zamknąć połączenie.
+                connection.Close();
+            }
+
+            return retval;
+        }
+
+
 
         /// <summary>
         /// Dodaje do bazy nowego pacjenta.
