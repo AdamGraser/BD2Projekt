@@ -21,11 +21,12 @@ namespace Lekarz
     /// </summary>
     public partial class MainWindow : Window
     {
-        DBClient.DBClient db; // klient bazy danych
-        int currentVisitID; // przechowuje ID wizyty, która właśnie się odbywa lub -1, jeśli lekarz nie przyjmuje teraz żadnego pacjenta/podczas której zlecone zostało badanie currentLabTestID
+        DBClient.DBClient db;  // klient bazy danych
+        int currentVisitID;    // przechowuje ID wizyty, która właśnie się odbywa lub -1, jeśli lekarz nie przyjmuje teraz żadnego pacjenta/podczas której zlecone zostało badanie currentLabTestID
         byte currentLabTestID; // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
-        byte currentRow; // przechowuje nr wiersza listy zleconych badań laboratoryjnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co zlecone badanie
-        LoginWindow loginWindow; // okno logowania
+        byte currentRow;       // przechowuje nr wiersza listy zleconych badań laboratoryjnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co zlecone badanie
+
+
 
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
@@ -33,10 +34,9 @@ namespace Lekarz
         public MainWindow()
         {
             InitializeComponent();
-            loginWindow = new LoginWindow();
+
             if (LogIn() == true)
             {
-                this.Title += " - " + loginWindow.Login;
                 db = new DBClient.DBClient();
                 currentVisitID = -1;
                 currentRow = 0;
@@ -44,6 +44,8 @@ namespace Lekarz
                 GetDataFromDB();                
             }            
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Przyjmij wizytę".
@@ -71,6 +73,8 @@ namespace Lekarz
                 }
             }
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Zleć badanie lab.".
@@ -129,6 +133,8 @@ namespace Lekarz
                 MessageBox.Show("Wystąpił błąd podczas zapisu zlecenia badania laboratoryjnego i nie zostało ono zapisane.", "Błąd zapisu zlecenia", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku zapisz.
         /// </summary>
@@ -162,6 +168,8 @@ namespace Lekarz
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca zmianę selekcji wizyty w listboksie.
         /// </summary>
@@ -183,6 +191,8 @@ namespace Lekarz
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Wyloguj się" na pasku menu.
         /// Powoduje ukrycie okna głównego i wyświetlenie okna logowania.
@@ -191,8 +201,10 @@ namespace Lekarz
         /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = System.Windows.Visibility.Hidden;
+            Title = "Lekarz";
+            Visibility = System.Windows.Visibility.Hidden;
             db = null;
+
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
             visitsList.Items.Clear();
             data_rej.Text = "";
@@ -219,21 +231,30 @@ namespace Lekarz
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
         /// </summary>
         /// <returns></returns>
         private bool LogIn()
         {
+            LoginWindow loginWindow = new LoginWindow();
+
             bool? result = loginWindow.ShowDialog();
+
             if (result == true)
-                return true;
-            else if (result == false) //zamknięcie okna logowania
             {
-                Environment.Exit(0);
+                Title += " - " + loginWindow.Login;
+                return true;
             }
+            else if (result == false) //zamknięcie okna logowania
+                Environment.Exit(0);
+            
             return false;
         }
+
+
 
         /// <summary>
         /// Metoda wywoływana po kliknięciu przycisku "O programie".
@@ -247,6 +268,8 @@ namespace Lekarz
             aboutDialog.ShowDialog();
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca klikniecie przycisku "Odśwież dane".
         /// Klikniecie przycisku powoduje pobranie aktualnych danych z bazy.
@@ -255,8 +278,11 @@ namespace Lekarz
         /// <param name="e"></param>
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
+            visitsList.Items.Clear();
             GetDataFromDB();
         }
+
+
 
         /// <summary>
         /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.

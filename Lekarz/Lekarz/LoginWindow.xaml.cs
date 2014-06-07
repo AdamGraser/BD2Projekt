@@ -23,6 +23,8 @@ namespace Lekarz
         private byte[] _hash;
         private string _login = "";
 
+
+
         /// <summary>
         /// Konstruktor.
         /// </summary>
@@ -30,6 +32,8 @@ namespace Lekarz
         {
             InitializeComponent();
         }
+
+
 
         /// <summary>
         /// Właściwość zwracająca login zalogowanego użytkownika.
@@ -41,6 +45,8 @@ namespace Lekarz
                 return _login;
             }
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "OK".
@@ -55,18 +61,26 @@ namespace Lekarz
             _hash = sha.ComputeHash(passwordBytes);
             _login = loginTextBox.Text;
 
+            bool? userFound = db.FindUser(_login, _hash);
+
             //Sprawdzanie czy w bazie istnieje podany użytkownik
-            if (db.FindUser(_login, _hash) == true)
+            if (userFound == true)
             {
                 this.DialogResult = true;
             }
             else
             {
                 this.DialogResult = false;
+
+                if (userFound == null)
+                    System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
             //wyczyszczenie hashu (dla bezpieczeństwa)
-            _hash = new byte[1];
+            _hash = null;
         }
+
+
 
         /// <summary>
         /// Metoda wywoływana przy zmianie tekstu w textboksie zawierającym login użytkownika.
@@ -84,6 +98,8 @@ namespace Lekarz
                 logInButton.IsEnabled = false;
             }
         }
+
+
 
         /// <summary>
         /// Metoda wywoływana przy zmianie tekstu w passwordboxie zawierającym hasło użytkownika.

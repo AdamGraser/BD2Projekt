@@ -20,6 +20,8 @@ namespace DBClient
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
 
+
+
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
         /// </summary>
@@ -32,15 +34,18 @@ namespace DBClient
             db = new Przychodnia.Przychodnia(connection);
         }
 
+
+
         /// <summary>
         /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
         /// </summary>
         /// <param name="login">Login do wyszukania w bazie</param>
         /// <param name="passwordHash">Hash hasła</param>
-        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy.</returns>
+        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy, null w przypadku wystąpienia błędu.</returns>
         public bool? FindUser(string login, byte[] passwordHash)
         {
-            bool retval = false;
+            bool? retval = false;
+
             //Łączenie się z bazą danych.
             connection.Open();
 
@@ -53,16 +58,27 @@ namespace DBClient
                 string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
 
                 //Utworzenie zapytania.
-                bool userExistsInDb = (from Lekarz in db.Lekarzs
-                                       //where Rejestratorka.Login == login && Rejestratorka.Haslo == System.Text.Encoding.ASCII.GetString(passwordHash)
+                var query = from Lekarz in db.Lekarzs
                                        where Lekarz.Login == login &&
                                              Lekarz.Haslo.StartsWith(temp) &&
-                                             Lekarz.Haslo.EndsWith(temp)
-                                       select new
-                                       {
-                                           id = Lekarz.Id_lek
-                                       }).Count() == 1;
-                retval = userExistsInDb;
+                                             Lekarz.Haslo.Length == temp.Length
+                                       select Lekarz.Id_lek;
+
+                byte lek_id = 0;
+                
+                foreach (byte q in query)
+                {
+                    if (lek_id == 0)
+                    {
+                        lek_id = q;
+                        retval = true;
+                    }
+                    else
+                    {
+                        retval = null;
+                        break;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -70,18 +86,22 @@ namespace DBClient
                 Console.WriteLine(e.Source);
                 Console.WriteLine(e.HelpLink);
                 Console.WriteLine(e.StackTrace);
+                retval = null;
             }
             finally
             {
                 //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
                 connection.Close();
             }
+
             return retval;
         }
-              
+             
+ 
+
         /// <summary>
         /// Pobiera z tabeli Wizyta i Pacjent daty wizyt oraz imiona i nazwiska pacjentów, dla których te wizyty zostały zarejestrowane.
-        /// Dotyczy to tylko wizyt nieodbytych, które jeszcze mogą się odbyć (Wizyta.Stan == null && Wizyta.Data_rej < DateTime.today)
+        /// Dotyczy to tylko wizyt nieodbytych, które jeszcze mogą się odbyć (Wizyta.Stan == null &amp;&amp; Wizyta.Data_rej &lt; DateTime.today)
         /// </summary>
         /// <param name="id_lek">ID aktualnie zalogowanego lekarza (wizyty zarejestrowane do niego zostaną pobrane z bazy).</param>
         /// <returns>Zwraca listę dat, imion i nazwisk oddzielonych spacjami lub null, jeśli wystąpił błąd.</returns>
@@ -134,6 +154,8 @@ namespace DBClient
 
             return visitsList;
         }
+
+
 
        /*
         /// <summary>
@@ -274,6 +296,8 @@ namespace DBClient
             return retval;
         }
 
+
+
         /// <summary>
         /// Aktualizuje dane o wskazanej wizycie, zmienia jej stan na "zakończona".
         /// </summary>
@@ -368,6 +392,8 @@ namespace DBClient
             return retval;
         }
 
+
+
         /// <summary>
         /// Dodaje do tabeli Badanie nowy rekord z informacjami o badaniu laboratoryjnym, zleconym w trakcie wskazanej wizyty.
         /// </summary>
@@ -455,6 +481,7 @@ namespace DBClient
         }
 
 
+
         /*
         /// <summary>
         /// Dodaje do tabeli Wizyta nowy rekord z informacjami o nowej wizycie.
@@ -540,6 +567,8 @@ namespace DBClient
             return retval;
         }
         */
+
+
 
         /*
         /// <summary>

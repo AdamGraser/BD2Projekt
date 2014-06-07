@@ -29,7 +29,7 @@ namespace DBClient
         public DBClient()
         {
             //Utworzenie połączenia do bazy danych.
-            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
+            connection = new SqlConnection(@"Server=\SQLEXPRESS; uid=sa; pwd=; Database=Przychodnia");
 
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
