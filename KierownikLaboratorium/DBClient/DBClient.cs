@@ -20,6 +20,8 @@ namespace DBClient
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
 
+
+
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
         /// </summary>
@@ -32,15 +34,18 @@ namespace DBClient
             db = new Przychodnia.Przychodnia(connection);
         }
 
+
+
         /// <summary>
         /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
         /// </summary>
         /// <param name="login">Login do wyszukania w bazie</param>
         /// <param name="passwordHash">Hash hasła</param>
-        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy.</returns>
+        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy, null w przypadku wystąpienia błędu.</returns>
         public bool? FindUser(string login, byte[] passwordHash)
         {
-            bool retval = false;
+            bool? retval = false;
+
             //Łączenie się z bazą danych.
             connection.Open();
 
@@ -53,15 +58,28 @@ namespace DBClient
                 string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
 
                 //Utworzenie zapytania.
-                bool userExistsInDb = (from Kierownik_laboratorium in db.Kierownik_laboratoriums                                       
+                var query = from Kierownik_laboratorium in db.Kierownik_laboratoriums                                       
                                        where Kierownik_laboratorium.Login == login &&
                                              Kierownik_laboratorium.Haslo.StartsWith(temp) &&
-                                             Kierownik_laboratorium.Haslo.EndsWith(temp)
-                                       select new
-                                       {
-                                           id = Kierownik_laboratorium.Id_klab                                           
-                                       }).Count() == 1;
-                retval = userExistsInDb;
+                                             Kierownik_laboratorium.Haslo.Length == temp.Length
+                                       select Kierownik_laboratorium.Id_klab;
+
+                byte id_klab = 0;
+
+                //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
+                foreach (byte q in query)
+                {
+                    if (id_klab == 0)
+                    {
+                        id_klab = q;
+                        retval = true;
+                    }
+                    else
+                    {
+                        retval = null;
+                        break;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -69,14 +87,18 @@ namespace DBClient
                 Console.WriteLine(e.Source);
                 Console.WriteLine(e.HelpLink);
                 Console.WriteLine(e.StackTrace);
+                retval = null;
             }
             finally
             {
                 //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
                 connection.Close();
             }
+
             return retval;
         }
+
+
 
         /// <summary>
         /// Pobiera z tabeli Pacjent imiona i nazwiska wszystkich pacjentów.

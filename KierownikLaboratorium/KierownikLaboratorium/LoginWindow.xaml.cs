@@ -23,10 +23,14 @@ namespace KierownikLaboratorium
         private byte[] _hash;
         private string _login = "";
 
+
+
         public LoginWindow()
         {
             InitializeComponent();
         }
+
+
 
         public string Login
         {
@@ -36,6 +40,13 @@ namespace KierownikLaboratorium
             }
         }
 
+
+
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "Zaloguj".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LogInButton_Click(object sender, RoutedEventArgs e)
         {
             DBClient.DBClient db = new DBClient.DBClient();  // klient bazy danych
@@ -44,16 +55,26 @@ namespace KierownikLaboratorium
             _hash = sha.ComputeHash(passwordBytes);
             _login = loginTextBox.Text;
 
+            bool? userFound = db.FindUser(_login, _hash);
+
             //Sprawdzanie czy w bazie istnieje podany użytkownik
-            if (db.FindUser(_login, _hash) == true)
+            if (userFound == true)
             {
                 this.DialogResult = true;
             }
             else
             {
                 this.DialogResult = false;
+
+                if (userFound == null)
+                    System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            //wyczyszczenie hashu (dla bezpieczeństwa)
+            _hash = null;
         }
+
+
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -66,6 +87,8 @@ namespace KierownikLaboratorium
                 logInButton.IsEnabled = false;
             }
         }
+
+
 
         private void PasswordBox_TextChanged(object sender, RoutedEventArgs e)
         {

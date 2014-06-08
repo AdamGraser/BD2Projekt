@@ -17,3 +17,22 @@ C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\AboutDialog.
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\obj\Debug\AboutDialog.g.cs
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\DBClient.dll
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Laborant\Laborant\bin\Debug\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\bin\Debug\Laborant.exe.config
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.exe
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.pdb
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\bin\Debug\Laborant.exe
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\bin\Debug\Laborant.pdb
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\bin\Debug\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\bin\Debug\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.csprojResolveAssemblyReference.cache
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\AboutDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\LoginWindow.baml
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\MainWindow.baml
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\AboutDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\LoginWindow.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\MainWindow.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\App.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant_MarkupCompile.cache
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.g.resources
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.Properties.Resources.resources
+E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.csproj.GenerateResource.Cache

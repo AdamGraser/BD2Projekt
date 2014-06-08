@@ -17,3 +17,22 @@ C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\KierownikLaborator
 C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\AboutDialog.g.cs
 C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\LoginWindow.baml
 C:\Users\Michał\OneDrive\Tymczasowe\BD\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\LoginWindow.g.cs
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\bin\Debug\KierownikLaboratorium.exe.config
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\KierownikLaboratorium.exe
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\KierownikLaboratorium.pdb
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\bin\Debug\KierownikLaboratorium.exe
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\bin\Debug\KierownikLaboratorium.pdb
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\bin\Debug\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\bin\Debug\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\KierownikLaboratorium.csprojResolveAssemblyReference.cache
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\AboutDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\LoginWindow.baml
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\MainWindow.baml
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\AboutDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\LoginWindow.g.cs
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\MainWindow.g.cs
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\App.g.cs
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\KierownikLaboratorium_MarkupCompile.cache
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\KierownikLaboratorium.g.resources
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\KierownikLaboratorium.Properties.Resources.resources
+E:\Adam\House of dog\studia\bd-projekt\KierownikLaboratorium\KierownikLaboratorium\obj\Debug\KierownikLaboratorium.csproj.GenerateResource.Cache

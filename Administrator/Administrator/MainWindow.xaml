@@ -4,9 +4,9 @@
         Title="Administrator" Height="350" Width="525">
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
-            <MenuItem x:Name="logoutMenuItem" Header="Wyloguj się" Click="logoutMenuItem_Click" />
+            <MenuItem Name="logoutMenuItem" Header="Wyloguj się" Click="logoutMenuItem_Click" />
             <MenuItem Header="Pomoc">
-                <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"></MenuItem>
+                <MenuItem Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click" />
             </MenuItem>
         </Menu>
         <TabControl DockPanel.Dock="Top">
@@ -20,6 +20,12 @@
                 
             </TabItem>
             <TabItem Header="Kierownik laboratorium">
+                
+            </TabItem>
+            <TabItem Header="Słownik badań">
+                
+            </TabItem>
+            <TabItem Header="Słownik specjalizacji">
                 
             </TabItem>
         </TabControl>

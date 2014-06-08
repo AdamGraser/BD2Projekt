@@ -21,13 +21,14 @@ namespace KierownikLaboratorium
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DBClient.DBClient db; // klient bazy danych
-        private LoginWindow loginWindow; // okno logowania
-        int currentVisitID; // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
-        byte currentLabTestID; // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
-        int currentLabTest; // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
-        bool? done; // determinuje czy rozpatrywane badanie laboratoryjne zostało wykonane czy nie (rozróżnienie dla użycia currentVisitID i currentLabTestID)       
-        Dictionary<int, byte> doneLabTests; // kolekcja par <ID wizyty, liczba badań
+        private DBClient.DBClient db;       // klient bazy danych
+        int currentVisitID;                 // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
+        byte currentLabTestID;              // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
+        int currentLabTest;                 // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
+        bool done;                          // determinuje czy rozpatrywane badanie laboratoryjne zostało wykonane czy nie (rozróżnienie dla użycia currentVisitID i currentLabTestID)       
+        Dictionary<int, byte> doneLabTests; // kolekcja par <ID wizyty, liczba badań wykonanych spośród zleconych w trakcie tej wizyty>
+
+
 
         /// <summary>
         /// Domyślny konstruktor. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
@@ -35,12 +36,11 @@ namespace KierownikLaboratorium
         public MainWindow()
         {
             InitializeComponent();
-            loginWindow = new LoginWindow();
+
             while (true)
             {
                 if (LogIn() == true)
                 {
-                    this.Title += " - " + loginWindow.Login;
                     db = new DBClient.DBClient();
                     doneLabTests = new Dictionary<int, byte>();
                     GetDataFromDB();
@@ -48,6 +48,8 @@ namespace KierownikLaboratorium
                 }
             }
         }
+
+
 
         /// <summary>
         /// Metoda wywoływana po kliknięciu przycisku "O programie".
@@ -61,6 +63,8 @@ namespace KierownikLaboratorium
             aboutDialog.ShowDialog();
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Wyloguj się" na pasku menu.
         /// Powoduje ukrycie okna głównego i wyświetlenie okna logowania.
@@ -69,34 +73,50 @@ namespace KierownikLaboratorium
         /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = System.Windows.Visibility.Hidden;
-            //TODO: wylogowanie z bazy danych            
-            if (LogIn() == true)
+            Title = "Kierownik laboratorium";
+            Visibility = System.Windows.Visibility.Hidden;
+            db = null;
+
+            //TODO:
+            //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
+
+            while (true)
             {
-                //TODO: ponowne zalogowanie
-                this.Visibility = System.Windows.Visibility.Visible;
-            }
-            else
-            {
-                Environment.Exit(0);
+                if (LogIn() == true)
+                {
+                    db = new DBClient.DBClient();
+                    GetDataFromDB();
+                    Visibility = System.Windows.Visibility.Visible;
+                    break;
+                }
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
+        /// Okienko logowania zwraca false tylko gdy zostanie zamknięte krzyżykiem. Ta metoda wtedy powoduje zamknięcie aplikacji.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
+            LoginWindow loginWindow = new LoginWindow();
+
             bool? result = loginWindow.ShowDialog();
+
             if (result == true)
-                return true;
-            else if (result == false) //zamknięcie okna logowania
             {
-                Environment.Exit(0);
+                Title += " - " + loginWindow.Login;
+                return true;
             }
+            else if (result == false) //zamknięcie okna logowania
+                Environment.Exit(0);
+
             return false;
         }
+
+
 
         /// <summary>
         /// 
@@ -105,7 +125,7 @@ namespace KierownikLaboratorium
         /// <param name="e"></param>
         private void Klab_CheckLabTest_Click(object sender, RoutedEventArgs e)
         {
-            if (currentVisitID == -1 && currentLabTestID == 0 && done == null)
+            if (done == false)
             {
                 if (doneLabTests.Count > 0)
                 {
@@ -160,6 +180,8 @@ namespace KierownikLaboratorium
             }
         }
 
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -167,7 +189,7 @@ namespace KierownikLaboratorium
         /// <param name="e"></param>
         private void Klab_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (currentVisitID > -1 && currentLabTestID > 0 && done == true)
+            if (done == true)
             {
                 Button s = (Button)sender;
                 bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, null, (bool?)s.Tag, Klab_LabTestRemarks.Text);
@@ -206,7 +228,7 @@ namespace KierownikLaboratorium
                     currentLabTest = -1;
                     currentVisitID = -1;
                     currentLabTestID = 0;
-                    done = null;
+                    done = false;
                 }
                 else if (save == false)
                     MessageBox.Show("Wystąpił błąd podczas próby zapisu uwag do badania laboratoryjnego i nie zostały one zapisane.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -215,6 +237,8 @@ namespace KierownikLaboratorium
             }
         }
 
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -222,7 +246,7 @@ namespace KierownikLaboratorium
         /// <param name="e"></param>
         private void Klab_Back_Click(object sender, RoutedEventArgs e)
         {
-            if (currentVisitID > -1 && currentLabTestID > 0 && done == true)
+            if (done == true)
             {
                 if (db.CheckLabTest(currentVisitID, currentLabTestID, null))
                 {
@@ -233,12 +257,14 @@ namespace KierownikLaboratorium
                     currentLabTest = -1;
                     currentVisitID = -1;
                     currentLabTestID = 0;
-                    done = null;
+                    done = false;
                 }
                 else
                     MessageBox.Show("Wystąpił błąd podczas zmiany stanu badania laboratoryjnego i jest ono wciąż oznaczone jako W trakcie sprawdzania.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
+
 
         /// <summary>
         /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.

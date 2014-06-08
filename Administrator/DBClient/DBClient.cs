@@ -20,6 +20,8 @@ namespace DBClient
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
 
+
+
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
         /// </summary>
@@ -32,9 +34,18 @@ namespace DBClient
             db = new Przychodnia.Przychodnia(connection);
         }
 
+
+
+        /// <summary>
+        /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
+        /// </summary>
+        /// <param name="login">Login do wyszukania w bazie</param>
+        /// <param name="passwordHash">Hash hasła</param>
+        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy, null w przypadku wystąpienia błędu.</returns>
         public bool? FindUser(string login, byte[] passwordHash)
         {
-            bool retval = false;
+            bool? retval = false;
+
             //Łączenie się z bazą danych.
             connection.Open();
 
@@ -47,15 +58,27 @@ namespace DBClient
                 string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
 
                 //Utworzenie zapytania.
-                bool userExistsInDb = (from Administrator in db.Administrators
-                                       where Administrator.Login == login &&
-                                             Administrator.Haslo.StartsWith(temp) &&
-                                             Administrator.Haslo.Length == temp.Length
-                                       select new
-                                       {
-                                           id_adm = Administrator.Id_adm
-                                       }).Count() == 1;
-                retval = userExistsInDb;
+                var query = from Administrator in db.Administrators
+                            where Administrator.Login == login &&
+                                  Administrator.Haslo.StartsWith(temp) &&
+                                  Administrator.Haslo.Length == temp.Length
+                            select Administrator.Id_adm;
+
+                byte lek_adm = 0;
+
+                foreach (byte q in query)
+                {
+                    if (lek_adm == 0)
+                    {
+                        lek_adm = q;
+                        retval = true;
+                    }
+                    else
+                    {
+                        retval = null;
+                        break;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -63,14 +86,18 @@ namespace DBClient
                 Console.WriteLine(e.Source);
                 Console.WriteLine(e.HelpLink);
                 Console.WriteLine(e.StackTrace);
+                retval = null;
             }
             finally
             {
                 //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
                 connection.Close();
             }
+
             return retval;
         }
+
+
 
         /// <summary>
         /// Pobiera z tabeli Pacjent imiona i nazwiska wszystkich pacjentów.

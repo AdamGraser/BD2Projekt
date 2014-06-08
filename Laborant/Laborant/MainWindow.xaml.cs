@@ -21,13 +21,14 @@ namespace Laborant
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DBClient.DBClient db; // klient bazy danych
-        private LoginWindow loginWindow; // okno logowania
-        int currentVisitID; // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
-        byte currentLabTestID; // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
-        int currentLabTest; // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
-        bool? done; // determinuje czy rozpatrywane badanie laboratoryjne zostało wykonane czy nie (rozróżnienie dla użycia currentVisitID i currentLabTestID)
+        private DBClient.DBClient db;          // klient bazy danych
+        int currentVisitID;                    // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
+        byte currentLabTestID;                 // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
+        int currentLabTest;                    // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
+        bool done;                            // determinuje czy laborant jest w trakcie wykonywania badania/edycji wykonanego badania (true) czy nie (false)
         Dictionary<int, byte> labTestsAtVisit; // kolekcja par <ID wizyty, liczba badań laboratoryjnych zleconych w trakcie tej wizyty> (tylko wizyty z dodatnią liczbą zleconych badań lab.)
+
+
 
         /// <summary>
         /// Domyślny konstruktor. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
@@ -35,12 +36,10 @@ namespace Laborant
         public MainWindow()
         {
             InitializeComponent();
-            loginWindow = new LoginWindow();
             while (true)
             {
                 if (LogIn() == true)
                 {
-                    this.Title += " - " + loginWindow.Login;
                     db = new DBClient.DBClient();
                     labTestsAtVisit = new Dictionary<int, byte>();
                     GetDataFromDB();
@@ -48,6 +47,8 @@ namespace Laborant
                 }                
             }
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Wyloguj się" na pasku menu.
@@ -57,9 +58,12 @@ namespace Laborant
         /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = System.Windows.Visibility.Hidden;
+            Title = "Laborant";
+            Visibility = System.Windows.Visibility.Hidden;
             db = null;
-            //TODO: wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
+
+            //TODO:
+            //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
             
             while (true)
             {
@@ -67,11 +71,13 @@ namespace Laborant
                 {
                     db = new DBClient.DBClient();
                     GetDataFromDB();
-                    this.Visibility = System.Windows.Visibility.Visible;
+                    Visibility = System.Windows.Visibility.Visible;
                     break;
                 }
             }
         }
+
+
 
         /// <summary>
         /// Metoda wywoływana po kliknięciu przycisku "O programie".
@@ -85,6 +91,8 @@ namespace Laborant
             aboutDialog.ShowDialog();
         }
 
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -92,7 +100,7 @@ namespace Laborant
         /// <param name="e"></param>
         private void Lab_Back_Click(object sender, RoutedEventArgs e)
         {
-            if (currentVisitID > -1 && currentLabTestID > 0 && done == false)
+            if (done == true)
             {
                 if (db.ExecuteLabTest(currentVisitID, currentLabTestID, null))
                 {
@@ -103,12 +111,14 @@ namespace Laborant
                     currentLabTest = -1;
                     currentVisitID = -1;
                     currentLabTestID = 0;
-                    done = null;
+                    done = false;
                 }
                 else
                     MessageBox.Show("Wystąpił błąd podczas zmiany stanu badania laboratoryjnego i jest ono wciąż oznaczone jako W trakcie wykonywania.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
+
 
         /// <summary>
         /// 
@@ -117,7 +127,7 @@ namespace Laborant
         /// <param name="e"></param>
         private void Lab_Save_Click(object sender, RoutedEventArgs e)
         {
-            if (currentVisitID > -1 && currentLabTestID > 0 && done == false)
+            if (done == true)
             {
                 Button s = (Button)sender;
                 bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, (bool?)s.Tag, null);
@@ -156,7 +166,7 @@ namespace Laborant
                     currentLabTest = -1;
                     currentVisitID = -1;
                     currentLabTestID = 0;
-                    done = null;
+                    done = false;
                 }
                 else if (save == false)
                     MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -165,21 +175,31 @@ namespace Laborant
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
+        /// Okienko logowania zwraca false tylko gdy zostanie zamknięte krzyżykiem. Ta metoda wtedy powoduje zamknięcie aplikacji.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
+            LoginWindow loginWindow = new LoginWindow();
+            
             bool? result = loginWindow.ShowDialog();
+
             if (result == true)
-                return true;
-            else if (result == false) //zamknięcie okna logowania
             {
-                Environment.Exit(0);
+                Title += " - " + loginWindow.Login;
+                return true;
             }
+            else if (result == false) //zamknięcie okna logowania
+                Environment.Exit(0);
+
             return false;
         }
+
+
 
         /// <summary>
         /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.
@@ -238,9 +258,11 @@ namespace Laborant
             // <-- Tworzenie listy zleconych, niezrealizowanych badań laboratoryjnych
         }
 
+
+
         void Lab_ExecuteLabTest_Click(object sender, RoutedEventArgs e)
         {
-            if (currentVisitID == -1 && currentLabTestID == 0 && done == null)
+            if (done == false)
             {
                 if (labTestsAtVisit.Count > 0)
                 {
@@ -261,7 +283,7 @@ namespace Laborant
                     }
 
                     currentLabTestID = (byte)(labTestsAtVisit[currentVisitID] - (num - currentLabTest));
-                    done = false;
+                    done = true;
 
                     if (db.ExecuteLabTest(currentVisitID, currentLabTestID, 1))
                     {

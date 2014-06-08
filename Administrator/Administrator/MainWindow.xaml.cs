@@ -22,6 +22,8 @@ namespace Administrator
     {
         private DBClient.DBClient db;
 
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -32,11 +34,14 @@ namespace Administrator
                 {
                     db = new DBClient.DBClient();
 
-                    //TODO: dopisać resztę (podobnie jak w kliencie rejestratorki i lekarza).
+                    //TODO: dopisać resztę (podobnie jak w kliencie rejestratorki i lekarza (lekarz wymagał kilku poprawek, nowa wersja pojawi się na repo dzisiaj 08.06.2014, ale wieczorem - Adam)).
+                    //      resztę, czyli wrzucanie rzeczy do wszelkich list, czy innych combo box'ów, inicjalizacja zmiennych itp. - Adam
                     break;
                 }
             }
         }
+
+
 
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -44,33 +49,57 @@ namespace Administrator
             aboutDialog.ShowDialog();
         }
 
+
+
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "Wyloguj się" na pasku menu.
+        /// Powoduje ukrycie okna głównego i wyświetlenie okna logowania.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = System.Windows.Visibility.Hidden;
-            //TODO: wylogowanie z bazy danych            
-            if (LogIn() == true)
+            Title = "Lekarz";
+            Visibility = System.Windows.Visibility.Hidden;
+            db = null;
+
+            //TODO:
+            //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
+
+            while (true)
             {
-                //TODO: ponowne zalogowanie
-                this.Visibility = System.Windows.Visibility.Visible;
-            }
-            else
-            {
-                Environment.Exit(0);
+                if (LogIn() == true)
+                {
+                    db = new DBClient.DBClient();
+                    //TODO: dopisać resztę (podobnie jak w kliencie rejestratorki i lekarza (lekarz wymagał kilku poprawek, nowa wersja pojawi się na repo dzisiaj 08.06.2014, ale wieczorem - Adam)).
+                    //      resztę, czyli wrzucanie rzeczy do wszelkich list, czy innych combo box'ów, inicjalizacja zmiennych itp. - Adam
+                    Visibility = System.Windows.Visibility.Visible;
+                    break;
+                }
             }
         }
 
+
+
+        /// <summary>
+        /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
+        /// Okienko logowania zwraca false tylko gdy zostanie zamknięte krzyżykiem. Ta metoda wtedy powoduje zamknięcie aplikacji.
+        /// </summary>
+        /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
             LoginWindow loginWindow = new LoginWindow();
+
             bool? result = loginWindow.ShowDialog();
+
             if (result == true)
             {
+                Title += " - " + loginWindow.Login;
                 return true;
             }
-            else if (result == null) //zamknięcie okna logowania, lub poważny błąd
-            {
+            else if (result == false) //zamknięcie okna logowania
                 Environment.Exit(0);
-            }
+
             return false;
         }
     }
