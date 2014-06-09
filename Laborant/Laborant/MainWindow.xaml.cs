@@ -118,7 +118,16 @@ namespace Laborant
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Lab_Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            Lab_LabTestsList.Items.Clear();
+            GetDataFromDB();
+        }
 
         /// <summary>
         /// 

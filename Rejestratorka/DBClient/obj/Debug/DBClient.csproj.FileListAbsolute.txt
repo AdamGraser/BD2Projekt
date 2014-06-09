@@ -13,3 +13,8 @@ E:\Adam\House of dog\studia\bd-projekt\Rejestratorka\DBClient\bin\Debug\DBClient
 E:\Adam\House of dog\studia\bd-projekt\Rejestratorka\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
 E:\Adam\House of dog\studia\bd-projekt\Rejestratorka\DBClient\obj\Debug\DBClient.dll
 E:\Adam\House of dog\studia\bd-projekt\Rejestratorka\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\DBClient\bin\Debug\DBClient.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\DBClient\bin\Debug\DBClient.pdb
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\DBClient\obj\Debug\DBClient.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\DBClient\obj\Debug\DBClient.pdb

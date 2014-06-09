@@ -36,3 +36,22 @@ E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant_Mark
 E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.g.resources
 E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.Properties.Resources.resources
 E:\Adam\House of dog\studia\bd-projekt\Laborant\Laborant\obj\Debug\Laborant.csproj.GenerateResource.Cache
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\bin\Debug\Laborant.exe.config
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\Laborant.exe
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\Laborant.pdb
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\bin\Debug\Laborant.exe
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\bin\Debug\Laborant.pdb
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\bin\Debug\DBClient.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\bin\Debug\DBClient.pdb
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\Laborant.csprojResolveAssemblyReference.cache
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\AboutDialog.baml
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\LoginWindow.baml
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\MainWindow.baml
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\AboutDialog.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\LoginWindow.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\MainWindow.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\App.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\Laborant_MarkupCompile.cache
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\Laborant.g.resources
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\Laborant.Properties.Resources.resources
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\Laborant\obj\Debug\Laborant.csproj.GenerateResource.Cache

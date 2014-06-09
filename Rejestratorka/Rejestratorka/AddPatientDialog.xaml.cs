@@ -248,6 +248,48 @@ namespace Rejestratorka
                 {
                     return false;
                 }
+
+                //Sprawdzenie sumy kontrolnej
+                string temp;
+                int control = 0;
+
+                temp = peselTextBox.Text.Substring(0, 1);
+                control += Convert.ToInt32(temp) * 1;
+
+                temp = peselTextBox.Text.Substring(1, 1);
+                control += Convert.ToInt32(temp) * 3;
+
+                temp = peselTextBox.Text.Substring(2, 1);
+                control += Convert.ToInt32(temp) * 7;
+
+                temp = peselTextBox.Text.Substring(3, 1);
+                control += Convert.ToInt32(temp) * 9;
+
+                temp = peselTextBox.Text.Substring(4, 1);
+                control += Convert.ToInt32(temp) * 1;
+
+                temp = peselTextBox.Text.Substring(5, 1);
+                control += Convert.ToInt32(temp) * 3;
+
+                temp = peselTextBox.Text.Substring(6, 1);
+                control += Convert.ToInt32(temp) * 7;
+
+                temp = peselTextBox.Text.Substring(7, 1);
+                control += Convert.ToInt32(temp) * 9;
+
+                temp = peselTextBox.Text.Substring(8, 1);
+                control += Convert.ToInt32(temp) * 1;
+
+                temp = peselTextBox.Text.Substring(9, 1);
+                control += Convert.ToInt32(temp) * 3;
+
+                control = control % 10;
+                temp = control.ToString();
+                if (temp != peselTextBox.Text.Substring(10, 1))
+                {
+                    return false;
+                }
+
             }
             return true;
         }

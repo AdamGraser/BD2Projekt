@@ -72,3 +72,40 @@ E:\Adam\House of dog\studia\bd-projekt\Rejestratorka\Rejestratorka\obj\Debug\Rej
 E:\Adam\House of dog\studia\bd-projekt\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.g.resources
 E:\Adam\House of dog\studia\bd-projekt\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.Properties.Resources.resources
 E:\Adam\House of dog\studia\bd-projekt\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.csproj.GenerateResource.Cache
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Rejestratorka.exe.config
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.exe
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.pdb
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Rejestratorka.exe
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Rejestratorka.pdb
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\DBClient.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Xceed.Wpf.DataGrid.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\Xceed.Wpf.Toolkit.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\DBClient.pdb
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.csprojResolveAssemblyReference.cache
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\AboutDialog.baml
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\LoginWindow.baml
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\MainWindow.baml
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\AddPatientDialog.baml
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\AboutDialog.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\LoginWindow.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\MainWindow.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\AddPatientDialog.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\App.g.cs
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka_MarkupCompile.cache
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.g.resources
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.Properties.Resources.resources
+C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Rejestratorka\Rejestratorka\obj\Debug\Rejestratorka.csproj.GenerateResource.Cache

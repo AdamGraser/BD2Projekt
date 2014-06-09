@@ -9,49 +9,59 @@
                 <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"></MenuItem>
             </MenuItem>
         </Menu>
-        <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65" >
-            <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
-                <Button Name="Lab_Save" Content="Zatwierdź" Height="26" Padding="4,0,4,0" Margin="0,0,40,0" Click="Lab_Save_Click" />
-                <Button Name="Lab_Cancel" Content="Anuluj" Height="26" Padding="4,0,4,0" Margin="0,0,40,0" Click="Lab_Save_Click" />
-                <Button Name="Lab_Back" Content="Powrót" Height="26" Padding="4,0,4,0" Click="Lab_Back_Click" />
-            </StackPanel>
-        </StackPanel>
-        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <StackPanel>
-                <ListBox Name="Lab_LabTestsList" HorizontalAlignment="Stretch" Height="76" MinHeight="76" MaxHeight="76" Margin="5,5,5,10" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="2" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
+        <TabControl Height="299" VerticalAlignment="Top" Width="516">
+            <TabItem Header="Niewykonane badania">
+                <Grid Background="#FFE5E5E5">
+                    <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="31,0,39,12">
+                        <StackPanel>
 
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="*" />                        
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                            <ListBox x:Name="Lab_LabTestsList" HorizontalAlignment="Stretch" Height="76" MinHeight="76" MaxHeight="76" Margin="5,5,5,10" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                            </ListBox>
 
-                    <!-- Pierwszy wiersz -->
-                    <TextBlock Name="Lab_LabTestOrderDate" Grid.Row="0" Grid.Column="0" Width="auto" Height="26" Margin="5,0,5,5"></TextBlock>
-                    <TextBlock Name="Lab_LabTestName" Grid.Row="0" Grid.Column="1" Width="auto" Height="26" Margin="0,0,5,5"></TextBlock>
+                            <Grid>
+                                <!-- Czwarty wiersz -->
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                    <!-- Drugi wiersz -->
-                    <TextBlock Name="Lab_LabTestDoctorName" Grid.Row="1" Grid.Column="0" Width="auto" Height="26" Margin="5,0,5,5"></TextBlock>
-                    <TextBlock Name="Lab_LabTestDescription" Grid.Row="1" Grid.Column="1" Width="auto" MinHeight="26" Height="auto" Margin="0,0,5,5"></TextBlock>
+                                <!-- Pierwszy wiersz -->
+                                <TextBlock x:Name="Lab_LabTestOrderDate" Grid.Row="0" Grid.Column="0" Width="auto" Height="26" Margin="5,0,5,5"/>
+                                <TextBlock x:Name="Lab_LabTestName" Grid.Row="0" Grid.Column="1" Width="auto" Height="26" Margin="0,0,5,5"/>
 
-                    <!-- Trzeci wiersz -->
-                    <TextBox Name="Lab_LabTestResult" ToolTip="Wynik badania" Grid.Row="2" Grid.ColumnSpan="2" Height="auto" MinHeight="26" HorizontalAlignment="Stretch" Margin="5,0,5,5" TextWrapping="Wrap"></TextBox>
+                                <!-- Drugi wiersz -->
+                                <TextBlock x:Name="Lab_LabTestDoctorName" Grid.Row="1" Grid.Column="0" Width="auto" Height="26" Margin="5,0,5,5"/>
+                                <TextBlock x:Name="Lab_LabTestDescription" Grid.Row="1" Grid.Column="1" Width="auto" MinHeight="26" Height="auto" Margin="0,0,5,5"/>
 
-                    <!-- Czwarty wiersz -->
-                    
+                                <!-- Trzeci wiersz -->
+                                <TextBox x:Name="Lab_LabTestResult" ToolTip="Wynik badania" Grid.Row="2" Grid.ColumnSpan="2" Height="auto" MinHeight="26" HorizontalAlignment="Stretch" Margin="5,0,5,5" TextWrapping="Wrap"/>
+
+                            </Grid>
+                            <StackPanel Background="#FFE5E4E2" Height="65" Width="430" >
+                                <StackPanel Orientation="Horizontal" Margin="24,10,24,0" HorizontalAlignment="Center" Width="366">
+                                    <Button x:Name="Lab_Save" Content="Zatwierdź" Height="26" Padding="4,0,4,0" Margin="0,0,40,0" Click="Lab_Save_Click" />
+                                    <Button x:Name="Lab_Cancel" Content="Anuluj" Height="26" Padding="4,0,4,0" Margin="0,0,40,0" Click="Lab_Save_Click" />
+                                    <Button x:Name="Lab_Refresh" Content="Odśwież dane" Padding="4,0,4,0" Margin="0,0,40,0" Click="Lab_Refresh_Click"/>
+                                    <Button x:Name="Lab_Back" Content="Powrót" Height="26" Padding="4,0,4,0" Click="Lab_Back_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
-            </StackPanel>
-        </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Wykonane badania">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
     </DockPanel>
 </Window>
