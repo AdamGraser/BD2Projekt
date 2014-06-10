@@ -74,6 +74,9 @@ namespace DBClient
                                   Rejestratorka.Haslo.Length == temp.Length
                           select Rejestratorka.Id_rej;
 
+                id_rej = 0; // Tak było w laborancie - nie wiem, czy potrzebne, ale nie zaszkodzi
+
+                //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
                 foreach (byte q in query)
                 {
                     if (id_rej == 0)

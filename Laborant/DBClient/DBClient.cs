@@ -19,8 +19,7 @@ namespace DBClient
         SqlConnection connection;
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
-
-
+        static byte id_lab;   //ID laboranta obecnie zalogowanego w systemie
 
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
@@ -64,7 +63,7 @@ namespace DBClient
                                              Laborant.Haslo.Length == temp.Length
                                        select Laborant.Id_lab;
 
-                byte id_lab = 0;
+                id_lab = 0;
 
                 //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
                 foreach (byte q in query)
@@ -76,6 +75,7 @@ namespace DBClient
                     }
                     else
                     {
+                        id_lab = 0;
                         retval = null;
                         break;
                     }
@@ -757,7 +757,7 @@ namespace DBClient
                             ?
                             from Badanie in db.Badanies
                             join Sl_badan in db.Sl_badans on Badanie.Kod equals Sl_badan.Kod
-                            where Badanie.Id_lab != null
+                            where Badanie.Id_lab == id_lab
                             orderby Badanie.Id_wiz, Badanie.Id_bad
                             select new
                             {
@@ -900,14 +900,33 @@ namespace DBClient
 
             //Utworzenie zapytania - pobranie z tabeli rekordu, który ma być zmieniony.
             var query = from Badanie in db.Badanies
-                        where (Badanie.Id_wiz == id_wiz && Badanie.Id_bad == id_bad)
+                        where (Badanie.Id_wiz == id_wiz)
                         select Badanie;
 
-            //Wykonanie zapytania w pętli foreach.
-            foreach (Przychodnia.Badanie bad in query)
+            bool end = false;
+            while (!end) // Wykonuj, dopoki rekord nie zostanie zaktualizowany, albo na pewno nie bedzie sie dalo go zaktualizowac
             {
-                //Dokonanie żądanych zmian.
-                bad.Id_lab = id_lab;
+                end = true;
+                //Wykonanie zapytania w pętli foreach.
+                foreach (Przychodnia.Badanie bad in query)
+                {
+                    if (bad.Id_bad == id_bad) // Czy o to badanie chodzilo
+                    {
+                        if ((bad.Id_lab == null) || (bad.Id_lab == id_lab)) //Sprawdzenie, czy nie grzebano przy rekordzie
+                        {
+                            //Dokonanie żądanych zmian.
+                            bad.Id_lab = id_lab;
+
+                            retval = true;
+                        }
+                        else // Coś jest nie tak - trzeba zinkrementowac id_bad
+                        {
+                            ++id_bad;
+                            end = false;
+                            retval = false;
+                        }
+                    }
+                }
             }
 
             try
@@ -964,7 +983,13 @@ namespace DBClient
             return retval;
         }
 
-
+        /// <summary>
+        /// Przypisuje polu id_lab wartość 0 - jest to swoisty reset tego pola, który powinien dla bezpieczeństwa być wykonywany przy wylogowaniu.
+        /// </summary>
+        public void ResetIdLab()
+        {
+            id_lab = 0;
+        }
 
         /// <summary>
         /// Rozpoczyna sprawdzanie badania (przypisuje ID kierownika laboratorium do badania) lub zmienia stan badania z powrotem na Niesprawdzone (wstawia NULL w miejsce ID kier. lab.).
