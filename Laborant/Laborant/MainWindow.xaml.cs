@@ -48,6 +48,9 @@ namespace Laborant
                     break;
                 }                
             }
+
+            Lab_Save.Tag = (bool?)null;
+            Lab_Cancel.Tag = (bool?)false;
         }
 
         /// <summary>
@@ -108,8 +111,11 @@ namespace Laborant
         {
             if (done == true)
             {
-                if (db.ExecuteLabTest(currentVisitID, currentLabTestID, null))
+                byte result = db.ExecuteLabTest(currentVisitID, currentLabTestID, null);
+                if (result != 0)
                 {
+                    currentLabTestID = result;
+
                     //Usuwanie szczegółowych informacji o badaniu i usunięcie danych wprowadzonych do pola na wyniki tego badania.
                     Lab_LabTestOrderDate.Text = Lab_LabTestName.Text = Lab_LabTestDescription.Text = Lab_LabTestDoctorName.Text = "";
                     Lab_LabTestResult.Clear();
@@ -201,8 +207,10 @@ namespace Laborant
         {
             if (done == true)
             {
-                if (db.ExecuteLabTest(currentVisitID, currentLabTestID, null))
+                byte result = db.ExecuteLabTest(currentVisitID, currentLabTestID, null);
+                if (result != 0)
                 {
+                    currentLabTestID = result;
                     //Usuwanie szczegółowych informacji o badaniu i usunięcie danych wprowadzonych do pola na wyniki tego badania.
                     Lab_LabTestOrderDate.Text = Lab_LabTestName1.Text = Lab_LabTestDescription1.Text = Lab_LabTestDoctorName1.Text = "";
                     Lab_LabTestResult.Clear();
@@ -343,9 +351,6 @@ namespace Laborant
                             Lab_LabTestsList1.Items.Add(button);
                         }
                     }
-
-                    Lab_Save.Tag = (bool?)null;
-                    Lab_Cancel.Tag = (bool?)false;
                 }
             }
             else
@@ -386,8 +391,10 @@ namespace Laborant
                     currentLabTestID = (byte)(labTestsAtVisit[currentVisitID] - (num - currentLabTest));
                     done = true;
 
-                    if (db.ExecuteLabTest(currentVisitID, currentLabTestID, 1))
+                    byte result = db.ExecuteLabTest(currentVisitID, currentLabTestID, null);
+                    if (result != 0)
                     {
+                        currentLabTestID = result;
                         /* Przypominam: labTestNumber to jednocześnie nr wiersza na liście badań. Elementy w ListBox'ie są numerowane od 0, to zawsze integery, niezależnie od
                          * layout'u listy (zawsze od lewej do prawej, z góry na dół).
                          * [string do wydobycia][button]<nr wiersza> no i wiadomo, te liczby to indeksy właśnie:
@@ -451,8 +458,10 @@ namespace Laborant
                     currentLabTestID = (byte)(labTestsAtVisit1[currentVisitID] - (num - currentLabTest));
                     done = true;
 
-                    if (db.ExecuteLabTest(currentVisitID, currentLabTestID, 1))
+                    byte result = db.ExecuteLabTest(currentVisitID, currentLabTestID, null);
+                    if (result != 0)
                     {
+                        currentLabTestID = result;
                         /* Przypominam: labTestNumber to jednocześnie nr wiersza na liście badań. Elementy w ListBox'ie są numerowane od 0, to zawsze integery, niezależnie od
                          * layout'u listy (zawsze od lewej do prawej, z góry na dół).
                          * [string do wydobycia][button]<nr wiersza> no i wiadomo, te liczby to indeksy właśnie:

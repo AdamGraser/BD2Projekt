@@ -887,9 +887,9 @@ namespace DBClient
         /// <param name="id_bad">L.p. badania dla tej wizyty.</param>
         /// <param name="id_lab">ID laboranta, który wykona to badanie lub null jeśli wykonanie badania ma być cofnięte.</param>
         /// <returns>True jeśli zmiany zostały pomyślnie wprowadzone lub false w przypadku wystąpienia błędu.</returns>
-        public bool ExecuteLabTest(int id_wiz, byte id_bad, byte? id_lab)
+        public byte ExecuteLabTest(int id_wiz, byte id_bad, byte? id_lab)
         {
-            bool retval = true;
+            byte retval = 0;
 
             //Łączenie się z bazą danych.
             connection.Open();
@@ -916,14 +916,12 @@ namespace DBClient
                         {
                             //Dokonanie żądanych zmian.
                             bad.Id_lab = id_lab;
-
-                            retval = true;
+                            retval = id_bad;
                         }
                         else // Coś jest nie tak - trzeba zinkrementowac id_bad
                         {
                             ++id_bad;
                             end = false;
-                            retval = false;
                         }
                     }
                 }
@@ -945,7 +943,7 @@ namespace DBClient
                 Console.WriteLine(invOper.Source);
                 Console.WriteLine(invOper.HelpLink);
                 Console.WriteLine(invOper.StackTrace);
-                retval = false;
+                retval = 0;
             }
             catch (SqlException sqlEx)
             {
@@ -954,7 +952,7 @@ namespace DBClient
                 Console.WriteLine(sqlEx.Source);
                 Console.WriteLine(sqlEx.HelpLink);
                 Console.WriteLine(sqlEx.StackTrace);
-                retval = false;
+                retval = 0;
 
                 //Rollback, bo coś poszło nie tak.
                 transaction.Rollback();
@@ -972,7 +970,7 @@ namespace DBClient
                 Console.WriteLine(ex.Source);
                 Console.WriteLine(ex.HelpLink);
                 Console.WriteLine(ex.StackTrace);
-                retval = false;
+                retval = 0;
             }
             finally
             {
