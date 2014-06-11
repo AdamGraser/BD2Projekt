@@ -28,6 +28,7 @@ namespace KierownikLaboratorium
         public LoginWindow()
         {
             InitializeComponent();
+            loginTextBox.Focus();
         }
 
 

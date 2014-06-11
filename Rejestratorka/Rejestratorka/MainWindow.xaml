@@ -44,6 +44,7 @@
                                             <RowDefinition Height="auto" />
                                             <RowDefinition Height="auto" />
                                             <RowDefinition Height="auto" />
+                                            <RowDefinition Height="auto" />
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto" />
@@ -53,14 +54,16 @@
                                         <!-- Pierwsza kolumna -->
                                         <Label Grid.Row="0" Grid.Column="0" Content="Imię i nazwisko" />
                                         <Label Grid.Row="1" Grid.Column="0" Content="PESEL" />
-                                        <Label Grid.Row="2" Grid.Column="0" Content="Data urodzenia" />
-                                        <Label Grid.Row="3" Grid.Column="0" Content="Adres" />
+                                        <Label Grid.Row="2" Grid.Column="0" Content="Płeć" />
+                                        <Label Grid.Row="3" Grid.Column="0" Content="Data urodzenia" />
+                                        <Label Grid.Row="4" Grid.Column="0" Content="Adres" />
 
                                         <!-- Druga kolumna -->
-                                        <TextBlock Grid.Row="0" Grid.Column="1" Name="PatientName"></TextBlock>
-                                        <TextBlock Grid.Row="1" Grid.Column="1" Name="PatientPesel"></TextBlock>
-                                        <TextBlock Grid.Row="2" Grid.Column="1" Name="PatientBirthDate"></TextBlock>
-                                        <TextBlock Grid.Row="3" Grid.Column="1" Name="PatientAddress"></TextBlock>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Name="PatientName" />
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Name="PatientPesel" />
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Name="PatientGender" />
+                                        <TextBlock Grid.Row="3" Grid.Column="1" Name="PatientBirthDate" />
+                                        <TextBlock Grid.Row="4" Grid.Column="1" Name="PatientAddress" />
                                     </Grid>
                                 </Expander>
                             </StackPanel>

@@ -157,7 +157,6 @@ namespace DBClient
 
 
 
-       /*
         /// <summary>
         /// Pobiera z tabeli Sl_badan nazwy i opisy wszystkich badań laboratoryjnych.
         /// </summary>
@@ -210,7 +209,6 @@ namespace DBClient
 
             return labTests;
         }
-       */
 
 
         /// <summary>

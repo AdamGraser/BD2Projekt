@@ -27,12 +27,15 @@ namespace Rejestratorka
         DBClient.DBClient db;            // klient bazy danych
         DataTable registeredVisitsTable; // zawiera dane wyświetlane w tabeli z zarejestrowanymi wizytami.
 
+
+
         /// <summary>
         /// Domyślny konstruktor. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
         /// </summary>
         public MainWindow()
         {
             InitializeComponent();
+
             while (true)
             {
                 if (LogIn() == true)
@@ -44,6 +47,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Dodaj pacjenta".
         /// </summary>
@@ -51,34 +56,39 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void AddPatient_Click(object sender, RoutedEventArgs e)
         {
-            bool? dialogResult;
             AddPatientDialog addPatientDialog = new AddPatientDialog();
-            dialogResult=addPatientDialog.ShowDialog();
+            
+            bool? dialogResult = addPatientDialog.ShowDialog();
+
             if (dialogResult == true)
             {
                 if (db.AddPatient(addPatientDialog.PatientName, addPatientDialog.PatientSurname,
-                    addPatientDialog.PatientDateOfBirth, addPatientDialog.PatientPesel,
+                    addPatientDialog.PatientDateOfBirth, addPatientDialog.PatientPesel, addPatientDialog.PatientGender,
                     addPatientDialog.PatientHouseNumber, addPatientDialog.PatientFlatNumber,
                     addPatientDialog.PatientStreet, addPatientDialog.PatientPostCode, addPatientDialog.PatientCity))
                 {
-                    System.Windows.MessageBox.Show("Pacjent został dodany");
+                    System.Windows.MessageBox.Show("Pacjent został pomyślnie dodany do bazy danych.", "Dodanie nowego pacjenta", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show("Nie udało się dodać pacjenta", "Błąd dodawania pacjenta", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show("Nie udało się dodać nowego pacjenta do bazy danych!", "Błąd dodawania pacjenta", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
+
             RefreshPatientsList();
         }
+
+
 
         /// <summary>
         /// Metoda odświeżająca zawartość combobox'a zawierającego listę pacjentów.
         /// </summary>
         private void RefreshPatientsList()
         {            
-            // --> Tworzenie listy pacjentów.
             List<string> patients = db.GetPatients();
+
             PatientsList.Items.Clear();
+
             if (patients != null && patients.Count > 0)
             {
                 foreach (string p in patients)
@@ -91,14 +101,17 @@ namespace Rejestratorka
                                 "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
+
+
         /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "Zarejestruj wyzytę".
+        /// Metoda obsługująca kliknięcie przycisku "Rejestruj wizytę".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RegisterVisit_Click(object sender, RoutedEventArgs e)
         {
             DateTime? timeOfVisit = visitTime.Value;
+
             if (VisitDate.SelectedDate == null)
             {
                 System.Windows.MessageBox.Show("Nie podano daty odbycia się wizyty!", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -111,6 +124,7 @@ namespace Rejestratorka
             {
                 DateTime dateOfVisit = (DateTime)VisitDate.SelectedDate;
                 DateTime dateToSaveInDB = new DateTime(dateOfVisit.Year, dateOfVisit.Month, dateOfVisit.Day, timeOfVisit.Value.Hour, timeOfVisit.Value.Minute, timeOfVisit.Value.Second);
+
                 if (db.AddVisit(dateToSaveInDB, (byte)(DoctorsList.SelectedIndex + 1), PatientsList.SelectedIndex + 1))
                 {
                     System.Windows.MessageBox.Show("Zarejestrowano nową wizytę.", "Informacja", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -123,6 +137,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca zwinięcie expandera zawierającego szczegółowe dane pacjenta.
         /// </summary>
@@ -132,9 +148,12 @@ namespace Rejestratorka
         {
             PatientName.Text = "";
             PatientPesel.Text = "";
+            PatientGender.Text = "";
             PatientBirthDate.Text = "";
             PatientAddress.Text = "";
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca rozwinięcie expandera zawierającego szczegółowe dane pacjenta.
@@ -151,6 +170,7 @@ namespace Rejestratorka
                 {
                     PatientName.Text = PatientsList.SelectedValue.ToString();
                     PatientPesel.Text = patientDetails["pesel"];
+                    PatientGender.Text = patientDetails["plec"];
                     PatientBirthDate.Text = patientDetails["dataur"];
                     PatientAddress.Text = patientDetails["adres"];
 
@@ -168,6 +188,8 @@ namespace Rejestratorka
                 PatientDetails.IsExpanded = false;
             }
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca zaznaczenie elementu na liście pacjentów.
@@ -189,6 +211,7 @@ namespace Rejestratorka
                     {
                         PatientName.Text = PatientsList.SelectedValue.ToString();
                         PatientPesel.Text = patientDetails["pesel"];
+                        PatientGender.Text = patientDetails["plec"];
                         PatientBirthDate.Text = patientDetails["dataur"];
                         PatientAddress.Text = patientDetails["adres"];
                     }
@@ -207,6 +230,8 @@ namespace Rejestratorka
 
         }
        
+
+
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Szukaj".
         /// </summary>
@@ -264,6 +289,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Anuluj wizytę".
         /// </summary>
@@ -291,6 +318,8 @@ namespace Rejestratorka
              
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca zmianę zaznaczenia wiersza w tabeli zawierającej zarejestrowane wizyty.
         /// </summary>
@@ -308,10 +337,13 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
+        /// Okienko logowania zwraca false tylko gdy zostanie zamknięte krzyżykiem. Ta metoda wtedy powoduje zamknięcie aplikacji.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
             LoginWindow loginWindow = new LoginWindow();
@@ -328,6 +360,8 @@ namespace Rejestratorka
 
             return false;
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Wyloguj się" na pasku menu.
@@ -375,6 +409,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Metoda wywoływana po kliknięciu przycisku "O programie".
         /// Wyświetala okno dialogowe prezentujące informacje o autorach programu.
@@ -386,6 +422,8 @@ namespace Rejestratorka
             AboutDialog aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca klikniecie przycisku "Odśwież dane".
@@ -399,6 +437,8 @@ namespace Rejestratorka
             DoctorsList.Items.Clear();
             GetDataFromDB();
         }
+
+
 
         /// <summary>
         /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.
@@ -469,6 +509,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Metoda wywoływana po kliknięciu przycisku "Wyczyść filtr".
         /// </summary>
@@ -488,6 +530,8 @@ namespace Rejestratorka
             }
             clearFilterButton.IsEnabled = false;
         }
+
+
 
         private void DoctorsList2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

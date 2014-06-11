@@ -21,6 +21,8 @@ namespace Rejestratorka
     {
         DateTime? dateOfBirth;
 
+
+
         /// <summary>
         /// Konstruktor
         /// </summary>
@@ -29,6 +31,8 @@ namespace Rejestratorka
             InitializeComponent();
             nameTextBox.Focus();
         }
+
+
 
         /// <summary>
         /// Właściwość zwracająca imię pacjenta.
@@ -41,6 +45,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Właściwość zwracająca nazwisko pacjenta.
         /// </summary>
@@ -51,6 +57,8 @@ namespace Rejestratorka
                 return surnameTextBox.Text;
             }
         }
+
+
 
         /// <summary>
         /// Właściwość zwracająca PESEL pacjenta.
@@ -63,6 +71,24 @@ namespace Rejestratorka
             }
         }
 
+
+
+        /// <summary>
+        /// Właściwość zwracająca płeć pacjenta.
+        /// </summary>
+        public bool PatientGender
+        {
+            get
+            {
+                if (Man.IsChecked == true)
+                    return false;
+                else
+                    return true;
+            }
+        }
+
+
+
         /// <summary>
         /// Właściwość zwracająca datę urodzenia pacjenta.
         /// </summary>
@@ -73,6 +99,8 @@ namespace Rejestratorka
                 return (DateTime)dateOfBirth;
             }
         }
+
+
 
         /// <summary>
         /// Właściwość zwracająca numer domu pacjenta.
@@ -85,6 +113,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Właściwość zwracająca numer mieszkania pacjenta.
         /// </summary>
@@ -95,6 +125,8 @@ namespace Rejestratorka
                 return flatNumberTextBox.Text;
             }
         }
+
+
 
         /// <summary>
         /// Właściwość zwracająca nazwę ulicy pacjenta.
@@ -107,6 +139,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Właściwość zwracająca kod pocztowy miasta pacjenta.
         /// </summary>
@@ -117,6 +151,8 @@ namespace Rejestratorka
                 return postCodeTextBox.Text;
             }
         }
+
+
 
         /// <summary>
         /// Właściwość zwracająca miasto pacjenta.
@@ -129,6 +165,8 @@ namespace Rejestratorka
             }
         }
 
+
+
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Anuluj".
         /// </summary>
@@ -139,6 +177,8 @@ namespace Rejestratorka
             this.DialogResult = false;
             Close();
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "OK".
@@ -153,10 +193,10 @@ namespace Rejestratorka
                 Close();
             }
             else
-            {
-                MessageBox.Show(this, "Wprowadzony PESEL jest nieprawidłowy");
-            }
+                MessageBox.Show(this, "Wprowadzony PESEL jest nieprawidłowy!", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+
+
 
         /// <summary>
         /// 
@@ -176,6 +216,8 @@ namespace Rejestratorka
             }
         }               
 
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -185,14 +227,16 @@ namespace Rejestratorka
         {
             if (IsFormCompleted())
             {
-                MessageBox.Show(peselTextBox.Text);
                 okButton.IsEnabled = true;
             }
             else
             {
-                okButton.IsEnabled = false;
+                if (okButton != null) //bez tego przy pierwszym uruchomieniu wyrzuca wyjątek.
+                    okButton.IsEnabled = false;
             }
         }
+
+
 
         /// <summary>
         /// Metoda sprawdzająca czy formularz dodawania nowego pacjenta zawiera wszystkie niezbędne dane.
@@ -208,90 +252,80 @@ namespace Rejestratorka
             return false;
         }
         
+
+
         /// <summary>
         /// Sprawdza czy PESEL zgadza się z podaną datą urodzenia.
+        /// Zgodnie z logiką formularza, funkcja ta jest wywoływana tylko wtedy, gdy formularz jest w całości wypłeniony. Dlatego długość wartości pola z PESEL-em nie jest sprawdzana.
         /// </summary>
         /// <returns>true - gdy PESEL jest prawidłowy, w przeciwnym wypadku false.</returns> 
         private bool isPeselValid()
         {
+            bool retval = true;
+            int temp;
+            
             dateOfBirth = dateOfBirthTextBox.SelectedDate;
+
             if (dateOfBirth != null)
             {
-                string year = dateOfBirth.Value.Year.ToString();
-                year = year.Substring(year.Length - 2);
-                if (year != peselTextBox.Text.Substring(0, 2))
+                temp = dateOfBirth.Value.Year % 100;
+                string peselStart = "";
+
+                if (temp < 10)
+                    peselStart = "0";
+
+                peselStart += temp.ToString();
+
+                if (dateOfBirth.Value.Year < 1900)
+                    peselStart += (dateOfBirth.Value.Month + 80).ToString();
+                else if (dateOfBirth.Value.Year > 1999 && dateOfBirth.Value.Year < 2100)
+                    peselStart += (dateOfBirth.Value.Month + 20).ToString();
+                else if (dateOfBirth.Value.Year > 2099 && dateOfBirth.Value.Year < 2200)
+                    peselStart += (dateOfBirth.Value.Month + 40).ToString();
+                else if (dateOfBirth.Value.Year > 2199 && dateOfBirth.Value.Year < 2300)
+                    peselStart += (dateOfBirth.Value.Month + 60).ToString();
+                else
                 {
-                    return false;
+                    if (dateOfBirth.Value.Month < 10)
+                        peselStart += "0";
+
+                    peselStart += dateOfBirth.Value.Month.ToString();
                 }
 
-                int monthNumer = dateOfBirth.Value.Month;
-                if (dateOfBirth.Value.Year >= 2000 && dateOfBirth.Value.Year <= 2099)
-                {
-                    monthNumer += 20;
-                }
-                string month = monthNumer.ToString();
-                if (month.Length < 2)
-                {
-                    month = "0" + month;
-                }
-                if (month != peselTextBox.Text.Substring(2, 2))
-                {
-                    return false;
-                }
+                if(dateOfBirth.Value.Day < 10)
+                    peselStart += "0";
 
-                string day = dateOfBirth.Value.Day.ToString();
-                if (day.Length < 2)
-                {
-                    day = "0" + day;
-                }
-                if (day != peselTextBox.Text.Substring(4, 2))
-                {
-                    return false;
-                }
+                peselStart += dateOfBirth.Value.Day.ToString();
 
-                //Sprawdzenie sumy kontrolnej
-                string temp;
-                int control = 0;
-
-                temp = peselTextBox.Text.Substring(0, 1);
-                control += Convert.ToInt32(temp) * 1;
-
-                temp = peselTextBox.Text.Substring(1, 1);
-                control += Convert.ToInt32(temp) * 3;
-
-                temp = peselTextBox.Text.Substring(2, 1);
-                control += Convert.ToInt32(temp) * 7;
-
-                temp = peselTextBox.Text.Substring(3, 1);
-                control += Convert.ToInt32(temp) * 9;
-
-                temp = peselTextBox.Text.Substring(4, 1);
-                control += Convert.ToInt32(temp) * 1;
-
-                temp = peselTextBox.Text.Substring(5, 1);
-                control += Convert.ToInt32(temp) * 3;
-
-                temp = peselTextBox.Text.Substring(6, 1);
-                control += Convert.ToInt32(temp) * 7;
-
-                temp = peselTextBox.Text.Substring(7, 1);
-                control += Convert.ToInt32(temp) * 9;
-
-                temp = peselTextBox.Text.Substring(8, 1);
-                control += Convert.ToInt32(temp) * 1;
-
-                temp = peselTextBox.Text.Substring(9, 1);
-                control += Convert.ToInt32(temp) * 3;
-
-                control = control % 10;
-                temp = control.ToString();
-                if (temp != peselTextBox.Text.Substring(10, 1))
-                {
-                    return false;
-                }
-
+                if (!peselTextBox.Text.StartsWith(peselStart))
+                    retval = false;
             }
-            return true;
+
+
+
+            if (Woman.IsChecked == true && byte.Parse(peselTextBox.Text[9].ToString()) % 2 > 0)
+            {
+                retval = false;
+            }
+            else if (Man.IsChecked == true && byte.Parse(peselTextBox.Text[9].ToString()) % 2 == 0)
+                retval = false;
+
+            temp = int.Parse(peselTextBox.Text[0].ToString());
+            temp += int.Parse(peselTextBox.Text[1].ToString()) * 3;
+            temp += int.Parse(peselTextBox.Text[2].ToString()) * 7;
+            temp += int.Parse(peselTextBox.Text[3].ToString()) * 9;
+            temp += int.Parse(peselTextBox.Text[4].ToString());
+            temp += int.Parse(peselTextBox.Text[5].ToString()) * 3;
+            temp += int.Parse(peselTextBox.Text[6].ToString()) * 7;
+            temp += int.Parse(peselTextBox.Text[7].ToString()) * 9;
+            temp += int.Parse(peselTextBox.Text[8].ToString());
+            temp += int.Parse(peselTextBox.Text[9].ToString()) * 3;
+            temp += int.Parse(peselTextBox.Text[10].ToString());
+
+            if (temp % 10 != 0)
+                retval = false;
+
+            return retval;
         }
     }
 }

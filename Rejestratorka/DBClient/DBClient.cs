@@ -74,9 +74,6 @@ namespace DBClient
                                   Rejestratorka.Haslo.Length == temp.Length
                           select Rejestratorka.Id_rej;
 
-                id_rej = 0; // Tak było w laborancie - nie wiem, czy potrzebne, ale nie zaszkodzi
-
-                //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
                 foreach (byte q in query)
                 {
                     if (id_rej == 0)
@@ -165,7 +162,7 @@ namespace DBClient
 
         /// <summary>
         /// Pobiera z tabeli Pacjent szczegółowe informacje o wskazanym pacjencie.
-        /// Zwrócona struktura następujące tekstowe indeksy: "pesel", "dataur", "adres".
+        /// Zwrócona struktura następujące tekstowe indeksy: "pesel", "plec", "dataur", "adres".
         /// </summary>
         /// <param name="id_pac">ID pacjenta, którego szczegóły mają zostać zwrócone.</param>
         /// <returns>Zestaw szczegółów o wskazanym pacjencie lub null, jeśli wystąpił błąd.</returns>
@@ -188,6 +185,7 @@ namespace DBClient
                             select new
                             {
                                 pesel = Pacjent.Pesel,
+                                plec = Pacjent.Plec,
                                 dataUr = Pacjent.Data_ur,
                                 ulica = Pacjent.Ulica,
                                 nrBud = Pacjent.Nr_bud,
@@ -201,6 +199,7 @@ namespace DBClient
                 {
                     //Zapisanie wyników w odpowiednich elementach.
                     patientDetails.Add("pesel", p.pesel.ToString());
+                    patientDetails.Add("plec", p.plec ? "Kobieta" : "Mężczyzna");
                     patientDetails.Add("dataur", p.dataUr.ToString());
                     patientDetails.Add("adres", p.ulica + " " + p.nrBud.ToString() + (p.nrMiesz != null ? " " + p.nrMiesz.ToString() + ", " : ", ") + p.kodPocz + " " + p.miasto);
                 }
@@ -707,7 +706,7 @@ namespace DBClient
         /// <param name="postCode">kod pocztowy z adresu pacjenta</param>
         /// <param name="city">miasto pacjenta</param>
         /// <returns>Wartość true jeśli nowy rekord został pomyślnie dodany do tabeli. W razie wystąpienia błędu zwraca wartość false.</returns>
-        public bool AddPatient(string name, string surname, DateTime dateOfBirth, string pesel, string numberOfHouse, string numberOfFlat, string street, string postCode, string city)
+        public bool AddPatient(string name, string surname, DateTime dateOfBirth, string pesel, bool gender, string numberOfHouse, string numberOfFlat, string street, string postCode, string city)
         {
             bool retval = true;
 
@@ -724,6 +723,7 @@ namespace DBClient
             pac.Nazwisko = surname;
             pac.Pesel = long.Parse(pesel);
             pac.Data_ur = dateOfBirth;
+            pac.Plec = gender;
             pac.Nr_miesz = int.Parse(numberOfFlat);
             pac.Nr_bud = int.Parse(numberOfHouse);
             pac.Ulica = street;

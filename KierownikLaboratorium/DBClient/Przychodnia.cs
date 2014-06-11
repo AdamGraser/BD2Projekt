@@ -1419,6 +1419,8 @@ namespace Przychodnia
 		
 		private string _Miasto;
 		
+		private bool _Plec;
+		
 		private EntitySet<Wizyta> _Wizytas;
 		
     #region Extensibility Method Definitions
@@ -1445,6 +1447,8 @@ namespace Przychodnia
     partial void OnKod_poczChanged();
     partial void OnMiastoChanging(string value);
     partial void OnMiastoChanged();
+    partial void OnPlecChanging(bool value);
+    partial void OnPlecChanged();
     #endregion
 		
 		public Pacjent()
@@ -1649,6 +1653,26 @@ namespace Przychodnia
 					this._Miasto = value;
 					this.SendPropertyChanged("Miasto");
 					this.OnMiastoChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="plec", Storage="_Plec", DbType="Bit NOT NULL")]
+		public bool Plec
+		{
+			get
+			{
+				return this._Plec;
+			}
+			set
+			{
+				if ((this._Plec != value))
+				{
+					this.OnPlecChanging(value);
+					this.SendPropertyChanging();
+					this._Plec = value;
+					this.SendPropertyChanged("Plec");
+					this.OnPlecChanged();
 				}
 			}
 		}
@@ -1957,7 +1981,7 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="opis", Storage="_Opis", DbType="Text NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="opis", Storage="_Opis", DbType="Text", UpdateCheck=UpdateCheck.Never)]
 		public string Opis
 		{
 			get

@@ -28,6 +28,7 @@ namespace Administrator
         public LoginWindow()
         {
             InitializeComponent();
+            loginTextBox.Focus();
         }
 
 

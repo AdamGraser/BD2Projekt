@@ -31,6 +31,7 @@ namespace Lekarz
         public LoginWindow()
         {
             InitializeComponent();
+            loginTextBox.Focus();
         }
 
 
@@ -49,7 +50,7 @@ namespace Lekarz
 
 
         /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "OK".
+        /// Metoda obsługująca kliknięcie przycisku "Zaloguj".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -66,11 +67,11 @@ namespace Lekarz
             //Sprawdzanie czy w bazie istnieje podany użytkownik
             if (userFound == true)
             {
-                this.DialogResult = true;
+                DialogResult = true;
             }
             else
             {
-                this.DialogResult = false;
+                DialogResult = false;
 
                 if (userFound == null)
                     System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);

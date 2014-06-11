@@ -24,13 +24,18 @@ namespace Rejestratorka
         private byte[] _hash;
         private string _login;
 
+
+
         /// <summary>
         /// Konstruktor.
         /// </summary>
         public LoginWindow()
         {
             InitializeComponent();
+            loginTextBox.Focus();
         }
+
+
 
         /// <summary>
         /// Właściwość zwracająca login zalogowanego użytkownika.
@@ -43,8 +48,10 @@ namespace Rejestratorka
             }
         }
         
+
+
         /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "OK".
+        /// Metoda obsługująca kliknięcie przycisku "Zaloguj".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -75,6 +82,8 @@ namespace Rejestratorka
             _hash = null;
         }
 
+
+
         /// <summary>
         /// Metoda wywoływana przy zmianie tekstu w textboksie zawierającym login użytkownika.
         /// </summary>
@@ -91,6 +100,8 @@ namespace Rejestratorka
                 logInButton.IsEnabled = false;
             }
         }
+
+
 
         /// <summary>
         /// Metoda wywoływana przy zmianie tekstu w passwordboxie zawierającym hasło użytkownika.

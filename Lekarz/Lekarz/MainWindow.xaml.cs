@@ -23,8 +23,8 @@ namespace Lekarz
     {
         DBClient.DBClient db;  // klient bazy danych
         int currentVisitID;    // przechowuje ID wizyty, która właśnie się odbywa lub -1, jeśli lekarz nie przyjmuje teraz żadnego pacjenta/podczas której zlecone zostało badanie currentLabTestID
-        byte currentLabTestID; // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
-        byte currentRow;       // przechowuje nr wiersza listy zleconych badań laboratoryjnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co zlecone badanie
+        byte currentLabRow;    // przechowuje nr wiersza listy zleconych badań laboratoryjnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co zlecone badanie
+        int currentPhyRow;     // przechowuje nr wiersza listy wykonanych badań fizykalnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co wykonane badanie
 
 
 
@@ -35,14 +35,45 @@ namespace Lekarz
         {
             InitializeComponent();
 
-            if (LogIn() == true)
+            while (true)
             {
-                db = new DBClient.DBClient();
-                currentVisitID = -1;
-                currentRow = 0;
-                currentLabTestID = 0;
-                GetDataFromDB();                
-            }            
+                if (LogIn() == true)
+                {
+                    db = new DBClient.DBClient();
+
+                    currentVisitID = -1;
+                    currentLabRow = 0;
+                    currentPhyRow = 0;
+
+                    GetDataFromDB();
+
+                    // --> Tworzenie listy badań laboratoryjnych.
+                    List<string> labTestsNames = db.GetLabTestsNames();
+
+                    if (labTestsNames != null && labTestsNames.Count > 0)
+                    {
+                        foreach (string l in labTestsNames)
+                        {
+                            LabTestsList.Items.Add(new ComboBoxItem().Content = l);
+                        }
+                    }
+                    else
+                    {
+                        LabTestsList.IsEnabled = false;
+
+                        LabTestDesc.Text = "Brak badań w bazie danych";
+                        LabTestDesc.IsEnabled = false;
+
+                        orderLaboratoryTestButton.IsEnabled = false;
+
+                        if (labTestsNames == null)
+                            MessageBox.Show("Wystąpił błąd podczas pobierania listy badań laboratoryjnych.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    // <-- Tworzenie listy badań laboratoryjnych.
+
+                    break;
+                }
+            }
         }
 
 
@@ -54,7 +85,7 @@ namespace Lekarz
         /// <param name="e"></param>
         private void ChangeVisitState_Click(object sender, RoutedEventArgs e)
         {
-            if (currentVisitID == -1 && currentLabTestID == 0)
+            if (currentVisitID == -1)
             {
                 ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
                 currentVisitID = (int)item.Tag;
@@ -65,6 +96,10 @@ namespace Lekarz
 
                     visitsList.Items.RemoveAt(visitsList.SelectedIndex);
                     changeVisitStateButton.IsEnabled = false;
+
+                    diagnosisExpander.IsEnabled = true;
+                    laboratoryTestsExpander.IsEnabled = true;
+                    physicalTestsExpander.IsEnabled = true;
                 }
                 else
                 {
@@ -85,7 +120,7 @@ namespace Lekarz
         {
             DateTime lTT = DateTime.Now;
 
-            if (db.AddLabTest(currentVisitID, (byte)(currentRow + 1), lTT, LabTestDesc.Text, (short)(LabTestsList.SelectedIndex + 1)))
+            if (db.AddLabTest(currentVisitID, (byte)(currentLabRow + 1), lTT, LabTestDesc.Text, (short)(LabTestsList.SelectedIndex + 1)))
             {
                 Grid savedLabTest = new Grid();
                 RowDefinition row = new RowDefinition();
@@ -122,9 +157,9 @@ namespace Lekarz
                 Grid.SetColumn(labTestDesc, 2);
                 savedLabTest.Children.Add(labTestDesc);
 
-                LaboratoryTests.Children.Insert((int)currentRow, savedLabTest);
+                LaboratoryTests.Children.Insert((int)currentLabRow, savedLabTest);
 
-                ++currentRow;
+                ++currentLabRow;
 
                 LabTestDesc.Clear();
                 LabTestsList.SelectedIndex = -1;
@@ -142,10 +177,30 @@ namespace Lekarz
         /// <param name="e"></param>
         private void SaveVisit_Click(object sender, RoutedEventArgs e)
         {
-            if (currentVisitID > -1 && currentLabTestID == 0)
+            if (currentVisitID > -1)
             {
-                bool physicalTestIsDone = false; //tymczasowo
-                if (db.SaveVisit(currentVisitID, opis.Text, physicalTestIsDone, diagnoza.Text))
+                bool physicalTestIsDone;
+                string visDesc = opis.Text;
+
+                //Dodanie badań fizykalnych do opisu wizyty.
+                if (PhysicalTests.Children.Count > 2)
+                {
+                    visDesc += "\n\n***************************\n\nBadania fizykalne:\n";
+                    physicalTestIsDone = true;
+                    TextBox temp;
+
+                    for (int i = 0; i < PhysicalTests.Children.Count - 2; ++i)
+                    {
+                        temp = (TextBox)PhysicalTests.Children[i];
+                        visDesc += "\n" + temp.Text;
+                    }
+                }
+                else
+                    physicalTestIsDone = false;
+
+                
+                //Czyszczenie elementów i list, zwijanie i wyłączanie expander'ów.
+                if (db.SaveVisit(currentVisitID, visDesc, physicalTestIsDone, diagnoza.Text))
                 {
                     data_rej.Text = nazwa_pac.Text = stan.Text = "";
 
@@ -155,12 +210,27 @@ namespace Lekarz
                     LabTestDesc.Clear();
                     LabTestsList.SelectedIndex = -1;
 
+                    PhyTestDesc.Clear();
+
                     while (LaboratoryTests.Children.Count > 2)
                         LaboratoryTests.Children.RemoveAt(0);
 
+                    while (PhysicalTests.Children.Count > 2)
+                        PhysicalTests.Children.RemoveAt(0);
+
                     currentVisitID = -1;
 
+                    visitsList.Items.RemoveAt(visitsList.SelectedIndex);
                     visitsList.SelectedIndex = -1;
+
+                    diagnosisExpander.IsEnabled = false;
+                    diagnosisExpander.IsExpanded = false;
+                    laboratoryTestsExpander.IsEnabled = false;
+                    laboratoryTestsExpander.IsExpanded = false;
+                    physicalTestsExpander.IsEnabled = false;
+                    physicalTestsExpander.IsExpanded = false;
+                    VisitExpander.IsEnabled = false;
+                    VisitExpander.IsExpanded = false;
                 }
                 else
                     MessageBox.Show("Wystąpił błąd podczas zapisu szczegółów wizyty i nie zostały one zapisane.", "Błąd aktualizacji wizyty", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -177,7 +247,7 @@ namespace Lekarz
         /// <param name="e"></param>
         private void visitsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (currentVisitID == -1 && currentLabTestID == 0)
+            if (currentVisitID == -1)
             {
                 ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
                 string temp = (string)item.Content;
@@ -188,6 +258,9 @@ namespace Lekarz
                 nazwa_pac.Text = visit[1];
                 stan.Text = "Nierozpoczęta";
                 changeVisitStateButton.IsEnabled = true;
+
+                VisitExpander.IsEnabled = true;
+                VisitExpander.IsExpanded = true;
             }
         }
 
@@ -212,20 +285,29 @@ namespace Lekarz
             stan.Text = "";
             opis.Text = "";
             diagnoza.Text = "";
-            LabTestsList.SelectedItem = null;
             LabTestsList.SelectedIndex = -1;
             LabTestDesc.Text = "";
-            PhiTestsList.SelectedItem = null;
-            PhiTestsList.SelectedIndex = -1;
-            PhiTestDesc.Text = "";
+            PhyTestDesc.Text = "";
+
+            diagnosisExpander.IsEnabled = false;
+            diagnosisExpander.IsExpanded = false;
+            laboratoryTestsExpander.IsEnabled = false;
+            laboratoryTestsExpander.IsExpanded = false;
+            physicalTestsExpander.IsEnabled = false;
+            physicalTestsExpander.IsExpanded = false;
+            VisitExpander.IsEnabled = false;
+            VisitExpander.IsExpanded = false;
 
             while (true)
             {
                 if (LogIn() == true)
                 {
                     db = new DBClient.DBClient();
+                    currentVisitID = -1;
+                    currentLabRow = 0;
+                    currentPhyRow = 0;
                     GetDataFromDB();
-                    this.Visibility = System.Windows.Visibility.Visible;
+                    Visibility = System.Windows.Visibility.Visible;
                     break;
                 }
             }
@@ -235,8 +317,9 @@ namespace Lekarz
 
         /// <summary>
         /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
+        /// Okienko logowania zwraca false tylko gdy zostanie zamknięte krzyżykiem. Ta metoda wtedy powoduje zamknięcie aplikacji.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
             LoginWindow loginWindow = new LoginWindow();
@@ -248,7 +331,7 @@ namespace Lekarz
                 Title += " - " + loginWindow.Login;
                 return true;
             }
-            else if (result == false) //zamknięcie okna logowania
+            else if (result == null) //zamknięcie okna logowania powoduje zamknięcie aplikacji
                 Environment.Exit(0);
             
             return false;
@@ -314,6 +397,26 @@ namespace Lekarz
                     MessageBox.Show("Wystąpił błąd podczas pobierania listy wizyt.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             // <-- Tworzenie listy wizyt dla bieżąco zalogowanego lekarza. 
+        }
+
+
+
+        /// <summary>
+        /// Metoda obsługująca zdarzenie kliknięcia "Zapisz badanie fiz."
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void savePhysicalTestButton_Click(object sender, RoutedEventArgs e)
+        {
+            TextBlock phyTest = new TextBlock();
+            phyTest.Text = PhyTestDesc.Text;
+            phyTest.TextWrapping = TextWrapping.Wrap;
+
+            LaboratoryTests.Children.Insert(currentPhyRow, phyTest);
+
+            ++currentPhyRow;
+
+            PhyTestDesc.Clear();
         }
     }
 }

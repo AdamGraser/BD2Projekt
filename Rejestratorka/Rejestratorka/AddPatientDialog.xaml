@@ -3,26 +3,59 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Dodawanie nowego pacjenta" Height="364.502" Width="300" ResizeMode="NoResize" WindowStyle="ToolWindow">
-    <Canvas Background="#FFE5E4E2">
-        <Label Content="Imię:" Canvas.Left="10" Canvas.Top="20" />
-        <TextBox x:Name="nameTextBox" Height="24" Width="164" Canvas.Right ="10" Canvas.Top="20" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="0" />
-        <Label Content="Nazwisko:" Canvas.Left="10" Canvas.Top="50" />
-        <TextBox x:Name="surnameTextBox" Height="24" Width="164" Canvas.Right ="10" Canvas.Top="50" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="1" />
-        <Label Content="PESEL:" Canvas.Left="10" Canvas.Top="80" />
-        <xctk:MaskedTextBox x:Name="peselTextBox" Height="24" Width="164" Canvas.Right ="10" Canvas.Top="80" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="2" Mask="00000000000" />
-        <Label Content="Data urodzenia:" Canvas.Left="10" Canvas.Top="110" />       
-        <DatePicker x:Name="dateOfBirthTextBox" Canvas.Right="10" Canvas.Top="110" Width="164" SelectedDateChanged="dateOfBirthTextBox_SelectedDateChanged" IsTabStop="True" TabIndex="3"/>
-        <Label Content="Nr domu:" Canvas.Left="10" Canvas.Top="140" />
-        <TextBox x:Name="houseNumberTextBox" Height="24" Width="164" Canvas.Right ="10" Canvas.Top="140" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" />
-        <Label Content="Nr mieszkania:" Canvas.Left="10" Canvas.Top="170" />
-        <TextBox x:Name="flatNumberTextBox" Height="24" Width="164" Canvas.Right ="10" Canvas.Top="170" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" />
-        <Label Content="Ulica:" Canvas.Left="10" Canvas.Top="200" />
-        <TextBox x:Name="streetTextBox" Height="24" Width="164" Canvas.Right ="10" Canvas.Top="200" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" />
-        <Label Content="Kod pocztowy:" Canvas.Left="10" Canvas.Top="230" />
-        <xctk:MaskedTextBox x:Name="postCodeTextBox" Height="24" Width="164" Canvas.Right ="10" Canvas.Top="230" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" Mask="00-000" />
-        <Label Content="Miejscowość:" Canvas.Left="10" Canvas.Top="260" />
-        <TextBox x:Name="cityTextBox" Height="24" Width="164" Canvas.Right ="10" Canvas.Top="260" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" />
-        <Button x:Name="okButton" Content="OK" Width="75" Canvas.Right="10" Canvas.Bottom="10" Click="okButton_Click" IsDefault="True" IsEnabled="False" TabIndex="5"/>
-        <Button x:Name="cancelButton" Content="Anuluj" Width="75" Canvas.Right="95" Canvas.Bottom="10" Click="cancelButton_Click" IsCancel="True" TabIndex="6"/>
-    </Canvas>
+    <Grid Background="#FFE5E4E2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <Label Content="Imię:" Grid.Row="0" Grid.Column="0" />
+        <TextBox x:Name="nameTextBox" Height="24" Width="164" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="0" />
+
+        <Label Content="Nazwisko:" Grid.Row="1" Grid.Column="0" />
+        <TextBox x:Name="surnameTextBox" Height="24" Width="164" Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="1" />
+
+        <Label Content="PESEL:" Grid.Row="2" Grid.Column="0" />
+        <xctk:MaskedTextBox x:Name="peselTextBox" Height="24" Width="164" Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="2" Mask="00000000000" />
+
+        <Label Content="Płeć:" Grid.Row="3" Grid.Column="0" />
+        <UniformGrid Columns="2" Grid.Row="3" Grid.Column="1">
+            <RadioButton GroupName="Gender" Name="Man" Content="Mężczyzna" IsChecked="True" IsThreeState="False" />
+            <RadioButton GroupName="Gender" Name="Woman" Content="Kobieta" IsThreeState="False" />
+        </UniformGrid>
+
+        <Label Content="Data urodzenia:" Grid.Row="4" Grid.Column="0" />
+        <DatePicker x:Name="dateOfBirthTextBox" Grid.Row="4" Grid.Column="1" Width="164" SelectedDateChanged="dateOfBirthTextBox_SelectedDateChanged" IsTabStop="True" TabIndex="3"/>
+
+        <Label Content="Nr domu:" Grid.Row="5" Grid.Column="0" />
+        <TextBox x:Name="houseNumberTextBox" Height="24" Width="164" Grid.Row="5" Grid.Column="1" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" />
+
+        <Label Content="Nr mieszkania:" Grid.Row="6" Grid.Column="0" />
+        <TextBox x:Name="flatNumberTextBox" Height="24" Width="164" Grid.Row="6" Grid.Column="1" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" />
+
+        <Label Content="Ulica:" Grid.Row="7" Grid.Column="0" />
+        <TextBox x:Name="streetTextBox" Height="24" Width="164" Grid.Row="7" Grid.Column="1" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" />
+
+        <Label Content="Kod pocztowy:" Grid.Row="8" Grid.Column="0" />
+        <xctk:MaskedTextBox x:Name="postCodeTextBox" Height="24" Width="164" Grid.Row="8" Grid.Column="1" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" Mask="00-000" />
+
+        <Label Content="Miejscowość:" Grid.Row="9" Grid.Column="0" />
+        <TextBox x:Name="cityTextBox" Height="24" Width="164" Grid.Row="9" Grid.Column="1" TextWrapping="Wrap" TextChanged="textBox_TextChanged" TabIndex="4" />
+
+        <Button x:Name="okButton" Content="OK" Width="75" Grid.Row="10" Grid.Column="0" Click="okButton_Click" IsDefault="True" IsEnabled="False" TabIndex="5"/>
+        <Button x:Name="cancelButton" Content="Anuluj" Width="75" Grid.Row="10" Grid.Column="1" Click="cancelButton_Click" IsCancel="True" TabIndex="6"/>
+    </Grid>
 </Window>

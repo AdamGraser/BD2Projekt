@@ -28,6 +28,7 @@ namespace Laborant
         public LoginWindow()
         {
             InitializeComponent();
+            loginTextBox.Focus();
         }
 
 
