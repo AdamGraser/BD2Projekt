@@ -331,7 +331,11 @@ namespace Lekarz
                 Title += " - " + loginWindow.Login;
                 return true;
             }
+<<<<<<< HEAD
+            else if (result == false) //zamknięcie okna logowania powoduje zamknięcie aplikacji
+=======
             else if (result == null) //zamknięcie okna logowania powoduje zamknięcie aplikacji
+>>>>>>> origin/master
                 Environment.Exit(0);
             
             return false;

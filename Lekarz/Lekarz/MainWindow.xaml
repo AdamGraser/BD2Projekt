@@ -1,20 +1,45 @@
-﻿<Window x:Class="Lekarz.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Viewer="clr-namespace:SAPBusinessObjects.WPF.Viewer;assembly=SAPBusinessObjects.WPF.Viewer" x:Class="Lekarz.MainWindow"
         Title="Lekarz" Height="688" Width="525">
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <MenuItem x:Name="logoutMenuItem" Header="Wyloguj się" Click="logoutMenuItem_Click" />
             <MenuItem Header="Pomoc">
-                <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"></MenuItem>
+                <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
-        <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65" >
-            <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
-                <Button Name="saveVisitButton" Content="Zapisz" Padding="4,0,4,0" Height="28" Margin="0,5,0,0" Click="SaveVisit_Click" Width="75" />
-            </StackPanel>
-        </StackPanel>
         <ScrollViewer DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+<<<<<<< HEAD
+            <TabControl Height="637" Width="520">
+                <TabItem Header="Wizyty">
+                    <Grid Background="#FFE5E5E5" Margin="0,0,0,-14">
+                        <StackPanel Margin="0,0,-7,4">
+                            <ListBox x:Name="visitsList" HorizontalAlignment="Stretch" MinHeight="76" Height="76" MaxHeight="76" Margin="20,10,20,10" SelectionChanged="visitsList_SelectionChanged"/>
+                            <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
+                                <Button x:Name="refreshButton" Content="Odśwież dane" Padding="4,0,4,0" Height="28" Margin="0,5,0,0" Click="refreshButton_Click"  />
+                            </StackPanel>
+                            <Expander x:Name="VisitExpander" Header="Wizyta" Margin="20,10,20,10" IsEnabled="False">
+                                <Grid Margin="20,10,20,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Pierwsza kolumna -->
+                                    <Label Grid.Row="0" Grid.Column="0" Content="Data odbycia wizyty" Margin="0,0,0,5" />
+                                    <Label Grid.Row="1" Grid.Column="0" Content="Imię i nazwisko" Margin="0,0,0,5" />
+                                    <Label Grid.Row="2" Grid.Column="0" Content="Stan wizyty" Margin="0,0,0,5" />
+                                    <Label Grid.Row="3" Grid.Column="0" Content="Opis" Margin="0,0,0,5" />
+
+=======
             <StackPanel>            
                 <ListBox Name="visitsList" HorizontalAlignment="Stretch" MinHeight="76" Height="76" MaxHeight="76" Margin="20,10,20,10" SelectionChanged="visitsList_SelectionChanged"></ListBox>
                 <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
@@ -85,24 +110,115 @@
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
+>>>>>>> origin/master
 
-                                <ComboBox Grid.Row="0" Grid.Column="0" Name="LabTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26"></ComboBox>
-                                <Label Grid.Row="0" Grid.Column="1" Content="Opis" Margin="5,0,0,0" />
-                                <TextBox Grid.Row="0" Grid.Column="2" Name="LabTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"></TextBox>
-                            </Grid>
-                            <Button Name="orderLaboratoryTestButton" Content="Zleć nowe badanie lab." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="OrderLaboratoryTest_Click" />
+                                    <!-- Druga kolumna -->
+                                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="data_rej" Height="26" Width="auto"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="nazwa_pac" Height="26" Width="auto"/>
+                                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                                        <TextBlock x:Name="stan" Width="150" Height="26" Margin="0,0,5,0"/>
+                                        <Button x:Name="changeVisitStateButton" Content="Przyjmij wizytę" Padding="4,0,4,0" Height="26" Click="ChangeVisitState_Click" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
+                                        <TextBox x:Name="opis" Height="auto" MinHeight="26" Width="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+                            <Expander x:Name="diagnosisExpander" Header="Diagnoza" Margin="20,10,20,10" IsEnabled="False">
+                                <Grid Margin="20,10,20,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Row="0" Grid.Column="0" Content="Diagnoza" />
+                                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="diagnoza" Height="auto" Width="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True"/>
+                                </Grid>
+                            </Expander>
+                            <Expander x:Name="laboratoryTestsExpander" Header="Badania laboratoryjne" Margin="20,10,20,10" IsEnabled="False">
+                                <Grid Margin="20,10,20,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Row="0" Grid.Column="0" Content="Zleć badania lab." Margin="0,0,0,5" />
+                                    <StackPanel Grid.Row="0" Grid.Column="1" x:Name="LaboratoryTests">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <ComboBox Grid.Row="0" Grid.Column="0" x:Name="LabTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26"/>
+                                            <Label Grid.Row="0" Grid.Column="1" Content="Opis" Margin="5,0,0,0" />
+                                            <TextBox Grid.Row="0" Grid.Column="2" x:Name="LabTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"/>
+                                        </Grid>
+                                        <Button x:Name="orderLaboratoryTestButton" Content="Zleć nowe badanie lab." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="OrderLaboratoryTest_Click" />
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+                            <Expander x:Name="physicalTestsExpander" Header="Badania fizykalne" Margin="20,10,20,10" IsEnabled="False">
+                                <Grid Margin="20,10,20,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Row="0" Grid.Column="0" Content="Zleć badania fiz." Margin="0,0,0,5" />
+                                    <StackPanel Grid.Row="0" Grid.Column="1" x:Name="PhysicalTests">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Label Grid.Row="0" Grid.Column="0" Content="Opis" Margin="5,0,0,0" />
+                                            <TextBox Grid.Row="0" Grid.Column="1" x:Name="PhyTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"/>
+                                        </Grid>
+                                        <Button x:Name="savePhysicalTestButton" Content="Zapisz badanie fiz." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="savePhysicalTestButton_Click" />
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+                        </StackPanel>
+                        <StackPanel Background="#FFE5E4E2" Margin="0,521,-7,10" >
+                            <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
+                                <Button x:Name="saveVisitButton" Content="Zapisz" Padding="4,0,4,0" Height="28" Margin="0,5,0,0" Click="SaveVisit_Click" Width="75" />
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
+<<<<<<< HEAD
+                </TabItem>
+                <TabItem Header="Raporty">
+                    <Grid Background="#FFE5E5E5">
+=======
                 </Expander>
                 <Expander Name="physicalTestsExpander" Header="Badania fizykalne" Margin="20,10,20,10" IsEnabled="False">
                     <Grid Margin="20,10,20,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
+>>>>>>> origin/master
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="13*"/>
+                            <ColumnDefinition Width="497*"/>
                         </Grid.ColumnDefinitions>
+<<<<<<< HEAD
+                        <Viewer:CrystalReportsViewer HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="595"/>
+=======
                         <Label Grid.Row="0" Grid.Column="0" Content="Zleć badania fiz." Margin="0,0,0,5" />
                         <StackPanel Grid.Row="0" Grid.Column="1" Name="PhysicalTests">
                             <Grid>
@@ -119,9 +235,10 @@
                             </Grid>
                             <Button Name="savePhysicalTestButton" Content="Zapisz badanie fiz." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="savePhysicalTestButton_Click" />
                         </StackPanel>
+>>>>>>> origin/master
                     </Grid>
-                </Expander>
-            </StackPanel>
-        </ScrollViewer>        
+                </TabItem>
+            </TabControl>
+        </ScrollViewer>
     </DockPanel>
 </Window>
