@@ -21,13 +21,13 @@ namespace Laborant
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DBClient.DBClient db;          // klient bazy danych
-        int currentVisitID;                    // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
-        byte currentLabTestID;                 // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
-        int currentLabTest;                    // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
-        bool done;                             // determinuje czy laborant jest w trakcie wykonywania badania/edycji wykonanego badania (true) czy nie (false)
-        Dictionary<int, byte> labTestsAtVisit; // kolekcja par <ID wizyty, liczba badań laboratoryjnych zleconych w trakcie tej wizyty> (tylko wizyty z dodatnią liczbą zleconych badań lab.)
-        Dictionary<int, byte> labTestsAtVisit1; // kolekcja par <ID wizyty, liczba badań laboratoryjnych zleconych w trakcie tej wizyty> (tylko wizyty z dodatnią liczbą zleconych badań lab.)
+        private DBClient.DBClient db;                 // klient bazy danych
+        int currentVisitID;                           // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
+        byte currentLabTestID;                        // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
+        int currentLabTest;                           // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
+        bool done;                                    // determinuje czy laborant jest w trakcie wykonywania badania/edycji wykonanego badania (true) czy nie (false)
+        Dictionary<int, List<byte>> labTestsAtVisit;  // kolekcja par <ID wizyty, liczba badań laboratoryjnych zleconych w trakcie tej wizyty> (tylko wizyty z dodatnią liczbą zleconych badań lab.)
+        Dictionary<int, List<byte>> labTestsAtVisit1; // kolekcja par <ID wizyty, liczba badań laboratoryjnych zleconych w trakcie tej wizyty> (tylko wizyty z dodatnią liczbą zleconych badań lab.)
 
 
         /// <summary>
@@ -41,8 +41,8 @@ namespace Laborant
                 if (LogIn() == true)
                 {
                     db = new DBClient.DBClient();
-                    labTestsAtVisit = new Dictionary<int, byte>();
-                    labTestsAtVisit1 = new Dictionary<int, byte>();
+                    labTestsAtVisit = new Dictionary<int,List<byte>>();
+                    labTestsAtVisit1 = new Dictionary<int,List<byte>>();
                     GetDataFromDB(true);
                     GetDataFromDB(false);
                     break;
@@ -111,11 +111,8 @@ namespace Laborant
         {
             if (done == true)
             {
-                byte result = db.ExecuteLabTest(currentVisitID, currentLabTestID, null);
-                if (result != 0)
+                if (db.ExecuteLabTest(currentVisitID, currentLabTestID, false))
                 {
-                    currentLabTestID = result;
-
                     //Usuwanie szczegółowych informacji o badaniu i usunięcie danych wprowadzonych do pola na wyniki tego badania.
                     Lab_LabTestOrderDate.Text = Lab_LabTestName.Text = Lab_LabTestDescription.Text = Lab_LabTestDoctorName.Text = "";
                     Lab_LabTestResult.Clear();
@@ -151,7 +148,7 @@ namespace Laborant
             if (done == true)
             {
                 Button s = (Button)sender;
-                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, (bool?)s.Tag, null);
+                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, (bool?)s.Tag);
 
                 if (save == true)
                 {
@@ -175,10 +172,10 @@ namespace Laborant
                     Lab_LabTestsList.Items.RemoveAt(labTestNumber);
 
                     //Zaktualizowanie struktury zawierającej liczbę niewykonanych badań dla każdej wizyty.
-                    if (labTestsAtVisit[currentVisitID] == 1)
+                    if (labTestsAtVisit[currentVisitID].Count == 1)
                         labTestsAtVisit.Remove(currentVisitID);
                     else
-                        --labTestsAtVisit[currentVisitID];
+                        labTestsAtVisit[currentVisitID].Remove(currentLabTestID);
 
                     //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
                     Lab_LabTestOrderDate.Text = Lab_LabTestName.Text = Lab_LabTestDescription.Text = Lab_LabTestDoctorName.Text = "";
@@ -207,21 +204,14 @@ namespace Laborant
         {
             if (done == true)
             {
-                byte result = db.ExecuteLabTest(currentVisitID, currentLabTestID, null);
-                if (result != 0)
-                {
-                    currentLabTestID = result;
-                    //Usuwanie szczegółowych informacji o badaniu i usunięcie danych wprowadzonych do pola na wyniki tego badania.
-                    Lab_LabTestOrderDate.Text = Lab_LabTestName1.Text = Lab_LabTestDescription1.Text = Lab_LabTestDoctorName1.Text = "";
-                    Lab_LabTestResult.Clear();
+                //Usuwanie szczegółowych informacji o badaniu i usunięcie danych wprowadzonych do pola na wyniki tego badania.
+                Lab_LabTestOrderDate.Text = Lab_LabTestName1.Text = Lab_LabTestDescription1.Text = Lab_LabTestDoctorName1.Text = "";
+                Lab_LabTestResult.Clear();
 
-                    currentLabTest = -1;
-                    currentVisitID = -1;
-                    currentLabTestID = 0;
-                    done = false;
-                }
-                else
-                    MessageBox.Show("Wystąpił błąd podczas zmiany stanu badania laboratoryjnego i jest ono wciąż oznaczone jako W trakcie wykonywania.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                currentLabTest = -1;
+                currentVisitID = -1;
+                currentLabTestID = 0;
+                done = false;
             }
         }
 
@@ -246,12 +236,10 @@ namespace Laborant
             if (done == true)
             {
                 Button s = (Button)sender;
-                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, (bool?)s.Tag, null);
+                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, (bool?)s.Tag);
 
                 if (save == true)
                 {
-                    int labTestNumber = currentLabTest;
-
                     //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
                     Lab_LabTestOrderDate1.Text = Lab_LabTestName1.Text = Lab_LabTestDescription1.Text = Lab_LabTestDoctorName1.Text = "";
                     Lab_LabTestResult1.Clear();
@@ -309,11 +297,11 @@ namespace Laborant
 
                 foreach (var t in tests)
                 {
-                    //Później potrzebne będzie tylko w trakcie której wizyty ile badań zlecono.
+                    //Zapisywanie list ID badań dla każdej wizyty
                     if (undone)
-                        labTestsAtVisit.Add(t.Key, (byte)t.Value.Count);
+                        labTestsAtVisit.Add(t.Key, db.GetLabTestsIDs(t.Key));
                     else
-                        labTestsAtVisit1.Add(t.Key, (byte)t.Value.Count);
+                        labTestsAtVisit1.Add(t.Key, db.GetLabTestsIDs(t.Key));
 
                     foreach (string str in t.Value)
                     {
@@ -378,7 +366,7 @@ namespace Laborant
 
                     foreach (var t in labTestsAtVisit)
                     {
-                        num += t.Value;
+                        num += t.Value.Count;
 
                         if (num >= currentLabTest)
                         {
@@ -388,13 +376,11 @@ namespace Laborant
 
                     }
 
-                    currentLabTestID = (byte)(labTestsAtVisit[currentVisitID] - (num - currentLabTest));
+                    currentLabTestID = labTestsAtVisit[currentVisitID][num - currentLabTest];
                     done = true;
 
-                    byte result = db.ExecuteLabTest(currentVisitID, currentLabTestID, null);
-                    if (result != 0)
+                    if (db.ExecuteLabTest(currentVisitID, currentLabTestID, true))
                     {
-                        currentLabTestID = result;
                         /* Przypominam: labTestNumber to jednocześnie nr wiersza na liście badań. Elementy w ListBox'ie są numerowane od 0, to zawsze integery, niezależnie od
                          * layout'u listy (zawsze od lewej do prawej, z góry na dół).
                          * [string do wydobycia][button]<nr wiersza> no i wiadomo, te liczby to indeksy właśnie:
@@ -443,9 +429,9 @@ namespace Laborant
                     int num = 0;
                     currentLabTest = (int)button.Tag;
 
-                    foreach (var t in labTestsAtVisit)
+                    foreach (var t in labTestsAtVisit1)
                     {
-                        num += t.Value;
+                        num += t.Value.Count;
 
                         if (num >= currentLabTest)
                         {
@@ -455,46 +441,39 @@ namespace Laborant
 
                     }
 
-                    currentLabTestID = (byte)(labTestsAtVisit1[currentVisitID] - (num - currentLabTest));
+                    currentLabTestID = labTestsAtVisit1[currentVisitID][num - currentLabTest];
                     done = true;
 
-                    byte result = db.ExecuteLabTest(currentVisitID, currentLabTestID, null);
-                    if (result != 0)
+                    /* Przypominam: labTestNumber to jednocześnie nr wiersza na liście badań. Elementy w ListBox'ie są numerowane od 0, to zawsze integery, niezależnie od
+                        * layout'u listy (zawsze od lewej do prawej, z góry na dół).
+                        * [string do wydobycia][button]<nr wiersza> no i wiadomo, te liczby to indeksy właśnie:
+                        * [0][1]<1>: 1 * 2 - 2 = 0
+                        * [2][3]<2>: 2 * 2 - 2 = 2
+                        * ...
+                        * [12][13]<7>: 7 * 2 - 2 = 12
+                        * Jak widać, poniższy wzór zawsze da w wyniku indeks elementu w lewej kolumnie.*/
+                    ListBoxItem item = (ListBoxItem)Lab_LabTestsList1.Items.GetItemAt(currentLabTest * 2 - 2);
+                    string temp = (string)item.Content;
+
+                    string[] labTest = temp.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+                    Lab_LabTestOrderDate1.Text = labTest[0];
+                    Lab_LabTestName1.Text = labTest[1];
+
+                    List<string> labTestDetails = db.GetLabTestDetails(currentVisitID, currentLabTestID);
+
+                    if (labTestDetails != null)
                     {
-                        currentLabTestID = result;
-                        /* Przypominam: labTestNumber to jednocześnie nr wiersza na liście badań. Elementy w ListBox'ie są numerowane od 0, to zawsze integery, niezależnie od
-                         * layout'u listy (zawsze od lewej do prawej, z góry na dół).
-                         * [string do wydobycia][button]<nr wiersza> no i wiadomo, te liczby to indeksy właśnie:
-                         * [0][1]<1>: 1 * 2 - 2 = 0
-                         * [2][3]<2>: 2 * 2 - 2 = 2
-                         * ...
-                         * [12][13]<7>: 7 * 2 - 2 = 12
-                         * Jak widać, poniższy wzór zawsze da w wyniku indeks elementu w lewej kolumnie.*/
-                        ListBoxItem item = (ListBoxItem)Lab_LabTestsList1.Items.GetItemAt(currentLabTest * 2 - 2);
-                        string temp = (string)item.Content;
-
-                        string[] labTest = temp.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
-
-                        Lab_LabTestOrderDate1.Text = labTest[0];
-                        Lab_LabTestName1.Text = labTest[1];
-
-                        List<string> labTestDetails = db.GetLabTestDetails(currentVisitID, currentLabTestID);
-
-                        if (labTestDetails != null)
+                        if (labTestDetails.Count > 0)
                         {
-                            if (labTestDetails.Count > 0)
-                            {
-                                Lab_LabTestDescription1.Text = labTestDetails[0];
-                                Lab_LabTestDoctorName1.Text = labTestDetails[1] + " " + labTestDetails[2];
-                            }
-                            else
-                                MessageBox.Show("Podano nieprawidłowe ID wizyty lub nieprawidłowe ID badania.", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            Lab_LabTestDescription1.Text = labTestDetails[0];
+                            Lab_LabTestDoctorName1.Text = labTestDetails[1] + " " + labTestDetails[2];
                         }
                         else
-                            MessageBox.Show("Wystąpił błąd podczas pobierania szczegółów badania laboratoryjnego.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show("Podano nieprawidłowe ID wizyty lub nieprawidłowe ID badania.", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                     else
-                        MessageBox.Show("Wystąpił błąd podczas zmiany stanu badania laboratoryjnego i jest ono wciąż oznaczone jako Niewykonane.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Wystąpił błąd podczas pobierania szczegółów badania laboratoryjnego.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }
