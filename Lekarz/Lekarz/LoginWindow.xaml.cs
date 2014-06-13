@@ -15,6 +15,11 @@ using System.Security.Cryptography;
 
 namespace Lekarz
 {
+    public class RefBool
+    {
+        public bool v;
+    }
+
     /// <summary>
     /// Logika interakcji dla klasy LoginWindow.xaml
     /// </summary>
@@ -22,14 +27,18 @@ namespace Lekarz
     {
         private byte[] _hash;
         private string _login = "";
-
+        private RefBool hardExit;
 
 
         /// <summary>
         /// Konstruktor.
+        /// <param name="exit">Referencja do zmiennej, w której zostanie zapamiętana informacja, czy wymuszono zamnięcie okna</param>
         /// </summary>
-        public LoginWindow()
+        public LoginWindow(RefBool exit)
         {
+            hardExit = exit;
+            hardExit.v = true;
+
             InitializeComponent();
             loginTextBox.Focus();
         }
@@ -46,8 +55,6 @@ namespace Lekarz
                 return _login;
             }
         }
-
-
 
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Zaloguj".
@@ -68,10 +75,12 @@ namespace Lekarz
             if (userFound == true)
             {
                 DialogResult = true;
+                hardExit.v = false;
             }
             else
             {
                 DialogResult = false;
+                hardExit.v = false;
 
                 if (userFound == null)
                     System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);

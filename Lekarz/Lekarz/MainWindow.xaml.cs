@@ -322,7 +322,8 @@ namespace Lekarz
         /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
-            LoginWindow loginWindow = new LoginWindow();
+            RefBool hardExit = new RefBool();
+            LoginWindow loginWindow = new LoginWindow(hardExit);
 
             bool? result = loginWindow.ShowDialog();
 
@@ -331,11 +332,7 @@ namespace Lekarz
                 Title += " - " + loginWindow.Login;
                 return true;
             }
-<<<<<<< HEAD
-            else if (result == false) //zamknięcie okna logowania powoduje zamknięcie aplikacji
-=======
-            else if (result == null) //zamknięcie okna logowania powoduje zamknięcie aplikacji
->>>>>>> origin/master
+            else if (hardExit.v == true) //zamknięcie okna logowania powoduje zamknięcie aplikacji
                 Environment.Exit(0);
             
             return false;

@@ -11,7 +11,6 @@
             </MenuItem>
         </Menu>
         <ScrollViewer DockPanel.Dock="Top" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-<<<<<<< HEAD
             <TabControl Height="637" Width="520">
                 <TabItem Header="Wizyty">
                     <Grid Background="#FFE5E5E5" Margin="0,0,0,-14">
@@ -39,78 +38,6 @@
                                     <Label Grid.Row="2" Grid.Column="0" Content="Stan wizyty" Margin="0,0,0,5" />
                                     <Label Grid.Row="3" Grid.Column="0" Content="Opis" Margin="0,0,0,5" />
 
-=======
-            <StackPanel>            
-                <ListBox Name="visitsList" HorizontalAlignment="Stretch" MinHeight="76" Height="76" MaxHeight="76" Margin="20,10,20,10" SelectionChanged="visitsList_SelectionChanged"></ListBox>
-                <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
-                        <Button Name="refreshButton" Content="Odśwież dane" Padding="4,0,4,0" Height="28" Margin="0,5,0,0" Click="refreshButton_Click"  />
-                </StackPanel>
-                <Expander Name="VisitExpander" Header="Wizyta" Margin="20,10,20,10" IsEnabled="False">
-                    <Grid Margin="20,10,20,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />
-                            <RowDefinition Height="auto" />                    
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Pierwsza kolumna -->
-                        <Label Grid.Row="0" Grid.Column="0" Content="Data odbycia wizyty" Margin="0,0,0,5" />
-                        <Label Grid.Row="1" Grid.Column="0" Content="Imię i nazwisko" Margin="0,0,0,5" />
-                        <Label Grid.Row="2" Grid.Column="0" Content="Stan wizyty" Margin="0,0,0,5" />
-                        <Label Grid.Row="3" Grid.Column="0" Content="Opis" Margin="0,0,0,5" />
-                    
-
-                        <!-- Druga kolumna -->
-                        <TextBlock Grid.Row="0" Grid.Column="1" Name="data_rej" Height="26" Width="auto"></TextBlock>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Name="nazwa_pac" Height="26" Width="auto"></TextBlock>
-                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                            <TextBlock Name="stan" Width="150" Height="26" Margin="0,0,5,0"></TextBlock>
-                            <Button x:Name="changeVisitStateButton" Content="Przyjmij wizytę" Padding="4,0,4,0" Height="26" Click="ChangeVisitState_Click" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,0,0,5">
-                            <TextBox Name="opis" Height="auto" MinHeight="26" Width="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"></TextBox>                   
-                        </StackPanel>                              
-                    </Grid>
-                </Expander>
-                <Expander Name="diagnosisExpander" Header="Diagnoza" Margin="20,10,20,10" IsEnabled="False">
-                    <Grid Margin="20,10,20,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />                        
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="Diagnoza" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Name="diagnoza" Height="auto" Width="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True"></TextBox>
-                    </Grid>
-                </Expander>
-                <Expander Name="laboratoryTestsExpander" Header="Badania laboratoryjne" Margin="20,10,20,10" IsEnabled="False">
-                    <Grid Margin="20,10,20,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="Zleć badania lab." Margin="0,0,0,5" />
-                        <StackPanel Grid.Row="0" Grid.Column="1" Name="LaboratoryTests">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
->>>>>>> origin/master
 
                                     <!-- Druga kolumna -->
                                     <TextBlock Grid.Row="0" Grid.Column="1" x:Name="data_rej" Height="26" Width="auto"/>
@@ -200,42 +127,15 @@
                             </StackPanel>
                         </StackPanel>
                     </Grid>
-<<<<<<< HEAD
                 </TabItem>
                 <TabItem Header="Raporty">
                     <Grid Background="#FFE5E5E5">
-=======
-                </Expander>
-                <Expander Name="physicalTestsExpander" Header="Badania fizykalne" Margin="20,10,20,10" IsEnabled="False">
-                    <Grid Margin="20,10,20,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
->>>>>>> origin/master
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="13*"/>
                             <ColumnDefinition Width="497*"/>
                         </Grid.ColumnDefinitions>
-<<<<<<< HEAD
                         <Viewer:CrystalReportsViewer HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="595"/>
-=======
-                        <Label Grid.Row="0" Grid.Column="0" Content="Zleć badania fiz." Margin="0,0,0,5" />
-                        <StackPanel Grid.Row="0" Grid.Column="1" Name="PhysicalTests">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
 
-                                <Label Grid.Row="0" Grid.Column="0" Content="Opis" Margin="5,0,0,0" />
-                                <TextBox Grid.Row="0" Grid.Column="1" Name="PhyTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"></TextBox>
-                            </Grid>
-                            <Button Name="savePhysicalTestButton" Content="Zapisz badanie fiz." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="savePhysicalTestButton_Click" />
-                        </StackPanel>
->>>>>>> origin/master
                     </Grid>
                 </TabItem>
             </TabControl>
