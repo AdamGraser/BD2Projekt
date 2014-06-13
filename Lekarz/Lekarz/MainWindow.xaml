@@ -134,7 +134,7 @@
                             <ColumnDefinition Width="13*"/>
                             <ColumnDefinition Width="497*"/>
                         </Grid.ColumnDefinitions>
-                        <Viewer:CrystalReportsViewer HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="595"/>
+                        <Viewer:CrystalReportsViewer HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="auto"/>
 
                     </Grid>
                 </TabItem>

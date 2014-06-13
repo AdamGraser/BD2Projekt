@@ -55,3 +55,6 @@ C:\Users\Michal\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz_Marku
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz.g.resources
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz.Properties.Resources.resources
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz.csproj.GenerateResource.Cache
+C:\Users\Adam\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\bin\Debug\Lekarz.exe.config
+C:\Users\Adam\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz.exe
+C:\Users\Adam\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz.pdb
