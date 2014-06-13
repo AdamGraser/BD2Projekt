@@ -59,7 +59,7 @@
                     </ScrollViewer>
                 </Grid>
             </TabItem>
-            <TabItem Header="Wykonane badania">
+            <TabItem Header="Wykonane badania" Name="Lab_DoneLabTests">
                 <Grid Background="#FFE5E5E5">
                     <Grid Background="#FFE5E5E5">
                         <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="31,0,39,12">

@@ -30,8 +30,9 @@ namespace Laborant
         Dictionary<int, List<byte>> labTestsAtVisit1; // kolekcja par <ID wizyty, liczba badań laboratoryjnych zleconych w trakcie tej wizyty> (tylko wizyty z dodatnią liczbą zleconych badań lab.)
 
 
+
         /// <summary>
-        /// Domyślny konstruktor. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
+        /// Domyślny konstruktor. Obłsuguje logowanie. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
         /// </summary>
         public MainWindow()
         {
@@ -51,7 +52,11 @@ namespace Laborant
 
             Lab_Save.Tag = (bool?)null;
             Lab_Cancel.Tag = (bool?)false;
+            Lab_Save1.Tag = (bool?)null;
+            Lab_Cancel1.Tag = (bool?)false;
         }
+
+
 
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Wyloguj się" na pasku menu.
@@ -67,8 +72,8 @@ namespace Laborant
             db = null;
 
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
-            Lab_LabTestsList.Items.Clear();
-            Lab_LabTestsList1.Items.Clear();
+            ClearLabTestsLists();
+            ClearLabTestsLists1();
             Lab_LabTestResult.Clear();
             Lab_LabTestResult1.Clear();
 
@@ -100,10 +105,11 @@ namespace Laborant
         }
 
 
+
         // OBSLUGA KONTROLEK Z PIERWSZEJ ZAKLADKI
 
         /// <summary>
-        /// 
+        /// Obsługa kliknięcia przycisku "Powrót".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -127,19 +133,38 @@ namespace Laborant
             }
         }
 
+
+
         /// <summary>
-        /// 
+        /// Obsługa kliknięcia przycisku "Odśwież dane".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Lab_Refresh_Click(object sender, RoutedEventArgs e)
         {
-            Lab_LabTestsList.Items.Clear();
+            ClearLabTestsLists();
             GetDataFromDB(true);
         }
 
+
+
         /// <summary>
-        /// 
+        /// Czyści listę niewykonanych badań laboratoryjnych, ew. aktywuje ją i przywraca wyrównanie elementów do wartości domyślnych.
+        /// Czyści również zbiór ID wizyt i ich list ID niewykonanych badań.
+        /// </summary>
+        private void ClearLabTestsLists()
+        {
+            Lab_LabTestsList.Items.Clear();
+            Lab_LabTestsList.IsEnabled = true;
+            Lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Top;
+
+            labTestsAtVisit.Clear();
+        }
+
+
+
+        /// <summary>
+        /// Obsługa kliknięcia przycisków "Zatwierdź" i "Anuluj".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -193,167 +218,13 @@ namespace Laborant
             }
         }
 
-        // OBSLUGA KONTROLEK Z DRUGIEJ ZAKLADKI
+
 
         /// <summary>
-        /// 
+        /// Obsługa kliknięcia przycisków "Wykonaj" z listy niewykonanych badań.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Lab_Back_Click1(object sender, RoutedEventArgs e)
-        {
-            if (done == true)
-            {
-                //Usuwanie szczegółowych informacji o badaniu i usunięcie danych wprowadzonych do pola na wyniki tego badania.
-                Lab_LabTestOrderDate.Text = Lab_LabTestName1.Text = Lab_LabTestDescription1.Text = Lab_LabTestDoctorName1.Text = "";
-                Lab_LabTestResult.Clear();
-
-                currentLabTest = -1;
-                currentVisitID = -1;
-                currentLabTestID = 0;
-                done = false;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Lab_Refresh_Click1(object sender, RoutedEventArgs e)
-        {
-            Lab_LabTestsList1.Items.Clear();
-            GetDataFromDB(false);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Lab_Save_Click1(object sender, RoutedEventArgs e)
-        {
-            if (done == true)
-            {
-                Button s = (Button)sender;
-                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, (bool?)s.Tag);
-
-                if (save == true)
-                {
-                    //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
-                    Lab_LabTestOrderDate1.Text = Lab_LabTestName1.Text = Lab_LabTestDescription1.Text = Lab_LabTestDoctorName1.Text = "";
-                    Lab_LabTestResult1.Clear();
-
-                    currentLabTest = -1;
-                    currentVisitID = -1;
-                    currentLabTestID = 0;
-                    done = false;
-                }
-                else if (save == false)
-                    MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                else
-                    MessageBox.Show("Podano nieprawidłowe dane dla funkcji zapisu wyników badania.", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        // KONIEC OBSLUGI KONTROLEK
-
-        /// <summary>
-        /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
-        /// Okienko logowania zwraca false tylko gdy zostanie zamknięte krzyżykiem. Ta metoda wtedy powoduje zamknięcie aplikacji.
-        /// </summary>
-        /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
-        private bool LogIn()
-        {
-            LoginWindow loginWindow = new LoginWindow();
-            
-            bool? result = loginWindow.ShowDialog();
-
-            if (result == true)
-            {
-                Title += " - " + loginWindow.Login;
-                return true;
-            }
-            else if (result == false) //zamknięcie okna logowania
-                Environment.Exit(0);
-
-            return false;
-        }
-
-
-
-        /// <summary>
-        /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.
-        /// <param name="undone">Jeśli "true", pobierane są badania niewykonane. Jeśli false - wykonane przez zalogowanego laboranta.</param>
-        /// </summary>
-        private void GetDataFromDB(bool undone)
-        {
-            // --> Tworzenie listy zleconych, niezrealizowanych badań laboratoryjnych
-            Dictionary<int, List<string>> tests = db.GetLabTests(!undone);
-
-            if (tests != null && tests.Count > 0)
-            {
-                int labTestNumber = 0; //int wystarczy, hardcore na 4 mld niewykonanych badań lab. się nawet w Polsce nie zdarza :D
-
-                foreach (var t in tests)
-                {
-                    //Zapisywanie list ID badań dla każdej wizyty
-                    if (undone)
-                        labTestsAtVisit.Add(t.Key, db.GetLabTestsIDs(t.Key));
-                    else
-                        labTestsAtVisit1.Add(t.Key, db.GetLabTestsIDs(t.Key));
-
-                    foreach (string str in t.Value)
-                    {
-                        ++labTestNumber;
-
-                        ListBoxItem item = new ListBoxItem();
-                        item.Content = str;
-                        item.Margin = new Thickness(0.0, 0.0, 10.0, 0.0);
-
-                        if (undone)
-                            Lab_LabTestsList.Items.Add(item);
-                        else
-                            Lab_LabTestsList1.Items.Add(item);
-
-                        /* Każdy kolejny przycisk-klon ma w tagu zapisany nr badania, przy którym się znajduje, czyli w sumie numer wiersza listy, w którym się znajduje.
-                         * Później foreach przez labTestsAtVisit dodając do kupy wartości, dopóki suma mniejsza od tagu tego przycisku - reszty chyba nie trzeba tłumaczyć.
-                         * Wiemy w której wizycie to zostało zlecone (labTestsAtView.Key), a po wykonaniu 2 operacji odejmowania wiemy które to konkretnie badanie - p. Lab_ExecuteLabTest_Click*/
-                        Button button = new Button();
-                        if (undone)
-                        {
-                            button.Name = "Lab_ExecuteLabTest";
-                            button.Content = "Wykonaj";
-                            button.Padding = new Thickness(5.0, 0.0, 5.0, 0.0);
-                            button.Tag = labTestNumber;
-                            button.Click += Lab_ExecuteLabTest_Click;
-                            Lab_LabTestsList.Items.Add(button);
-                        }
-                        else
-                        {
-                            button.Name = "Lab_EditLabTest";
-                            button.Content = "Edytuj";
-                            button.Padding = new Thickness(5.0, 0.0, 5.0, 0.0);
-                            button.Tag = labTestNumber;
-                            button.Click += Lab_EditLabTest_Click;
-                            Lab_LabTestsList1.Items.Add(button);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Lab_LabTestsList.IsEnabled = false;
-                Lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-                Lab_LabTestsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
-                Lab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak badań do końca życia!");
-
-                if (tests == null)
-                    MessageBox.Show("Wystąpił błąd podczas pobierania listy badań do wykonania.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            // <-- Tworzenie listy zleconych, niezrealizowanych badań laboratoryjnych
-        }
-
         void Lab_ExecuteLabTest_Click(object sender, RoutedEventArgs e)
         {
             if (done == false)
@@ -419,6 +290,96 @@ namespace Laborant
         }
 
 
+
+        // OBSLUGA KONTROLEK Z DRUGIEJ ZAKLADKI
+
+        /// <summary>
+        /// Obsługa kliknięcia przycisku "Powrót".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Lab_Back_Click1(object sender, RoutedEventArgs e)
+        {
+            if (done == true)
+            {
+                //Usuwanie szczegółowych informacji o badaniu i usunięcie danych wprowadzonych do pola na wyniki tego badania.
+                Lab_LabTestOrderDate.Text = Lab_LabTestName1.Text = Lab_LabTestDescription1.Text = Lab_LabTestDoctorName1.Text = "";
+                Lab_LabTestResult.Clear();
+
+                currentLabTest = -1;
+                currentVisitID = -1;
+                currentLabTestID = 0;
+                done = false;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Obsługa kliknięcia przycisku "Odśwież dane".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Lab_Refresh_Click1(object sender, RoutedEventArgs e)
+        {
+            ClearLabTestsLists1();
+            GetDataFromDB(false);
+        }
+
+
+
+        /// <summary>
+        /// Czyści listę niewykonanych badań laboratoryjnych, ew. aktywuje ją i przywraca wyrównanie elementów do wartości domyślnych.
+        /// Czyści również zbiór ID wizyt i ich list ID niewykonanych badań.
+        /// </summary>
+        private void ClearLabTestsLists1()
+        {
+            Lab_LabTestsList1.Items.Clear();
+            Lab_LabTestsList1.IsEnabled = true;
+            Lab_LabTestsList1.VerticalContentAlignment = System.Windows.VerticalAlignment.Top;
+
+            labTestsAtVisit1.Clear();
+        }
+
+
+
+        /// <summary>
+        /// Obsługa kliknięcia przycisków "Zatwierdź" i "Anuluj".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Lab_Save_Click1(object sender, RoutedEventArgs e)
+        {
+            if (done == true)
+            {
+                Button s = (Button)sender;
+                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, (bool?)s.Tag);
+
+                if (save == true)
+                {
+                    //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
+                    Lab_LabTestOrderDate1.Text = Lab_LabTestName1.Text = Lab_LabTestDescription1.Text = Lab_LabTestDoctorName1.Text = "";
+                    Lab_LabTestResult1.Clear();
+
+                    currentLabTest = -1;
+                    currentVisitID = -1;
+                    currentLabTestID = 0;
+                    done = false;
+                }
+                else if (save == false)
+                    MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                else
+                    MessageBox.Show("Podano nieprawidłowe dane dla funkcji zapisu wyników badania.", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Obsługa kliknięcia przycisków "Edytuj" z listy wykonanych badań.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void Lab_EditLabTest_Click(object sender, RoutedEventArgs e)
         {
             if (done == false)
@@ -478,6 +439,129 @@ namespace Laborant
             }
         }
 
+        // KONIEC OBSLUGI KONTROLEK
+
+
+
+        /// <summary>
+        /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
+        /// Okienko logowania zwraca false tylko gdy zostanie zamknięte krzyżykiem. Ta metoda wtedy powoduje zamknięcie aplikacji.
+        /// </summary>
+        /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
+        private bool LogIn()
+        {
+            LoginWindow loginWindow = new LoginWindow();
+            
+            bool? result = loginWindow.ShowDialog();
+
+            if (result == true)
+            {
+                Title += " - " + loginWindow.Login;
+                return true;
+            }
+            else if (result == false) //zamknięcie okna logowania
+                Environment.Exit(0);
+
+            return false;
+        }
+
+
+
+        /// <summary>
+        /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.
+        /// <param name="undone">Jeśli "true", pobierane są badania niewykonane. Jeśli false, pobierane są badania wykonane przez zalogowanego laboranta.</param>
+        /// </summary>
+        private void GetDataFromDB(bool undone)
+        {
+            // --> Tworzenie listy zleconych, niezrealizowanych badań laboratoryjnych
+            Dictionary<int, List<string>> tests = db.GetLabTests(!undone);
+
+            if (tests != null && tests.Count > 0)
+            {
+                int labTestNumber = 0; //int wystarczy, hardcore na 4 mld niewykonanych badań lab. się nawet w Polsce nie zdarza :D
+
+                //Zapisywanie list ID badań dla każdej wizyty
+                if (undone)
+                {
+                    foreach (var t in tests)
+                    {
+                        labTestsAtVisit.Add(t.Key, db.GetLabTestsIDs(t.Key));
+
+                        foreach (string str in t.Value)
+                        {
+                            ++labTestNumber;
+
+                            ListBoxItem item = new ListBoxItem();
+                            item.Content = str;
+                            item.Margin = new Thickness(0.0, 0.0, 10.0, 0.0);
+
+                            Lab_LabTestsList.Items.Add(item);
+
+                            /* Każdy kolejny przycisk-klon ma w tagu zapisany nr badania, przy którym się znajduje, czyli w sumie numer wiersza listy, w którym się znajduje.
+                                * Później foreach przez labTestsAtVisit dodając do kupy wartości, dopóki suma mniejsza od tagu tego przycisku - reszty chyba nie trzeba tłumaczyć.
+                                * Wiemy w której wizycie to zostało zlecone (labTestsAtView.Key), a po wykonaniu 2 operacji odejmowania wiemy które to konkretnie badanie - p. Lab_ExecuteLabTest_Click*/
+                            Button button = new Button();
+
+                            button.Name = "Lab_ExecuteLabTest";
+                            button.Content = "Wykonaj";
+                            button.Padding = new Thickness(5.0, 0.0, 5.0, 0.0);
+                            button.Tag = labTestNumber;
+                            button.Click += Lab_ExecuteLabTest_Click;
+                            Lab_LabTestsList.Items.Add(button);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var t in tests)
+                    {
+                        labTestsAtVisit1.Add(t.Key, db.GetLabTestsIDs(t.Key));
+
+                        foreach (string str in t.Value)
+                        {
+                            ++labTestNumber;
+
+                            ListBoxItem item = new ListBoxItem();
+                            item.Content = str;
+                            item.Margin = new Thickness(0.0, 0.0, 10.0, 0.0);
+
+                            Lab_LabTestsList1.Items.Add(item);
+
+                            /* Każdy kolejny przycisk-klon ma w tagu zapisany nr badania, przy którym się znajduje, czyli w sumie numer wiersza listy, w którym się znajduje.
+                                * Później foreach przez labTestsAtVisit dodając do kupy wartości, dopóki suma mniejsza od tagu tego przycisku - reszty chyba nie trzeba tłumaczyć.
+                                * Wiemy w której wizycie to zostało zlecone (labTestsAtView.Key), a po wykonaniu 2 operacji odejmowania wiemy które to konkretnie badanie - p. Lab_ExecuteLabTest_Click*/
+                            Button button = new Button();
+
+                            button.Name = "Lab_EditLabTest";
+                            button.Content = "Edytuj";
+                            button.Padding = new Thickness(5.0, 0.0, 5.0, 0.0);
+                            button.Tag = labTestNumber;
+                            button.Click += Lab_EditLabTest_Click;
+                            Lab_LabTestsList1.Items.Add(button);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (undone)
+                {
+                    Lab_LabTestsList.IsEnabled = false;
+                    Lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+                    Lab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak niewykonanych badań w bazie danych!");
+                }
+                else
+                {
+                    Lab_LabTestsList1.IsEnabled = false;
+                    Lab_LabTestsList1.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+                    Lab_LabTestsList1.Items.Add(new ListBoxItem().Content = "Brak wykonanych badań w bazie danych!");
+                }
+
+                if (tests == null)
+                    MessageBox.Show("Wystąpił błąd podczas pobierania listy badań.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            // <-- Tworzenie listy zleconych, niezrealizowanych badań laboratoryjnych
+        }
     }
 }
 
