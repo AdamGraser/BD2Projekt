@@ -27,7 +27,7 @@ namespace DBClient
         public DBClient()
         {
             //Utworzenie połączenia do bazy danych.
-            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
+            connection = new SqlConnection(@"Server=\SQLEXPRESS; uid=sa; pwd=; Database=Przychodnia");
 
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
@@ -37,6 +37,7 @@ namespace DBClient
 
         /// <summary>
         /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
+        /// Jeśli dane są prawidłowe, zapisuje pobrane z bazy ID w polu id_lab.
         /// </summary>
         /// <param name="login">Login do wyszukania w bazie</param>
         /// <param name="passwordHash">Hash hasła</param>
@@ -316,8 +317,10 @@ namespace DBClient
                         where Badanie.Id_wiz == id_wiz && Badanie.Id_bad == id_bad
                         select Badanie;
 
+            //Wykonanie zapytania w pętli foreach.
             foreach (Przychodnia.Badanie bad in query)
             {
+                //Dokonanie żądanych zmian.
                 bad.Id_lab = (execute) ? (byte?)id_lab : null;
             }
 
@@ -409,7 +412,7 @@ namespace DBClient
 
             //Utworzenie zapytania - pobranie z tabeli rekordu, który ma być zmieniony.
             var query = from Badanie in db.Badanies
-                        where (Badanie.Id_wiz == id_wiz && Badanie.Id_bad == id_bad)
+                        where Badanie.Id_wiz == id_wiz && Badanie.Id_bad == id_bad
                         select Badanie;
 
             //Wykonanie zapytania w pętli foreach.

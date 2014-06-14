@@ -21,12 +21,12 @@ namespace KierownikLaboratorium
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DBClient.DBClient db;       // klient bazy danych
-        int currentVisitID;                 // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
-        byte currentLabTestID;              // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
-        int currentLabTest;                 // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
-        bool done;                          // determinuje czy rozpatrywane badanie laboratoryjne zostało wykonane czy nie (rozróżnienie dla użycia currentVisitID i currentLabTestID)       
-        Dictionary<int, byte> doneLabTests; // kolekcja par <ID wizyty, liczba badań wykonanych spośród zleconych w trakcie tej wizyty>
+        private DBClient.DBClient db;             // klient bazy danych
+        int currentVisitID;                       // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
+        byte currentLabTestID;                    // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
+        int currentLabTest;                       // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
+        bool done;                                // determinuje czy rozpatrywane badanie laboratoryjne zostało wykonane czy nie (rozróżnienie dla użycia currentVisitID i currentLabTestID)       
+        Dictionary<int, List<byte>> doneLabTests; // kolekcja par <ID wizyty, lista ID badań wykonanych spośród zleconych w trakcie tej wizyty>
 
 
 
@@ -37,16 +37,24 @@ namespace KierownikLaboratorium
         {
             InitializeComponent();
 
+            //Okienko logowania pojawia się dopóki użytkownik nie poda prawidłowych danych lub nie zamknie okienka.
             while (true)
             {
+                //Jeślli podano poprawne dane.
                 if (LogIn() == true)
                 {
+                    //Nowy klient bazy danych.
                     db = new DBClient.DBClient();
-                    doneLabTests = new Dictionary<int, byte>();
+                    doneLabTests = new Dictionary<int, List<byte>>();
+                    //Pobranie listy badań.
                     GetDataFromDB();
                     break;
                 }
             }
+
+            //Wartości przekazywane po kliknięciu w te przyciski do metody zapisującej dane o badaniu w bazie.
+            Klab_Save.Tag = true;
+            Klab_Cancel.Tag = false;
         }
 
 
@@ -73,13 +81,18 @@ namespace KierownikLaboratorium
         /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            //Przywrócenie tytułu okna bez loginu.
             Title = "Kierownik laboratorium";
             Visibility = System.Windows.Visibility.Hidden;
+            //Reset zapisanego ID - dla bezpieczeństwa.
+            db.ResetIdKlab();
+            //Niech GC zgarnie tego nieużywanego już dalej klienta bazy danych.
             db = null;
 
             //TODO:
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
 
+            //Podobnie jak w konstruktorze.
             while (true)
             {
                 if (LogIn() == true)
@@ -104,8 +117,10 @@ namespace KierownikLaboratorium
             RefBool hardExit = new RefBool();
             LoginWindow loginWindow = new LoginWindow(hardExit);
 
+            //Modalne wyświetlenie okienka logowania.
             bool? result = loginWindow.ShowDialog();
 
+            //Wpisano poprawne dane.
             if (result == true)
             {
                 Title += " - " + loginWindow.Login;
@@ -120,23 +135,27 @@ namespace KierownikLaboratorium
 
 
         /// <summary>
-        /// 
+        /// Obsługa kliknięcia przycisków "Sprawdź" z listy wykonanych badań.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Klab_CheckLabTest_Click(object sender, RoutedEventArgs e)
         {
+            //Jeśli done == true, to kierownik już kliknął przy jakimś badaniu "Sprawdź".
             if (done == false)
             {
                 if (doneLabTests.Count > 0)
                 {
                     Button button = (Button)sender;
                     int num = 0;
+                    //Sumaryczny nr badania (nr wiersza listy wykonanych badań, w którym znajduje się to badanie).
                     currentLabTest = (int)button.Tag;
 
+                    //Obliczanie ID wizyty.
                     foreach (var t in doneLabTests)
                     {
-                        num += t.Value;
+                        //Zliczanie wszystkich badań ze wszystkich wizyt.
+                        num += t.Value.Count;
 
                         if (num >= currentLabTest)
                         {
@@ -146,19 +165,24 @@ namespace KierownikLaboratorium
 
                     }
 
-                    currentLabTestID = (byte)(doneLabTests[currentVisitID] - (num - currentLabTest));
+                    //Mamy id_wiz czyli klucz, mamy też już indeks badania w tej wizycie: num - currentLabTest (aka: o ile przy zliczaniu badań przekroczyliśmy nr wiersza, w którym to badanie znajduje się na liście).
+                    currentLabTestID = doneLabTests[currentVisitID][num - currentLabTest];
+                    //Kierownik jest w trakcie sprawdzania badania.
                     done = true;
 
-                    if (db.CheckLabTest(currentVisitID, currentLabTestID, 1))
+                    if (db.CheckLabTest(currentVisitID, currentLabTestID, true))
                     {
+                        //Wyciągamy datę z nazwą i opisem z listy.
                         ListBoxItem item = (ListBoxItem)Klab_LabTestsList.Items.GetItemAt(currentLabTest * 2 - 2);
                         string temp = (string)item.Content;
 
+                        //Wyciągamy osobno datę, osobno nazwę z opisem.
                         string[] labTest = temp.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
                         Klab_LabTestOrderDate.Text = labTest[0];
                         Klab_LabTestName.Text = labTest[1];
 
+                        //Reszta z bazy.
                         List<string> labTestDetails = db.GetLabTestDetails(currentVisitID, currentLabTestID);
 
                         if (labTestDetails != null)
@@ -184,7 +208,7 @@ namespace KierownikLaboratorium
 
 
         /// <summary>
-        /// 
+        /// Obsługa kliknięcia przycisku "Zatwierdź".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -193,7 +217,7 @@ namespace KierownikLaboratorium
             if (done == true)
             {
                 Button s = (Button)sender;
-                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, null, (bool?)s.Tag, Klab_LabTestRemarks.Text);
+                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, (bool)s.Tag, (Klab_LabTestRemarks.Text.Length == 0) ? null : Klab_LabTestRemarks.Text);
 
                 if (save == true)
                 {
@@ -217,10 +241,10 @@ namespace KierownikLaboratorium
                     Klab_LabTestsList.Items.RemoveAt(labTestNumber);
 
                     //Zaktualizowanie struktury zawierającej liczbę niewykonanych badań dla każdej wizyty.
-                    if (doneLabTests[currentVisitID] == 1)
+                    if (doneLabTests[currentVisitID].Count == 1)
                         doneLabTests.Remove(currentVisitID);
                     else
-                        --doneLabTests[currentVisitID];
+                        doneLabTests[currentVisitID].Remove(currentLabTestID);
 
                     //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
                     Klab_LabTestOrderDate.Text = Klab_LabTestName.Text = Klab_LabTestDescription.Text = Klab_LabTestDoctorName.Text = Klab_LabTestResult.Text = "";
@@ -241,7 +265,7 @@ namespace KierownikLaboratorium
 
 
         /// <summary>
-        /// 
+        /// Obsługa kliknięcia przycisku "Powrót".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -249,7 +273,7 @@ namespace KierownikLaboratorium
         {
             if (done == true)
             {
-                if (db.CheckLabTest(currentVisitID, currentLabTestID, null))
+                if (db.CheckLabTest(currentVisitID, currentLabTestID, false))
                 {
                     //Usuwanie szczegółowych informacji o badaniu i usunięcie danych wprowadzonych do pola na wyniki tego badania.
                     Klab_LabTestOrderDate.Text = Klab_LabTestName.Text = Klab_LabTestDescription.Text = Klab_LabTestDoctorName.Text = Klab_LabTestResult.Text = "";
@@ -281,7 +305,7 @@ namespace KierownikLaboratorium
 
                 foreach (var t in tests)
                 {
-                    doneLabTests.Add(t.Key, (byte)t.Value.Count);
+                    doneLabTests.Add(t.Key, db.GetLabTestsIDs(t.Key));
 
                     foreach (string str in t.Value)
                     {
@@ -289,6 +313,7 @@ namespace KierownikLaboratorium
 
                         ListBoxItem item = new ListBoxItem();
                         item.Content = str;
+                        item.Margin = new Thickness(0.0, 0.0, 10.0, 0.0);
 
                         Klab_LabTestsList.Items.Add(item);
 
@@ -301,17 +326,13 @@ namespace KierownikLaboratorium
 
                         Klab_LabTestsList.Items.Add(button);
                     }
-
-                    Klab_Save.Tag = (bool?)true;
-                    Klab_Cancel.Tag = (bool?)false;
                 }
             }
             else
             {
                 Klab_LabTestsList.IsEnabled = false;
                 Klab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-                Klab_LabTestsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
-                Klab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak badań do końca życia!");
+                Klab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak wykonanych badań w bazie danych!");
 
                 if (tests == null)
                     MessageBox.Show("Wystąpił błąd podczas pobierania listy badań do sprawdzenia.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
