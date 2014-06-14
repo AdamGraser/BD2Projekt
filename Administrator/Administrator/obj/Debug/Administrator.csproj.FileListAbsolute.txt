@@ -36,3 +36,22 @@ E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\Adm
 E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\Administrator.g.resources
 E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\Administrator.Properties.Resources.resources
 E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\Administrator.csproj.GenerateResource.Cache
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\bin\Debug\Administrator.exe.config
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.exe
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.pdb
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\bin\Debug\Administrator.exe
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\bin\Debug\Administrator.pdb
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\bin\Debug\DBClient.dll
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\bin\Debug\DBClient.pdb
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.csprojResolveAssemblyReference.cache
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\AboutDialog.baml
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\LoginWindow.baml
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\MainWindow.baml
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\AboutDialog.g.cs
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\LoginWindow.g.cs
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\MainWindow.g.cs
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\App.g.cs
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator_MarkupCompile.cache
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.g.resources
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.Properties.Resources.resources
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.csproj.GenerateResource.Cache

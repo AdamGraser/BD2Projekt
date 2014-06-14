@@ -18,3 +18,8 @@ E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\bin\Debug\DBClient
 E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
 E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\obj\Debug\DBClient.dll
 E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\bin\Debug\DBClient.dll
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\bin\Debug\DBClient.pdb
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\obj\Debug\DBClient.dll
+C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\obj\Debug\DBClient.pdb

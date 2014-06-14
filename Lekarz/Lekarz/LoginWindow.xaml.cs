@@ -15,6 +15,9 @@ using System.Security.Cryptography;
 
 namespace Lekarz
 {
+    /// <summary>
+    /// Opakowany typ bool (możliwy do przekazywania przez referencję)
+    /// </summary>
     public class RefBool
     {
         public bool v;
@@ -70,17 +73,16 @@ namespace Lekarz
             _login = loginTextBox.Text;
 
             bool? userFound = db.FindUser(_login, _hash);
+            hardExit.v = false;
 
             //Sprawdzanie czy w bazie istnieje podany użytkownik
             if (userFound == true)
             {
                 DialogResult = true;
-                hardExit.v = false;
             }
             else
             {
                 DialogResult = false;
-                hardExit.v = false;
 
                 if (userFound == null)
                     System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);

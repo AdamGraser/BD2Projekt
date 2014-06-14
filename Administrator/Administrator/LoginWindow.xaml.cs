@@ -16,17 +16,32 @@ using System.Security.Cryptography;
 namespace Administrator
 {
     /// <summary>
+    /// Opakowany typ bool (możliwy do przekazywania przez referencję)
+    /// </summary>
+    public class RefBool
+    {
+        public bool v;
+    }
+
+    /// <summary>
     /// Interaction logic for LoginWindow.xaml
     /// </summary>
     public partial class LoginWindow : Window
     {
         private byte[] _hash;
         private string _login = "";
+        private RefBool hardExit;
 
 
-
-        public LoginWindow()
+        /// <summary>
+        /// Konstruktor.
+        /// <param name="exit">Referencja do zmiennej, w której zostanie zapamiętana informacja, czy wymuszono zamnięcie okna</param>
+        /// </summary>
+        public LoginWindow(RefBool exit)
         {
+            hardExit = exit;
+            hardExit.v = true;
+
             InitializeComponent();
             loginTextBox.Focus();
         }
@@ -58,14 +73,16 @@ namespace Administrator
 
             bool? userFound = db.FindUser(_login, _hash);
 
+            hardExit.v = false;
+
             //Sprawdzanie czy w bazie istnieje podany użytkownik
             if (userFound == true)
             {
-                this.DialogResult = true;
+                DialogResult = true;
             }
             else
             {
-                this.DialogResult = false;
+                DialogResult = false;
 
                 if (userFound == null)
                     System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);

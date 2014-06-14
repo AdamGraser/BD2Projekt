@@ -101,7 +101,8 @@ namespace KierownikLaboratorium
         /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
-            LoginWindow loginWindow = new LoginWindow();
+            RefBool hardExit = new RefBool();
+            LoginWindow loginWindow = new LoginWindow(hardExit);
 
             bool? result = loginWindow.ShowDialog();
 
@@ -110,7 +111,7 @@ namespace KierownikLaboratorium
                 Title += " - " + loginWindow.Login;
                 return true;
             }
-            else if (result == false) //zamknięcie okna logowania
+            else if (hardExit.v == true) //zamknięcie okna logowania
                 Environment.Exit(0);
 
             return false;
