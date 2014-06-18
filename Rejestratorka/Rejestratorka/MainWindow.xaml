@@ -26,16 +26,16 @@
                                 </StackPanel>
                                 <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
                                     <Label Content="Lekarz:" Width="100" />
-                                    <ComboBox Name="DoctorsList" Width="200" Height="28"></ComboBox>
+                                    <ComboBox Name="DoctorsList" Width="200" Height="28" SelectionChanged="DoctorsList_SelectionChanged"></ComboBox>
                                     <Button x:Name="refreshButton" Margin="20,0,0,0" Padding="4,0,4,0" Content="Odśwież dane" Width="90" Height="28" Click="refreshButton_Click"/>
                                 </StackPanel>
                                 <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
                                     <Label Content="Data wizyty:" Width="100" />
-                                    <DatePicker Name="VisitDate" Height="28"></DatePicker>
+                                    <DatePicker Name="VisitDate" Height="28" SelectedDateChanged="VisitDate_SelectedDateChanged"></DatePicker>
                                 </StackPanel>
                                 <StackPanel Margin="20,10,20,10" Orientation="Horizontal">
                                     <Label Content="Godzina:" Width="100" />
-                                    <xctk:TimePicker x:Name="visitTime" Height="28" Width="100" Value="{Binding CurrentDateTime}"/>
+                                    <xctk:TimePicker x:Name="visitTime" Height="28" Width="100" Value="{Binding CurrentDateTime}" ValueChanged="visitTime_ValueChanged"/>
                                 </StackPanel>
                                 <Expander Name="PatientDetails" Header="Szczegółowe dane pacjenta" Margin="20,10,20,10" IsEnabled="False" Expanded="PatientDetails_Expanded" Collapsed="PatientDetails_Collapsed">
                                     <Grid>

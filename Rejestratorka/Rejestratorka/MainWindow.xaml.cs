@@ -131,6 +131,10 @@ namespace Rejestratorka
                     PatientsList.SelectedIndex = -1;
                     DoctorsList.SelectedIndex = -1;
                     VisitDate.SelectedDate = null;
+                    visitTime.Value = null;
+                    PatientDetails.IsExpanded = false;
+                    PatientDetails.IsEnabled = false;
+                    RegisterVisit.IsEnabled = false;
                 }
                 else
                     System.Windows.MessageBox.Show("Wystąpił błąd podczas rejestrowania wizyty i nie została ona zarejestrowana.", "Błąd rejestracji", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -199,35 +203,40 @@ namespace Rejestratorka
         private void PatientsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (PatientsList.SelectedIndex > -1)
+            {
                 PatientDetails.IsEnabled = true;
 
-            if (PatientDetails.IsExpanded)
-            {
-                Dictionary<string, string> patientDetails = db.GetPatientDetails(PatientsList.SelectedIndex + 1);
+                if (RegisterVisit.IsEnabled == false)
+                    if (DoctorsList.SelectedIndex > -1 && VisitDate.SelectedDate != null && visitTime.Value != null)
+                        RegisterVisit.IsEnabled = true;
 
-                if (patientDetails != null)
+                if (PatientDetails.IsExpanded)
                 {
-                    if (patientDetails.Count > 0)
+                    Dictionary<string, string> patientDetails = db.GetPatientDetails(PatientsList.SelectedIndex + 1);
+
+                    if (patientDetails != null)
                     {
-                        PatientName.Text = PatientsList.SelectedValue.ToString();
-                        PatientPesel.Text = patientDetails["pesel"];
-                        PatientGender.Text = patientDetails["plec"];
-                        PatientBirthDate.Text = patientDetails["dataur"];
-                        PatientAddress.Text = patientDetails["adres"];
+                        if (patientDetails.Count > 0)
+                        {
+                            PatientName.Text = PatientsList.SelectedValue.ToString();
+                            PatientPesel.Text = patientDetails["pesel"];
+                            PatientGender.Text = patientDetails["plec"];
+                            PatientBirthDate.Text = patientDetails["dataur"];
+                            PatientAddress.Text = patientDetails["adres"];
+                        }
+                        else
+                        {
+                            System.Windows.MessageBox.Show("Pacjent o podanym numerze nie istnieje.", "Nieprawidłowy nr pacjenta", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            PatientDetails.IsExpanded = false;
+                        }
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("Pacjent o podanym numerze nie istnieje.", "Nieprawidłowy nr pacjenta", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        System.Windows.MessageBox.Show("Wystąpił błąd podczas pobierania szczegółowych danych o pacjencie.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                         PatientDetails.IsExpanded = false;
                     }
                 }
-                else
-                {
-                    System.Windows.MessageBox.Show("Wystąpił błąd podczas pobierania szczegółowych danych o pacjencie.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    PatientDetails.IsExpanded = false;
-                }
             }
-
         }
        
 
@@ -434,8 +443,16 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
+            PatientDetails.IsExpanded = false;
+            PatientDetails.IsEnabled = false;
+            visitTime.Value = null;
+            VisitDate.SelectedDate = null;
+            RegisterVisit.IsEnabled = false;
+            
             PatientsList.Items.Clear();
             DoctorsList.Items.Clear();
+            DoctorsList2.Items.Clear();
+
             GetDataFromDB();
         }
 
@@ -537,6 +554,36 @@ namespace Rejestratorka
         private void DoctorsList2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             clearFilterButton.IsEnabled = true;
+        }
+
+        private void DoctorsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DoctorsList.SelectedIndex > -1)
+            {
+                if(RegisterVisit.IsEnabled == false)
+                    if (PatientsList.SelectedIndex > -1 && VisitDate.SelectedDate != null && visitTime.Value != null)
+                        RegisterVisit.IsEnabled = true;
+            }
+        }
+
+        private void VisitDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VisitDate.SelectedDate != null)
+            {
+                if (RegisterVisit.IsEnabled == false)
+                    if (PatientsList.SelectedIndex > -1 && DoctorsList.SelectedIndex > -1 && visitTime.Value != null)
+                        RegisterVisit.IsEnabled = true;
+            }
+        }
+
+        private void visitTime_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (visitTime.Value != null)
+            {
+                if (RegisterVisit.IsEnabled == false)
+                    if (PatientsList.SelectedIndex > -1 && DoctorsList.SelectedIndex > -1 && VisitDate.SelectedDate != null)
+                        RegisterVisit.IsEnabled = true;
+            }
         }
     }
 }
