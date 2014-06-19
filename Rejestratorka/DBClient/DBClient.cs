@@ -520,7 +520,7 @@ namespace DBClient
         /// <param name="patientDateOfBirth">data urodzenia pacjenta</param>
         /// <param name="patientPesel">PESEL pacjenta</param>
         /// <param name="dateOfVisit">data wizyty</param>
-        /// <param name="doctor"></param>
+        /// <param name="doctorID">id lekarza przyjmującego wizytę</param>
         /// <returns></returns>
         public bool DeleteVisit(string patientName, string patientSurname, string patientPesel, string dateOfVisit, byte doctorID)
         {
