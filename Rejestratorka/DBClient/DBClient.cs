@@ -297,7 +297,7 @@ namespace DBClient
                 var query = from Wizyta in db.Wizytas
                             join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
                             join Lekarz in db.Lekarzs on Wizyta.Id_lek equals Lekarz.Id_lek
-                            where (Wizyta.Stan == null && Wizyta.Data_rej < DateTime.Now)
+                            where (Wizyta.Stan == null)
                             select new
                             {
                                 id = Wizyta.Id_wiz,

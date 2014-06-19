@@ -18,3 +18,8 @@ C:\Users\Michal\Documents\GitHub\BD2Projekt\Rejestratorka\DBClient\bin\Debug\DBC
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Rejestratorka\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Rejestratorka\DBClient\obj\Debug\DBClient.dll
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Rejestratorka\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Michał\Desktop\Rejestratorka\DBClient\bin\Debug\DBClient.dll
+C:\Users\Michał\Desktop\Rejestratorka\DBClient\bin\Debug\DBClient.pdb
+C:\Users\Michał\Desktop\Rejestratorka\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Michał\Desktop\Rejestratorka\DBClient\obj\Debug\DBClient.dll
+C:\Users\Michał\Desktop\Rejestratorka\DBClient\obj\Debug\DBClient.pdb
