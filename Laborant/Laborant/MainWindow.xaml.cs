@@ -69,6 +69,7 @@ namespace Laborant
             Title = "Laborant";
             Visibility = System.Windows.Visibility.Hidden;
             db.ResetIdLab();
+            db.Dispose();
             db = null;
 
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):

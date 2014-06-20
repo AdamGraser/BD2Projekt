@@ -38,6 +38,16 @@ namespace DBClient
 
 
         /// <summary>
+        /// Zwalnia zasoby zajmowane przez pole "db: Przychodnia".
+        /// </summary>
+        public void Dispose()
+        {
+            db.Dispose();
+        }
+
+
+
+        /// <summary>
         /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
         /// Jeśli dane są prawidłowe, zapisuje pobrane z bazy ID w polu id_lab.
         /// </summary>

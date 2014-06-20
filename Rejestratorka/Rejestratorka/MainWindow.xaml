@@ -14,7 +14,7 @@
             <TabItem Header="Rejestracja wizyty" >
                 <DockPanel LastChildFill="True">
                     <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65">
-                        <Button Name="RegisterVisit" HorizontalAlignment="Center" Margin="0,10,0,0" Padding="4,0,4,0" Content="Rejestruj wizytę" Height="28" Click="RegisterVisit_Click"/>
+                        <Button Name="RegisterVisit" HorizontalAlignment="Center" Margin="0,10,0,0" Padding="4,0,4,0" Content="Rejestruj wizytę" Height="28" Click="RegisterVisit_Click" IsEnabled="False" />
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
                         <ScrollViewer Name="TabRejScrollViewer" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">

@@ -86,6 +86,8 @@ namespace KierownikLaboratorium
             Visibility = System.Windows.Visibility.Hidden;
             //Reset zapisanego ID - dla bezpieczeństwa.
             db.ResetIdKlab();
+            //Zwolnienie zasobów zajmowanych przez obiekt klasy kontekstowej bazy danych.
+            db.Dispose();
             //Niech GC zgarnie tego nieużywanego już dalej klienta bazy danych.
             db = null;
 

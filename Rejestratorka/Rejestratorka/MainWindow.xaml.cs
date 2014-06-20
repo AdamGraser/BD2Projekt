@@ -384,6 +384,7 @@ namespace Rejestratorka
             Title = "Rejestracja";
             Visibility = System.Windows.Visibility.Hidden;
             db.ResetIdRej();
+            db.Dispose();
             db = null;
 
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):

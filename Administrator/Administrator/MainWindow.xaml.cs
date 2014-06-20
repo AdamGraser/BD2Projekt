@@ -61,6 +61,7 @@ namespace Administrator
         {
             Title = "Lekarz";
             Visibility = System.Windows.Visibility.Hidden;
+            db.Dispose();
             db = null;
 
             //TODO:

@@ -276,6 +276,7 @@ namespace Lekarz
         {
             Title = "Lekarz";
             Visibility = System.Windows.Visibility.Hidden;
+            db.Dispose();
             db = null;
 
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
