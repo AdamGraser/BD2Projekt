@@ -734,8 +734,8 @@ namespace DBClient
             pac.Pesel = long.Parse(pesel);
             pac.Data_ur = dateOfBirth;
             pac.Plec = gender;
-            pac.Nr_miesz = int.Parse(numberOfFlat);
-            pac.Nr_bud = int.Parse(numberOfHouse);
+            pac.Nr_miesz = numberOfFlat;
+            pac.Nr_bud = numberOfHouse;
             pac.Ulica = street;
             pac.Kod_pocz = postCode;
             pac.Miasto = city;

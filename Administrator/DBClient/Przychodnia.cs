@@ -1411,9 +1411,9 @@ namespace Przychodnia
 		
 		private string _Ulica;
 		
-		private int _Nr_bud;
+		private string _Nr_bud;
 		
-		private System.Nullable<int> _Nr_miesz;
+		private string _Nr_miesz;
 		
 		private string _Kod_pocz;
 		
@@ -1439,9 +1439,9 @@ namespace Przychodnia
     partial void OnData_urChanged();
     partial void OnUlicaChanging(string value);
     partial void OnUlicaChanged();
-    partial void OnNr_budChanging(int value);
+    partial void OnNr_budChanging(string value);
     partial void OnNr_budChanged();
-    partial void OnNr_mieszChanging(System.Nullable<int> value);
+    partial void OnNr_mieszChanging(string value);
     partial void OnNr_mieszChanged();
     partial void OnKod_poczChanging(string value);
     partial void OnKod_poczChanged();
@@ -1577,8 +1577,8 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="nr_bud", Storage="_Nr_bud", DbType="Int NOT NULL")]
-		public int Nr_bud
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="nr_bud", Storage="_Nr_bud", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
+		public string Nr_bud
 		{
 			get
 			{
@@ -1597,8 +1597,8 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="nr_miesz", Storage="_Nr_miesz", DbType="Int")]
-		public System.Nullable<int> Nr_miesz
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="nr_miesz", Storage="_Nr_miesz", DbType="VarChar(5)")]
+		public string Nr_miesz
 		{
 			get
 			{
@@ -1921,6 +1921,8 @@ namespace Przychodnia
 		
 		private string _Opis;
 		
+		private bool _Lab;
+		
 		private EntitySet<Badanie> _Badanies;
 		
     #region Extensibility Method Definitions
@@ -1933,6 +1935,8 @@ namespace Przychodnia
     partial void OnNazwaChanged();
     partial void OnOpisChanging(string value);
     partial void OnOpisChanged();
+    partial void OnLabChanging(bool value);
+    partial void OnLabChanged();
     #endregion
 		
 		public Sl_badan()
@@ -1997,6 +2001,26 @@ namespace Przychodnia
 					this._Opis = value;
 					this.SendPropertyChanged("Opis");
 					this.OnOpisChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="lab", Storage="_Lab", DbType="Bit NOT NULL")]
+		public bool Lab
+		{
+			get
+			{
+				return this._Lab;
+			}
+			set
+			{
+				if ((this._Lab != value))
+				{
+					this.OnLabChanging(value);
+					this.SendPropertyChanging();
+					this._Lab = value;
+					this.SendPropertyChanged("Lab");
+					this.OnLabChanged();
 				}
 			}
 		}

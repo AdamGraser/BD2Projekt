@@ -95,6 +95,7 @@ namespace Lekarz
                     stan.Text = "W trakcie realizacji";
 
                     visitsList.Items.RemoveAt(visitsList.SelectedIndex);
+                    visitsList.SelectedIndex = -1;
                     changeVisitStateButton.IsEnabled = false;
 
                     diagnosisExpander.IsEnabled = true;
@@ -219,9 +220,6 @@ namespace Lekarz
                         PhysicalTests.Children.RemoveAt(0);
 
                     currentVisitID = -1;
-
-                    visitsList.Items.RemoveAt(visitsList.SelectedIndex);
-                    visitsList.SelectedIndex = -1;
 
                     diagnosisExpander.IsEnabled = false;
                     diagnosisExpander.IsExpanded = false;
@@ -375,7 +373,7 @@ namespace Lekarz
         private void GetDataFromDB()
         {
             // --> Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.
-            Dictionary<int, string> visits = db.GetVisits(1);
+            Dictionary<int, string> visits = db.GetVisits(3);
 
             if (visits != null && visits.Count > 0)
             {
@@ -393,7 +391,7 @@ namespace Lekarz
                 visitsList.IsEnabled = false;
                 visitsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
                 visitsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
-                visitsList.Items.Add(new ListBoxItem().Content = "Brak wizyt do końca życia!");
+                visitsList.Items.Add(new ListBoxItem().Content = "Brak zarejestrowanych wizyt!");
 
                 if (visits == null)
                     MessageBox.Show("Wystąpił błąd podczas pobierania listy wizyt.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);

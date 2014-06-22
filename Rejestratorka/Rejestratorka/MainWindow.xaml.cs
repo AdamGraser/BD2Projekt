@@ -251,7 +251,12 @@ namespace Rejestratorka
             clearFilterButton.IsEnabled = true; 
      
             //wyczyszczenie dotychczasowej zawartości tabeli:
-            visitsDataGrid.Items.Clear();            
+            if (visitsDataGrid.ItemsSource != null && !registeredVisitsTable.DefaultView.Equals((DataView)visitsDataGrid.ItemsSource))
+            {
+                DataView src = (DataView)visitsDataGrid.ItemsSource;
+                src.Dispose();
+                visitsDataGrid.ItemsSource = null;
+            }
 
             //tworzenia filtra:
             string filterString = "";
@@ -263,21 +268,20 @@ namespace Rejestratorka
             if (patientSurnameTextBox.Text.Length != 0)
             {
                 if (patientNameTextBox.Text.Length != 0)
-                {
                     filterString += " && ";
-                }
+
                 filterString += string.Format("Nazwisko = '{0}'", patientSurnameTextBox.Text);
             }
             if (DoctorsList2.SelectedIndex > -1)
             {
                 if (patientNameTextBox.Text.Length != 0 || patientSurnameTextBox.Text.Length != 0)
-                {
                     filterString += " && ";
-                }
+
                 filterString += string.Format("Lekarz = '{0}'", DoctorsList2.SelectedItem.ToString());
             }
 
             DataRow[] selectedRows = registeredVisitsTable.Select(filterString);
+
             if (selectedRows.Count() > 0)
             {
                 DataTable filteredTable = new DataTable();
@@ -287,13 +291,15 @@ namespace Rejestratorka
                 DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
                 DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
                 DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
+
                 filteredTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
                     patientPeselColumn, dateOfVisitColumn, doctorColumn});
                 
                 foreach (DataRow row in selectedRows)
 	            {
-	            	 filteredTable.Rows.Add(row);
+	                filteredTable.ImportRow(row);
 	            }
+
                 visitsDataGrid.ItemsSource = filteredTable.DefaultView;
             }
         }
@@ -393,12 +399,15 @@ namespace Rejestratorka
             DoctorsList2.Items.Clear();
             patientNameTextBox.Text = "";
             patientSurnameTextBox.Text = "";
-            // moja propozycja:
-            DataView src = (DataView)visitsDataGrid.ItemsSource;
-            src.Dispose();
-            visitsDataGrid.ItemsSource = null;
-            // oryginał:
-            //visitsDataGrid.Items.Clear();
+            
+            //czyszczenie listy zarejestrowanych wizyt
+            if (visitsDataGrid.ItemsSource != null)
+            {
+                DataView src = (DataView)visitsDataGrid.ItemsSource;
+                src.Dispose();
+                visitsDataGrid.ItemsSource = null;
+            }
+
             PatientName.Text = "";
             PatientPesel.Text = "";
             PatientBirthDate.Text = "";
@@ -522,10 +531,20 @@ namespace Rejestratorka
                 registeredVisitsTable.Rows.Add(newRow);
             }
 
+            //uprzednie czyszczenie tabeli z zarejestrowanymi wizytami
+            if (visitsDataGrid.ItemsSource != null)
+            {
+                DataView src = (DataView)visitsDataGrid.ItemsSource;
+                src.Dispose();
+                visitsDataGrid.ItemsSource = null;
+            }
+
             if (registeredVisitsTable.DefaultView.Count > 0)
             {
                 visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
             }
+
+
         }
 
 
@@ -547,6 +566,7 @@ namespace Rejestratorka
             {
                 visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
             }
+
             clearFilterButton.IsEnabled = false;
         }
 
