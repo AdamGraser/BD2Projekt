@@ -114,9 +114,8 @@ namespace DBClient
         /// <summary>
         /// Pobiera z tabel Badanie i Sl_badan nazwy + opisy i daty zlecenia, zrealizowanych lub nie, badań laboratoryjnych.
         /// </summary>
-        /// <param name="done">Determinuje czy pobierane mają być badania wykonane (true) czy niewykonane (false).</param>
-        /// <returns>Zwraca listę dat zlecenia i nazw niezrealizowanych badań laboratoryjnych lub null, jeśli wystąpił błąd.</returns>
-        public Dictionary<int, List<string>> GetLabTests(bool done)
+        /// <returns>Zwraca listę dat zlecenia i nazw wybranych badań laboratoryjnych lub null, jeśli wystąpił błąd.</returns>
+        public Dictionary<int, List<string>> GetLabTests(string docFirstName, string docSurname, string state, DateTime? dateFrom, DateTime? dateTo)
         {
             Dictionary<int, List<string>> labTests = new Dictionary<int, List<string>>();
 
@@ -130,49 +129,47 @@ namespace DBClient
             try
             {
                 //Utworzenie zapytania.
-                var query = (done)
-                            ?
-                            from Badanie in db.Badanies
+                var query = from Badanie in db.Badanies
                             join Sl_badan in db.Sl_badans on Badanie.Kod equals Sl_badan.Kod
-                            where Badanie.Id_lab == id_lab
+                            join Wizyta in db.Wizytas on Badanie.Id_wiz equals Wizyta.Id_wiz
+                            join Lekarz in db.Lekarzs on Wizyta.Id_lek equals Lekarz.Id_lek
                             orderby Badanie.Id_wiz, Badanie.Id_bad
                             select new
                             {
                                 idWiz = Badanie.Id_wiz,
                                 dataZle = Badanie.Data_zle,
                                 nazwa = Sl_badan.Nazwa,
-                                opis = Sl_badan.Opis
-                            }
-                            :
-                            from Badanie in db.Badanies
-                            join Sl_badan in db.Sl_badans on Badanie.Kod equals Sl_badan.Kod
-                            where Badanie.Id_lab == null
-                            orderby Badanie.Id_wiz, Badanie.Id_bad
-                            select new
-                            {
-                                idWiz = Badanie.Id_wiz,
-                                dataZle = Badanie.Data_zle,
-                                nazwa = Sl_badan.Nazwa,
-                                opis = Sl_badan.Opis
+                                opis = Sl_badan.Opis,
+                                imieLek = Lekarz.Imie,
+                                nazwLek = Lekarz.Nazwisko
                             };
 
                 int iw = -1;
                 List<string> lt = null;
                 
+                //TODO: Jakoś odfiltrować, żeby zwróciło tylko badania w konkretnym stanie
+
                 //Wykonanie zapytania.
                 foreach (var b in query)
                 {
-                    //Zapisanie wyników.
-                    if (iw != b.idWiz)
+                    //Sprawdzenie, czy nasze zapytanie spełnia kryteria
+                    if ( ((docFirstName == "") || (docFirstName == b.imieLek)) &&
+                         ((docSurname == "") || (docSurname == b.nazwLek)) &&
+                         ((dateFrom == null) || (b.dataZle >= dateFrom)) &&
+                         ((dateTo == null) || (b.dataZle <= dateTo)) )
                     {
-                        iw = b.idWiz;
+                        //Zapisanie wyników.
+                        if (iw != b.idWiz)
+                        {
+                            iw = b.idWiz;
 
-                        lt = new List<string>();
+                            lt = new List<string>();
 
-                        labTests.Add(iw, lt);
+                            labTests.Add(iw, lt);
+                        }
+
+                        lt.Add(b.dataZle.ToString() + " " + b.nazwa + ", " + b.opis);
                     }
-
-                    lt.Add(b.dataZle.ToString() + " " + b.nazwa + ", " + b.opis);
                 }
             }
             catch (Exception e)
