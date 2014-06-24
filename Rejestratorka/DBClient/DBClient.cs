@@ -57,6 +57,46 @@ namespace DBClient
 
 
 
+        public int? GetNumberOfVisits(int doctorID, DateTime date)
+        {
+            int? numberOfVisits = null;
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {                             
+                numberOfVisits = (from Wizyta in db.Wizytas                            
+                            where (Wizyta.Stan == null && Wizyta.Id_lek == doctorID && Wizyta.Data_rej.Date == date.Date)
+                            select new
+                            {
+                                Wizyta.Id_wiz
+                            }).Count();                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+
+                numberOfVisits = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+
+            return numberOfVisits;
+        }
+
+
+
         /// <summary>
         /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
         /// </summary>
@@ -122,9 +162,9 @@ namespace DBClient
         /// Pobiera z tabeli Pacjent imiona i nazwiska wszystkich pacjentów.
         /// </summary>
         /// <returns>Zwraca listę imion i nazwisk oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>
-        public List<string> GetPatients()
+        public Dictionary<int, PatientData> GetPatients(string name, string surname, long? pesel)
         {
-            List<string> patientsList = new List<string>();
+            Dictionary<int, PatientData> patients = new Dictionary<int, PatientData>();
 
             //Łączenie się z bazą danych.
             connection.Open();
@@ -134,20 +174,139 @@ namespace DBClient
             db.Transaction = transaction;
 
             try
-            {
-                //Utworzenie zapytania.
-                var query = from Pacjent in db.Pacjents
-                            select new
-                            {
-                                imie = Pacjent.Imie,
-                                nazwisko = Pacjent.Nazwisko
-                            };
-
-                //Wykonanie zapytania, rekord po rekordzie.
-                foreach (var pac in query)
+            {                        
+                if (pesel != null && name.Length == 0 && surname.Length == 0)
                 {
-                    //Łączenie imion i nazwisk, zapisywanie ich.
-                    patientsList.Add(pac.imie + " " + pac.nazwisko);
+                    //Utworzenie zapytania.
+                    var query = from Pacjent in db.Pacjents
+                                where Pacjent.Pesel == pesel
+                                orderby Pacjent.Nazwisko
+                                select new
+                                {
+                                    id = Pacjent.Id_pac,
+                                    imie = Pacjent.Imie,
+                                    nazwisko = Pacjent.Nazwisko,
+                                    pesel = Pacjent.Pesel,
+                                    plec = Pacjent.Plec,
+                                    dataUr = Pacjent.Data_ur,
+                                    ulica = Pacjent.Ulica,
+                                    nrBud = Pacjent.Nr_bud,
+                                    nrMiesz = Pacjent.Nr_miesz,
+                                    kodPocz = Pacjent.Kod_pocz,
+                                    miasto = Pacjent.Miasto
+                                };
+
+
+                    //Wykonanie zapytania.
+                    foreach (var p in query)
+                    {
+                        PatientData patientData = new PatientData();
+                        //Zapisanie wyników w odpowiednich elementach.
+                        patientData.PatientName = p.imie;
+                        patientData.PatientSurname = p.nazwisko;
+                        patientData.PatientPesel = p.pesel.ToString();
+                        if (p.plec == false)
+                        {
+                            patientData.PatientGender = "Mężczyzna";
+                        }
+                        else
+                        {
+                            patientData.PatientGender = "Kobieta";
+                        }
+                        patientData.PatientDateOfBirth = p.dataUr.ToShortDateString();
+                        patientData.PatientCity = p.ulica;
+                        patientData.PatientNumberOfHouse = p.nrBud;
+                        patientData.PatientPostCode = p.kodPocz;
+                        patients.Add(p.id, patientData);
+                    }
+                }
+                else if ((name.Length > 0 || surname.Length > 0) && pesel == null)
+                {
+                    //Utworzenie zapytania.
+                    var query = from Pacjent in db.Pacjents
+                                where Pacjent.Imie == name + '%' && Pacjent.Nazwisko == surname + '%'
+                                select new
+                                {
+                                    id = Pacjent.Id_pac,
+                                    imie = Pacjent.Imie,
+                                    nazwisko = Pacjent.Nazwisko,
+                                    pesel = Pacjent.Pesel,
+                                    plec = Pacjent.Plec,
+                                    dataUr = Pacjent.Data_ur,
+                                    ulica = Pacjent.Ulica,
+                                    nrBud = Pacjent.Nr_bud,
+                                    nrMiesz = Pacjent.Nr_miesz,
+                                    kodPocz = Pacjent.Kod_pocz,
+                                    miasto = Pacjent.Miasto
+                                };
+
+
+                    //Wykonanie zapytania.
+                    foreach (var p in query)
+                    {
+                        PatientData patientData = new PatientData();
+                        //Zapisanie wyników w odpowiednich elementach.
+                        patientData.PatientName = p.imie;
+                        patientData.PatientSurname = p.nazwisko;
+                        patientData.PatientPesel = p.pesel.ToString();
+                        if (p.plec == false)
+                        {
+                            patientData.PatientGender = "Mężczyzna";
+                        }
+                        else
+                        {
+                            patientData.PatientGender = "Kobieta";
+                        }
+                        patientData.PatientDateOfBirth = p.dataUr.ToShortDateString();
+                        patientData.PatientCity = p.ulica;
+                        patientData.PatientNumberOfHouse = p.nrBud;
+                        patientData.PatientPostCode = p.kodPocz;
+                        patients.Add(p.id, patientData);
+                    }
+                }
+                else
+                {
+                    //Utworzenie zapytania.
+                    var query = from Pacjent in db.Pacjents
+                                where Pacjent.Imie == name + '%' && Pacjent.Nazwisko == surname + '%' && Pacjent.Pesel >= pesel
+                                select new
+                                {
+                                    id = Pacjent.Id_pac,
+                                    imie = Pacjent.Imie,
+                                    nazwisko = Pacjent.Nazwisko,
+                                    pesel = Pacjent.Pesel,
+                                    plec = Pacjent.Plec,
+                                    dataUr = Pacjent.Data_ur,
+                                    ulica = Pacjent.Ulica,
+                                    nrBud = Pacjent.Nr_bud,
+                                    nrMiesz = Pacjent.Nr_miesz,
+                                    kodPocz = Pacjent.Kod_pocz,
+                                    miasto = Pacjent.Miasto
+                                };
+
+
+                    //Wykonanie zapytania.
+                    foreach (var p in query)
+                    {
+                        PatientData patientData = new PatientData();
+                        //Zapisanie wyników w odpowiednich elementach.
+                        patientData.PatientName = p.imie;
+                        patientData.PatientSurname = p.nazwisko;
+                        patientData.PatientPesel = p.pesel.ToString();
+                        if (p.plec == false)
+                        {
+                            patientData.PatientGender = "Mężczyzna";
+                        }
+                        else
+                        {
+                            patientData.PatientGender = "Kobieta";
+                        }
+                        patientData.PatientDateOfBirth = p.dataUr.ToShortDateString();
+                        patientData.PatientCity = p.ulica;
+                        patientData.PatientNumberOfHouse = p.nrBud;
+                        patientData.PatientPostCode = p.kodPocz;
+                        patients.Add(p.id, patientData);
+                    }
                 }
             }
             catch (Exception e)
@@ -157,7 +316,7 @@ namespace DBClient
                 Console.WriteLine(e.HelpLink);
                 Console.WriteLine(e.StackTrace);
 
-                patientsList = null;
+                patients = null;
             }
             finally
             {
@@ -165,11 +324,11 @@ namespace DBClient
                 connection.Close();
             }
 
-            return patientsList;
+            return patients;
         }
 
 
-
+        /*
         /// <summary>
         /// Pobiera z tabeli Pacjent szczegółowe informacje o wskazanym pacjencie.
         /// Zwrócona struktura następujące tekstowe indeksy: "pesel", "plec", "dataur", "adres".
@@ -231,16 +390,16 @@ namespace DBClient
 
             return patientDetails;
         }
-
+        */
 
 
         /// <summary>
         /// Pobiera z tabeli Lekarz imiona i nazwiska wszystkich lekarzy.
         /// </summary>
         /// <returns>Zwraca listę imion i nazwisk oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>
-        public List<string> GetDoctors()
+        public Dictionary<byte, string> GetDoctors()
         {
-            List<string> doctorsList = new List<string>();
+            Dictionary<byte, string> doctorsList = new Dictionary<byte, string>();            
 
             //Łączenie się z bazą danych.
             connection.Open();
@@ -253,17 +412,18 @@ namespace DBClient
             {
                 //Utworzenie zapytania.
                 var query = from Lekarz in db.Lekarzs
+                            orderby Lekarz.Nazwisko
                             select new
                             {
                                 imie = Lekarz.Imie,
-                                nazwisko = Lekarz.Nazwisko
+                                nazwisko = Lekarz.Nazwisko,
+                                id = Lekarz.Id_lek
                             };
 
                 //Wykonanie zapytania, rekord po rekordzie.
                 foreach (var lek in query)
-                {
-                    //Łączenie imion i nazwisk, zapisywanie ich.
-                    doctorsList.Add(lek.imie + " " + lek.nazwisko);
+                {                    
+                    doctorsList.Add(lek.id, lek.imie + " " + lek.nazwisko);
                 }
             }
             catch (Exception e)
@@ -290,9 +450,9 @@ namespace DBClient
         /// Wyszukuje w bazie danych wizyty, które się nie odbyły.
         /// </summary>
         /// <returns>Lista rekordów z tabeli Wizyta, które w kolumnie data_rej mają wartość mniejszą niż bieżący czas.</returns>
-        public List<VisitData> GetUndoneVisits()
+        public Dictionary<int, VisitData> GetVisits(bool? status)
         {
-            List<VisitData> visitsList = new List<VisitData>();
+            Dictionary<int, VisitData> visitsList = new Dictionary<int, VisitData>();
             
             //Łączenie się z bazą danych.
             connection.Open();
@@ -307,7 +467,8 @@ namespace DBClient
                 var query = from Wizyta in db.Wizytas
                             join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
                             join Lekarz in db.Lekarzs on Wizyta.Id_lek equals Lekarz.Id_lek
-                            where (Wizyta.Stan == null)
+                            where Wizyta.Stan == status
+                            orderby Wizyta.Data_rej descending
                             select new
                             {
                                 id = Wizyta.Id_wiz,
@@ -317,7 +478,8 @@ namespace DBClient
                                 pesel = Pacjent.Pesel,
                                 dataRej = Wizyta.Data_rej,
                                 imie_lekarza = Lekarz.Imie,
-                                nazwisko_lekarza = Lekarz.Nazwisko
+                                nazwisko_lekarza = Lekarz.Nazwisko,
+                                stan_wizyty = Wizyta.Stan
                             };
 
                 //Wykonanie zapytania, rekord po rekordzie.
@@ -330,7 +492,19 @@ namespace DBClient
                     visData.PatientPesel = vis.pesel.ToString();
                     visData.Date = vis.dataRej.ToString();
                     visData.Doctor = vis.imie_lekarza + " " + vis.nazwisko_lekarza;
-                    visitsList.Add(visData);
+                    switch(vis.stan_wizyty)
+                    {
+                        case null:
+                            visData.Status = "Niezrealizowana";
+                            break;
+                        case false:
+                            visData.Status = "W trakcie realizacji";
+                            break;
+                        case true:
+                            visData.Status = "Zrealizowana";
+                            break;
+                    }
+                    visitsList.Add(vis.id, visData);
                 }                                                           
             }
             catch (Exception e)
@@ -348,10 +522,10 @@ namespace DBClient
                 connection.Close();
             }
             return visitsList;
-        }                      
+        }
 
 
-
+      
         /// <summary>
         /// Zmienia stan wskazanej wizyty na nowy.
         /// </summary>
@@ -455,6 +629,20 @@ namespace DBClient
             transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
             db.Transaction = transaction;
 
+            /*
+            //Pobranie z bazy id pacjenta na podstawie PESEL-u.
+            var patientIdQuery = from Pacjent in db.Pacjents
+                                 where Pacjent.Pesel == pesel
+                                 select Pacjent.Id_pac;
+            
+            int patientId = -1; //inicjalizacja, ponieważ inaczej w poniższym zapytaniu patientId mogło być niezainicjalizowane
+
+            foreach (int p in patientIdQuery)
+            {
+                patientId = p;
+            }
+            */
+
             //Encja, aby odwzorować tabelę Wizyta.
             Przychodnia.Wizyta wiz = new Przychodnia.Wizyta();
 
@@ -521,18 +709,13 @@ namespace DBClient
         }
 
 
-
+        /*
         /// <summary>
         /// Metoda usuwająca wizytę z bazy.
         /// </summary>
-        /// <param name="patientName">imię pacjenta</param>
-        /// <param name="patientSurname">nazwisko pacjenta</param>
-        /// <param name="patientDateOfBirth">data urodzenia pacjenta</param>
-        /// <param name="patientPesel">PESEL pacjenta</param>
-        /// <param name="dateOfVisit">data wizyty</param>
-        /// <param name="doctorID">id lekarza przyjmującego wizytę</param>
+        /// <param name="visitID">ID wizyty</param>
         /// <returns></returns>
-        public bool DeleteVisit(string patientName, string patientSurname, string patientPesel, string dateOfVisit, byte doctorID)
+        public bool DeleteVisit(int visitID)
         {
             bool retval = true;
 
@@ -543,9 +726,10 @@ namespace DBClient
             transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
             db.Transaction = transaction;
 
-            //Pobranie z bazy id pacjenta na podstawie imienia, nazwiska i PESEL-u.
+            
+            //Pobranie z bazy id pacjenta na podstawie PESEL-u.
             var patientIdQuery = from Pacjent in db.Pacjents
-                        where Pacjent.Imie == patientName && Pacjent.Nazwisko == patientSurname && Pacjent.Pesel == long.Parse(patientPesel)
+                        where Pacjent.Pesel == long.Parse(patientPesel)
                         select Pacjent.Id_pac;
 
             int patientId = -1; //inicjalizacja, ponieważ inaczej w poniższym zapytaniu patientId mogło być niezainicjalizowane
@@ -554,13 +738,14 @@ namespace DBClient
             {
                 patientId = p;
             }
+            
 
-            var visit = from Wizyta in db.Wizytas
-                        where Wizyta.Id_pac == patientId && Wizyta.Id_lek == doctorID && Wizyta.Data_rej.CompareTo(dateOfVisit) == 0
+            var query = from Wizyta in db.Wizytas
+                        where Wizyta.Id_wiz == visitID
                         select Wizyta;
 
             //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
-            foreach (Przychodnia.Wizyta wiz in visit)
+            foreach (Przychodnia.Wizyta wiz in query)
             {
                 db.Wizytas.DeleteOnSubmit(wiz);
             }
@@ -618,7 +803,7 @@ namespace DBClient
 
             return retval;
         }
-
+        */
 
 
         /// <summary>

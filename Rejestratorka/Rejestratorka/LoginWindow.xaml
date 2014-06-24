@@ -5,7 +5,7 @@
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65" >
             <StackPanel Orientation="Horizontal" Margin="20,10,0,0" HorizontalAlignment="Center">
-                <Button x:Name="logInButton" Content="Zaloguj" Padding="4,0,4,0" Height="28" Margin="0,5,0,0" Click="LogInButton_Click" Width="75" IsDefault="True" IsEnabled="False" />
+                <Button x:Name="logInButton" Content="Zaloguj" Padding="4,0,4,0" Height="28" Margin="0,5,0,0" Click="LogInButton_Click" Width="75" IsDefault="True" IsEnabled="False" TabIndex="2" />
             </StackPanel>
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Background="#FFE5E4E2" Height="65">
@@ -15,11 +15,11 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
                     <Label Content="Login:" Width="100"/>
-                    <TextBox x:Name="loginTextBox" Width="150" Height="28" TextChanged="TextBox_TextChanged"></TextBox>
+                    <TextBox x:Name="loginTextBox" Width="150" Height="28" TextChanged="TextBox_TextChanged" TabIndex="0"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
                     <Label Content="Hasło:" Width="100"/>
-                    <PasswordBox x:Name="passwordBox" Width="150" Height="28" PasswordChanged="PasswordBox_TextChanged"></PasswordBox>
+                    <PasswordBox x:Name="passwordBox" Width="150" Height="28" PasswordChanged="PasswordBox_TextChanged" TabIndex="1"></PasswordBox>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

@@ -20,6 +20,7 @@ namespace Rejestratorka
     public partial class AddPatientDialog : Window
     {
         DateTime? dateOfBirth;
+        const int ADDR_NUM_MAX_LEN = 4;
 
 
 
@@ -187,6 +188,17 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
+            if (flatNumberTextBox.Text.Length > ADDR_NUM_MAX_LEN)
+            {
+                MessageBox.Show(this, "Wprowadzony numer mieszkania wykracza poza dopuszczalny zakres.", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            if (houseNumberTextBox.Text.Length > ADDR_NUM_MAX_LEN)
+            {
+                MessageBox.Show(this, "Wprowadzony numer domu wykracza poza dopuszczalny zakres.", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (isPeselValid())
             {
                 this.DialogResult = true;

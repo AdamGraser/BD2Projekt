@@ -26,6 +26,9 @@ namespace Rejestratorka
     {
         DBClient.DBClient db;            // klient bazy danych
         DataTable registeredVisitsTable; // zawiera dane wyświetlane w tabeli z zarejestrowanymi wizytami.
+        List<byte> doctorsIdList;
+        List<int> patientsIdList;
+        List<int> visitsIdList;        
 
 
 
@@ -34,17 +37,18 @@ namespace Rejestratorka
         /// </summary>
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
 
-            while (true)
-            {
-                if (LogIn() == true)
-                {
-                    db = new DBClient.DBClient();
-                    GetDataFromDB();
-                    break;
-                }                
-            }
+           //while (true)
+           //{
+                //if (LogIn() == true)
+                //{
+                    //db = new DBClient.DBClient();
+                    //GetDataFromDB();
+                    ClearPatientsDataGrid();
+                    //break;
+                //}                
+            //}
         }
 
 
@@ -68,24 +72,23 @@ namespace Rejestratorka
                     addPatientDialog.PatientStreet, addPatientDialog.PatientPostCode, addPatientDialog.PatientCity))
                 {
                     System.Windows.MessageBox.Show("Pacjent został pomyślnie dodany do bazy danych.", "Dodanie nowego pacjenta", MessageBoxButton.OK, MessageBoxImage.Information);
+                    RefreshVisitsDataGrid(null);
                 }
                 else
                 {
                     System.Windows.MessageBox.Show("Nie udało się dodać nowego pacjenta do bazy danych!", "Błąd dodawania pacjenta", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-            }
-
-            RefreshPatientsList();
+            }            
         }
 
 
-
+        /*
         /// <summary>
         /// Metoda odświeżająca zawartość combobox'a zawierającego listę pacjentów.
         /// </summary>
         private void RefreshPatientsList()
         {            
-            List<string> patients = db.GetPatients();
+            List<string> patients = db.GetPatients(null, null, null);
 
             PatientsList.Items.Clear();
 
@@ -100,7 +103,7 @@ namespace Rejestratorka
                 System.Windows.MessageBox.Show("Brak pacjentów w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
                                 "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
+        */
 
 
         /// <summary>
@@ -108,11 +111,12 @@ namespace Rejestratorka
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void RegisterVisit_Click(object sender, RoutedEventArgs e)
+        private void registerVisitButton_Click(object sender, RoutedEventArgs e)
         {
+            
             DateTime? timeOfVisit = visitTime.Value;
-
-            if (VisitDate.SelectedDate == null)
+            /*
+            if (visitDate.SelectedDate == null)
             {
                 System.Windows.MessageBox.Show("Nie podano daty odbycia się wizyty!", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
@@ -122,27 +126,26 @@ namespace Rejestratorka
             }
             else
             {
-                DateTime dateOfVisit = (DateTime)VisitDate.SelectedDate;
-                DateTime dateToSaveInDB = new DateTime(dateOfVisit.Year, dateOfVisit.Month, dateOfVisit.Day, timeOfVisit.Value.Hour, timeOfVisit.Value.Minute, timeOfVisit.Value.Second);
+            */
+                DateTime dateOfVisit = (DateTime)visitDate.SelectedDate;
+                DateTime dateToSaveInDB = new DateTime(dateOfVisit.Year, dateOfVisit.Month, dateOfVisit.Day, timeOfVisit.Value.Hour, timeOfVisit.Value.Minute, timeOfVisit.Value.Second);                
 
-                if (db.AddVisit(dateToSaveInDB, (byte)(DoctorsList.SelectedIndex + 1), PatientsList.SelectedIndex + 1))
+                if (db.AddVisit(dateToSaveInDB, doctorsIdList[doctorsList.SelectedIndex], patientsIdList[patientsDataGrid.SelectedIndex]))
                 {
                     System.Windows.MessageBox.Show("Zarejestrowano nową wizytę.", "Informacja", MessageBoxButton.OK, MessageBoxImage.Information);
-                    PatientsList.SelectedIndex = -1;
-                    DoctorsList.SelectedIndex = -1;
-                    VisitDate.SelectedDate = null;
-                    visitTime.Value = null;
-                    PatientDetails.IsExpanded = false;
-                    PatientDetails.IsEnabled = false;
-                    RegisterVisit.IsEnabled = false;
+                    patientsDataGrid.SelectedIndex = -1;                    
+                    doctorsList.SelectedIndex = -1;
+                    visitDate.SelectedDate = null;
+                    visitTime.Value = null;                   
+                    registerVisitButton.IsEnabled = false;
                 }
                 else
-                    System.Windows.MessageBox.Show("Wystąpił błąd podczas rejestrowania wizyty i nie została ona zarejestrowana.", "Błąd rejestracji", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+                    System.Windows.MessageBox.Show("Wystąpił błąd podczas rejestrowania wizyty i nie została ona zarejestrowana.", "Błąd rejestracji", MessageBoxButton.OK, MessageBoxImage.Warning);                 
+            //}
         }
 
 
-
+        /*
         /// <summary>
         /// Metoda obsługująca zwinięcie expandera zawierającego szczegółowe dane pacjenta.
         /// </summary>
@@ -156,9 +159,9 @@ namespace Rejestratorka
             PatientBirthDate.Text = "";
             PatientAddress.Text = "";
         }
+        */
 
-
-
+        /*
         /// <summary>
         /// Metoda obsługująca rozwinięcie expandera zawierającego szczegółowe dane pacjenta.
         /// </summary>
@@ -192,9 +195,9 @@ namespace Rejestratorka
                 PatientDetails.IsExpanded = false;
             }
         }
+        */
 
-
-
+        /*
         /// <summary>
         /// Metoda obsługująca zaznaczenie elementu na liście pacjentów.
         /// </summary>
@@ -207,7 +210,7 @@ namespace Rejestratorka
                 PatientDetails.IsEnabled = true;
 
                 if (RegisterVisit.IsEnabled == false)
-                    if (DoctorsList.SelectedIndex > -1 && VisitDate.SelectedDate != null && visitTime.Value != null)
+                    if (doctorsList.SelectedIndex > -1 && visitDate.SelectedDate != null && visitTime.Value != null)
                         RegisterVisit.IsEnabled = true;
 
                 if (PatientDetails.IsExpanded)
@@ -238,17 +241,32 @@ namespace Rejestratorka
                 }
             }
         }
-       
+       */
 
 
         /// <summary>
-        /// Metoda obsługująca kliknięcie przycisku "Szukaj".
+        /// Metoda obsługująca kliknięcie przycisku "Szukaj" przy filtrze wyszukującym wizyty (karta "Zarejestrowane wizyty").
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void findVisitButton_Click(object sender, RoutedEventArgs e)
         {
-            clearFilterButton.IsEnabled = true; 
+            clearFilterButton2.IsEnabled = true;
+            switch (visitStatusComboBox.SelectedIndex)
+            {
+                case 0: 
+                    RefreshVisitsDataGrid(null);
+                    break;
+                case 1:
+                    RefreshVisitsDataGrid(false);
+                    break;
+                case 2:
+                    RefreshVisitsDataGrid(true);
+                    break;
+                default:
+                    RefreshVisitsDataGrid(null);
+                    break;            
+            }
      
             //wyczyszczenie dotychczasowej zawartości tabeli:
             if (visitsDataGrid.ItemsSource != null && !registeredVisitsTable.DefaultView.Equals((DataView)visitsDataGrid.ItemsSource))
@@ -256,32 +274,33 @@ namespace Rejestratorka
                 DataView src = (DataView)visitsDataGrid.ItemsSource;
                 src.Dispose();
                 visitsDataGrid.ItemsSource = null;
-            }
+            }            
 
             //tworzenia filtra:
             string filterString = "";
 
-            if (patientNameTextBox.Text.Length != 0)
+            if (patientNameTextBox2.Text.Length != 0)
             {
-                filterString += string.Format("Imię = '{0}'", patientNameTextBox.Text);
+                filterString += string.Format("Imię = '{0}'", patientNameTextBox2.Text);
             }
-            if (patientSurnameTextBox.Text.Length != 0)
+            if (patientSurnameTextBox2.Text.Length != 0)
             {
-                if (patientNameTextBox.Text.Length != 0)
+                if (patientNameTextBox2.Text.Length != 0)
+                {
                     filterString += " && ";
-
-                filterString += string.Format("Nazwisko = '{0}'", patientSurnameTextBox.Text);
+                }
+                filterString += string.Format("Nazwisko = '{0}'", patientSurnameTextBox2.Text);
             }
-            if (DoctorsList2.SelectedIndex > -1)
+            if (doctorsList2.SelectedIndex > -1)
             {
-                if (patientNameTextBox.Text.Length != 0 || patientSurnameTextBox.Text.Length != 0)
+                if (patientNameTextBox2.Text.Length != 0 || patientSurnameTextBox2.Text.Length != 0)
+                {
                     filterString += " && ";
-
-                filterString += string.Format("Lekarz = '{0}'", DoctorsList2.SelectedItem.ToString());
+                }
+                filterString += string.Format("Lekarz = '{0}'", doctorsList2.SelectedItem.ToString());
             }
 
             DataRow[] selectedRows = registeredVisitsTable.Select(filterString);
-
             if (selectedRows.Count() > 0)
             {
                 DataTable filteredTable = new DataTable();
@@ -291,13 +310,13 @@ namespace Rejestratorka
                 DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
                 DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
                 DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
-
+                DataColumn statusColumn = new DataColumn("Stan wizyty", typeof(string));
                 filteredTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
-                    patientPeselColumn, dateOfVisitColumn, doctorColumn});
+                    patientPeselColumn, dateOfVisitColumn, doctorColumn, statusColumn});
                 
                 foreach (DataRow row in selectedRows)
 	            {
-	                filteredTable.ImportRow(row);
+                    filteredTable.ImportRow(row);
 	            }
 
                 visitsDataGrid.ItemsSource = filteredTable.DefaultView;
@@ -313,6 +332,7 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void cancelVisitButton_Click(object sender, RoutedEventArgs e)
         {
+            /*
             System.Data.DataRowView selectedRow = (System.Data.DataRowView)visitsDataGrid.SelectedItem;
             object[] rowValues = selectedRow.Row.ItemArray;
             string patientName = (string)rowValues[0];
@@ -321,10 +341,12 @@ namespace Rejestratorka
             string patientPesel = (string)rowValues[3];
             string dateOfVisit = (string)rowValues[4];
             string doctor = (string)rowValues[5];
-
-            if (db.DeleteVisit(patientName, patientSurname, patientPesel, dateOfVisit, (byte)(DoctorsList2.SelectedIndex + 1)))
+            */
+            if (db.DeleteVisit(visitsIdList[visitsDataGrid.SelectedIndex]))
             {
                 System.Windows.MessageBox.Show("Wizyta została anulowana.", "Anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Information);
+                visitsDataGrid.SelectedIndex = -1;
+                visitsDataGrid.SelectedItem = null;
             }
             else
             {
@@ -393,28 +415,31 @@ namespace Rejestratorka
             db.Dispose();
             db = null;
 
-            //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
-            PatientsList.Items.Clear();
-            DoctorsList.Items.Clear();
-            DoctorsList2.Items.Clear();
-            patientNameTextBox.Text = "";
-            patientSurnameTextBox.Text = "";
-            
+            //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):            
+            doctorsList.Items.Clear();
+            doctorsList2.Items.Clear();
+            patientNameTextBox2.Text = "";
+            patientSurnameTextBox2.Text = "";
+
             //czyszczenie listy zarejestrowanych wizyt
+            DataView src;
             if (visitsDataGrid.ItemsSource != null)
             {
-                DataView src = (DataView)visitsDataGrid.ItemsSource;
+                src = (DataView)visitsDataGrid.ItemsSource;
                 src.Dispose();
                 visitsDataGrid.ItemsSource = null;
             }
 
-            PatientName.Text = "";
-            PatientPesel.Text = "";
-            PatientBirthDate.Text = "";
-            PatientAddress.Text = "";
+            //czyszczenie listy pacjentów
+            if (patientsDataGrid.ItemsSource != null)
+            {
+                src = (DataView)patientsDataGrid.ItemsSource;
+                src.Dispose();
+                patientsDataGrid.ItemsSource = null;
+            }       
             registeredVisitsTable.Dispose();
-            VisitDate.SelectedDate = null;
-            VisitDate.DisplayDate = DateTime.Today;
+            visitDate.SelectedDate = null;
+            visitDate.DisplayDate = DateTime.Today;
             visitTime.Value = null;
 
             while (true)
@@ -453,17 +478,19 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
-            PatientDetails.IsExpanded = false;
-            PatientDetails.IsEnabled = false;
-            visitTime.Value = null;
-            VisitDate.SelectedDate = null;
-            RegisterVisit.IsEnabled = false;
             
-            PatientsList.Items.Clear();
-            DoctorsList.Items.Clear();
-            DoctorsList2.Items.Clear();
+            /*
+            visitTime.Value = null;
+            visitDate.SelectedDate = null;
+            registerVisitButton.IsEnabled = false;
+            
+            //PatientsList.Items.Clear();
+            doctorsList.Items.Clear();
+            doctorsList2.Items.Clear();
 
             GetDataFromDB();
+            */
+            RefreshVisitsDataGrid(null);
         }
 
 
@@ -473,6 +500,7 @@ namespace Rejestratorka
         /// </summary>
         private void GetDataFromDB()
         {
+            /*
             // --> Tworzenie listy pacjentów.
             List<string> patients = db.GetPatients();
 
@@ -487,16 +515,24 @@ namespace Rejestratorka
                 System.Windows.MessageBox.Show("Brak pacjentów w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
                                 "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
             // <-- Tworzenie listy pacjentów.
-
+            */
             // --> Tworzenie listy lekarzy.
-            List<string> doctors = db.GetDoctors();
+            Dictionary<byte, string> doctorsDataList = db.GetDoctors();
+            doctorsIdList = new List<byte>();
+            List<string> doctors = new List<string>();
+
+            foreach (KeyValuePair<byte, string> doctorData in doctorsDataList)
+            {
+                doctorsIdList.Add(doctorData.Key);
+                doctors.Add(doctorData.Value);
+            }
 
             if (doctors != null && doctors.Count > 0)
             {
                 foreach (string d in doctors)
                 {
-                    DoctorsList.Items.Add(new ComboBoxItem().Content = d);
-                    DoctorsList2.Items.Add(new ComboBoxItem().Content = d);
+                    doctorsList.Items.Add(new ComboBoxItem().Content = d);
+                    doctorsList2.Items.Add(new ComboBoxItem().Content = d);
                 }
             }
             else
@@ -505,8 +541,309 @@ namespace Rejestratorka
             // <-- Tworzenie listy lekarzy.  
 
             //wypełnianie tabeli z wizytami:
+            RefreshVisitsDataGrid(null);
+        }
+
+
+
+        /// <summary>
+        /// Metoda wywoływana po kliknięciu przycisku "Wyczyść filtr".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void clearFilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            //wyczyszczenie pól filtra:
+            patientNameTextBox2.Text = "";
+            patientSurnameTextBox2.Text = "";
+            doctorsList2.SelectedIndex = -1; 
+           
+            //przywrócenie zawartości tabeli:
+            if (registeredVisitsTable.DefaultView.Count > 0)
+            {
+                visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
+            }
+            clearFilterButton2.IsEnabled = false;
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void doctorsList2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (clearFilterButton2 != null)
+                clearFilterButton2.IsEnabled = true;
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void doctorsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (doctorsList.SelectedIndex > -1)
+            {
+                //if (registerVisitButton.IsEnabled == false)
+                //{
+                    if (patientsDataGrid.SelectedIndex > -1 && visitDate.SelectedDate != null && visitTime.Value != null)
+                        registerVisitButton.IsEnabled = true;
+                //}
+            }
+            else
+            {
+                registerVisitButton.IsEnabled = false;
+            }
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void visitDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (visitDate.SelectedDate != null)
+            {
+                //if (registerVisitButton.IsEnabled == false)
+                //{
+                    if (patientsDataGrid.SelectedIndex > -1 && doctorsList.SelectedIndex > -1 && visitTime.Value != null)
+                        registerVisitButton.IsEnabled = true;
+                //}
+
+            }
+            else
+            {
+                registerVisitButton.IsEnabled = false;
+            }
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void visitTime_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (visitTime.Value != null)
+            {
+                //if (registerVisitButton.IsEnabled == false)
+                //{
+                    if (patientsDataGrid.SelectedIndex > -1 && doctorsList.SelectedIndex > -1 && visitDate.SelectedDate != null)
+                        registerVisitButton.IsEnabled = true;
+                //}
+            }
+            else
+            {
+                registerVisitButton.IsEnabled = false;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Metoda obsługująca kliknięcie przycisku "Szukaj" przy filtrze wyszukującym pacjentów (karta "Rejestracja wizyty").
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void findPatientButton_Click(object sender, RoutedEventArgs e)
+        {
+            patientsDataGrid.Columns.Clear();
+            if (patientsDataGrid.ItemsSource != null)
+            {
+                DataView src = (DataView)patientsDataGrid.ItemsSource;
+                src.Dispose();
+                patientsDataGrid.ItemsSource = null;
+            }
+            DataTable patientsTable = new DataTable();
+            Dictionary<int, PatientData> patients;
+           
+            if (peselTextBox.Text.Length > 0)
+            {
+                patients = db.GetPatients(patientNameTextBox1.Text, patientSurnameTextBox1.Text, long.Parse(peselTextBox.Text));
+            }
+            else
+            {
+                patients = db.GetPatients(patientNameTextBox1.Text, patientSurnameTextBox1.Text, null);
+            }            
+
+            patientsIdList = new List<int>();
+
+            //kolumny tabeli:
+            DataColumn nameColumn = new DataColumn("Imię", typeof(string));
+            DataColumn surnameColumn = new DataColumn("Nazwisko", typeof(string));
+            DataColumn dateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
+            DataColumn peselColumn = new DataColumn("PESEL", typeof(string));
+            DataColumn genderColumn = new DataColumn("Płeć", typeof(string));
+            DataColumn streetColumn = new DataColumn("Ulica", typeof(string));
+            DataColumn numberOfHouseColumn = new DataColumn("Numer domu", typeof(string));
+            DataColumn numberOfFlatColumn = new DataColumn("Numer mieszkania", typeof(string));
+            DataColumn postCodeColumn = new DataColumn("Kod pocztowy", typeof(string));
+            DataColumn cityColumn = new DataColumn("Miejscowość", typeof(string));
+            patientsTable.Columns.AddRange(new DataColumn[] {nameColumn, surnameColumn, dateOfBirthColum,
+                    peselColumn, genderColumn, streetColumn, numberOfHouseColumn, numberOfFlatColumn,
+                    postCodeColumn, cityColumn});
+
+            //wiersze:
+            foreach (KeyValuePair<int, PatientData> patientData in patients)
+            {
+                DataRow newRow = patientsTable.NewRow();
+                newRow["Imię"] = patientData.Value.PatientName;
+                newRow["Nazwisko"] = patientData.Value.PatientSurname;
+                newRow["Data urodzenia"] = patientData.Value.PatientDateOfBirth;
+                newRow["PESEL"] = patientData.Value.PatientPesel;
+                newRow["Płeć"] = patientData.Value.PatientGender;
+                newRow["Ulica"] = patientData.Value.PatientStreet;
+                newRow["Numer domu"] = patientData.Value.PatientNumberOfHouse;
+                newRow["Numer mieszkania"] = patientData.Value.PatientNumberOfFlat;
+                newRow["Kod pocztowy"] = patientData.Value.PatientPostCode;
+                newRow["Miejscowość"] = patientData.Value.PatientCity;
+                patientsTable.Rows.Add(newRow);
+                patientsIdList.Add(patientData.Key);
+            }
+
+            if (patientsTable.DefaultView.Count > 0)
+            {
+                patientsDataGrid.ItemsSource = patientsTable.DefaultView;
+            }
+
+        }
+
+       
+
+        /// <summary>
+        /// Metoda czyszcząca zawartość kontrolki DataGrid zawierającej dane pacjentów (patientsDataGrid w karcie "Rejestracja wizyty").
+        /// </summary>
+        private void ClearPatientsDataGrid()
+        {
+            patientsDataGrid.Columns.Clear();
+
+            //kolumny tabeli:
+            DataGridTextColumn nameColumn = new DataGridTextColumn();
+            nameColumn.Header = "Imię";
+            DataGridColumn surnameColumn = new DataGridTextColumn();
+            surnameColumn.Header = "Nazwisko";
+            DataGridColumn dateOfBirthColum = new DataGridTextColumn();
+            dateOfBirthColum.Header = "Data urodzenia";
+            DataGridColumn peselColumn = new DataGridTextColumn();
+            peselColumn.Header = "PESEL";
+            DataGridTextColumn genderColumn = new DataGridTextColumn();
+            genderColumn.Header = "Płeć";
+            DataGridTextColumn streetColumn = new DataGridTextColumn();
+            streetColumn.Header = "Ulica";
+            DataGridTextColumn numberOfHouseColumn = new DataGridTextColumn();
+            numberOfHouseColumn.Header = "Numer domu";
+            DataGridTextColumn numberOfFlatColumn = new DataGridTextColumn();
+            numberOfFlatColumn.Header = "Numer mieszkania";
+            DataGridTextColumn postCodeColumn = new DataGridTextColumn();
+            postCodeColumn.Header = "Kod pocztowy";
+            DataGridTextColumn cityColumn = new DataGridTextColumn();
+            cityColumn.Header = "Miejscowość";
+
+            patientsDataGrid.Columns.Add(nameColumn);
+            patientsDataGrid.Columns.Add(surnameColumn);
+            patientsDataGrid.Columns.Add(dateOfBirthColum);
+            patientsDataGrid.Columns.Add(peselColumn);
+            patientsDataGrid.Columns.Add(genderColumn);
+            patientsDataGrid.Columns.Add(streetColumn);
+            patientsDataGrid.Columns.Add(numberOfHouseColumn);
+            patientsDataGrid.Columns.Add(numberOfFlatColumn);
+            patientsDataGrid.Columns.Add(postCodeColumn);
+            patientsDataGrid.Columns.Add(cityColumn);
+        }
+
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void clearFilterButton1_Click(object sender, RoutedEventArgs e)
+        {
+            ClearPatientsDataGrid();
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void patientsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (registerVisitButton.IsEnabled == false)
+            {
+                if (patientsDataGrid.SelectedIndex > -1 && doctorsList.SelectedIndex > -1 && visitTime.Value != null)
+                    registerVisitButton.IsEnabled = true;
+            }
+        }
+
+
+                       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PatientFilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (patientNameTextBox1.Text.Length > 0 || patientSurnameTextBox1.Text.Length > 0 || peselTextBox.IsMaskFull == true)
+            {
+                findPatientButton.IsEnabled = true;
+                clearFilterButton1.IsEnabled = true;
+            }
+            else
+            {
+                findPatientButton.IsEnabled = false;
+                clearFilterButton1.IsEnabled = false;
+            }
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void peselTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (peselTextBox.IsMaskFull == true)
+            {
+                findPatientButton.IsEnabled = true;
+                clearFilterButton1.IsEnabled = true;
+            }
+            else if (patientSurnameTextBox1.Text.Length == 0 && patientSurnameTextBox1.Text.Length == 0)
+            {
+                if (findPatientButton != null) //bez tego przy pierwszym uruchomieniu wyrzuca wyjątek.
+                    findPatientButton.IsEnabled = false;
+                if (clearFilterButton1 != null)
+                    clearFilterButton1.IsEnabled = false;
+            }
+        }
+
+
+
+
+        private void RefreshVisitsDataGrid(bool? visitStatus)
+        {
+            //wypełnianie tabeli z wizytami:
             registeredVisitsTable = new DataTable();
-            List<VisitData> visits = db.GetUndoneVisits();
+            Dictionary<int, VisitData> visits = db.GetVisits(visitStatus);
+            visitsIdList = new List<int>();
 
             //kolumny tabeli:
             DataColumn patientNameColumn = new DataColumn("Imię", typeof(string));
@@ -515,20 +852,23 @@ namespace Rejestratorka
             DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
             DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
             DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
+            DataColumn statusColumn = new DataColumn("Stan wizyty", typeof(string));
             registeredVisitsTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
-                    patientPeselColumn, dateOfVisitColumn, doctorColumn});
+                    patientPeselColumn, dateOfVisitColumn, doctorColumn, statusColumn});
 
             //wiersze:
-            foreach (VisitData visit in visits)
+            foreach (KeyValuePair<int, VisitData> visit in visits)
             {
                 DataRow newRow = registeredVisitsTable.NewRow();
-                newRow["Imię"] = visit.PatientName;
-                newRow["Nazwisko"] = visit.PatientSurname;
-                newRow["Data urodzenia"] = visit.PatientDateOfBirth;
-                newRow["PESEL"] = visit.PatientPesel;
-                newRow["Data wizyty"] = visit.Date;
-                newRow["Lekarz"] = visit.Doctor;
+                newRow["Imię"] = visit.Value.PatientName;
+                newRow["Nazwisko"] = visit.Value.PatientSurname;
+                newRow["Data urodzenia"] = visit.Value.PatientDateOfBirth;
+                newRow["PESEL"] = visit.Value.PatientPesel;
+                newRow["Data wizyty"] = visit.Value.Date;
+                newRow["Lekarz"] = visit.Value.Doctor;
+                newRow["Stan wizyty"] = visit.Value.Status;
                 registeredVisitsTable.Rows.Add(newRow);
+                visitsIdList.Add(visit.Key);
             }
 
             //uprzednie czyszczenie tabeli z zarejestrowanymi wizytami
@@ -543,68 +883,57 @@ namespace Rejestratorka
             {
                 visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
             }
-
-
         }
 
 
 
-        /// <summary>
-        /// Metoda wywoływana po kliknięciu przycisku "Wyczyść filtr".
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void clearFilterButton_Click(object sender, RoutedEventArgs e)
+
+        private void VisitFilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //wyczyszczenie pól filtra:
-            patientNameTextBox.Text = "";
-            patientSurnameTextBox.Text = "";
-            DoctorsList2.SelectedIndex = -1; 
-           
-            //przywrócenie zawartości tabeli:
-            if (registeredVisitsTable.DefaultView.Count > 0)
+            if (patientNameTextBox2.Text.Length > 0 || patientSurnameTextBox2.Text.Length > 0 || doctorsList2.SelectedIndex != -1)
             {
-                visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
+                findVisitButton.IsEnabled = true;
+                clearFilterButton2.IsEnabled = true;
             }
-
-            clearFilterButton.IsEnabled = false;
-        }
-
-
-
-        private void DoctorsList2_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            clearFilterButton.IsEnabled = true;
-        }
-
-        private void DoctorsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DoctorsList.SelectedIndex > -1)
+            else if (patientNameTextBox2.Text.Length == 0 && patientSurnameTextBox2.Text.Length == 0 && doctorsList2.SelectedIndex == -1 && visitStatusComboBox.SelectedIndex == 0)
             {
-                if(RegisterVisit.IsEnabled == false)
-                    if (PatientsList.SelectedIndex > -1 && VisitDate.SelectedDate != null && visitTime.Value != null)
-                        RegisterVisit.IsEnabled = true;
+                findVisitButton.IsEnabled = false;
+                clearFilterButton2.IsEnabled = false;
             }
         }
 
-        private void VisitDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+
+
+
+        private void visitStatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (VisitDate.SelectedDate != null)
+            if (visitStatusComboBox.SelectedIndex != 0) //0 - wartość domyślna, oznacza niezrealizowane wizyty
             {
-                if (RegisterVisit.IsEnabled == false)
-                    if (PatientsList.SelectedIndex > -1 && DoctorsList.SelectedIndex > -1 && visitTime.Value != null)
-                        RegisterVisit.IsEnabled = true;
+                findVisitButton.IsEnabled = true;
+                clearFilterButton2.IsEnabled = true;
+            }
+            else if (patientNameTextBox2.Text.Length == 0 && patientSurnameTextBox2.Text.Length == 0 && doctorsList2.SelectedIndex == -1)
+            {
+                if (findVisitButton != null && clearFilterButton2 != null)
+                {
+                    findVisitButton.IsEnabled = false;
+                    clearFilterButton2.IsEnabled = false;
+                }
             }
         }
 
-        private void visitTime_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void visitDate2_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (visitTime.Value != null)
+            if (visitDate2.SelectedDate != null)
             {
-                if (RegisterVisit.IsEnabled == false)
-                    if (PatientsList.SelectedIndex > -1 && DoctorsList.SelectedIndex > -1 && VisitDate.SelectedDate != null)
-                        RegisterVisit.IsEnabled = true;
+                findVisitButton.IsEnabled = true;
+                clearFilterButton2.IsEnabled = true;
             }
+            else if (patientNameTextBox2.Text.Length == 0 && patientSurnameTextBox2.Text.Length == 0 && doctorsList2.SelectedIndex == -1 && visitStatusComboBox.SelectedIndex == 0)
+            {
+                findVisitButton.IsEnabled = false;
+                clearFilterButton2.IsEnabled = false;
+            } 
         }
     }
 }

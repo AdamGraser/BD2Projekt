@@ -5,19 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DBClient
-{   
-    /// <summary>
-    /// Klasa przechowująca dane wizyty.
-    /// </summary>
-    public class VisitData
+{
+    public class PatientData
     {
         private string _patientName;
         private string _patientSurname;
         private string _patientPesel;
         private string _patientDateOfBirth;
-        private string _date;
-        private string _doctor;
-        private string _visitStatus;
+        private string _patientGender;
+        private string _patientStreet;
+        private string _patientNumberOfHouse;
+        private string _patientNumberOfFlat;
+        private string _patientPostCode;
+        private string _patientCity;
 
 
 
@@ -90,50 +90,97 @@ namespace DBClient
 
 
         /// <summary>
-        /// Właściwość zwracająca datę wizyty.
+        /// Właściwość zwracająca płeć pacjenta.
         /// </summary>
-        public string Date
+        public string PatientGender
         {
             get
             {
-                return _date;
+                return _patientGender;
             }
             set
             {
-                _date = value;
-            }
-        }
-
-
-
-        /// <summary>
-        /// Właściwość zwracająca imię i nazwisko lekarza, u którego ma odbyć się wizyta.
-        /// </summary>
-        public string Doctor
-        {
-            get
-            {
-                return _doctor;
-            }
-            set
-            {
-                _doctor = value;
+                _patientGender = value;
             }
         }
 
 
         /// <summary>
-        /// 
+        /// Właściwość zwracająca nazwę ulicy na której mieszka pacjent.
         /// </summary>
-        public string Status
+        public string PatientStreet
         {
             get
             {
-                return _visitStatus;
+                return _patientStreet;
             }
             set
             {
-                _visitStatus = value;
+                _patientStreet = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Właściwość zwracająca numer budynku w którym mieszka pacjent.
+        /// </summary>
+        public string PatientNumberOfHouse
+        {
+            get
+            {
+                return _patientNumberOfHouse;
+            }
+            set
+            {
+                _patientNumberOfHouse = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Właściwość zwracająca numer mieszkania pacjenta.
+        /// </summary>
+        public string PatientNumberOfFlat
+        {
+            get
+            {
+                return _patientNumberOfFlat;
+            }
+            set
+            {
+                _patientNumberOfFlat = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Właściwość zwracająca kod pocztowy adresu pacjenta.
+        /// </summary>
+        public string PatientPostCode
+        {
+            get
+            {
+                return _patientPostCode;
+            }
+            set
+            {
+                _patientPostCode = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Właściwość zwracająca nazwę miejscowości w której mieszka pacjent.
+        /// </summary>
+        public string PatientCity
+        {
+            get
+            {
+                return _patientCity;
+            }
+            set
+            {
+                _patientCity = value;
             }
         }
     }
