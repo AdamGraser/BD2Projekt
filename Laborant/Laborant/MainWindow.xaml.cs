@@ -262,7 +262,7 @@ namespace Laborant
 
                     }
 
-                    currentLabTestID = labTestsAtVisit[currentVisitID][num - currentLabTest];
+                    currentLabTestID = labTestsAtVisit[currentVisitID][labTestsAtVisit[currentVisitID].Count - 1 - (num - currentLabTest)];
                     done = true;
 
                     

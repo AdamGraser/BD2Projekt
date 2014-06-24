@@ -35,9 +35,6 @@ namespace Przychodnia
     partial void InsertBadanie(Badanie instance);
     partial void UpdateBadanie(Badanie instance);
     partial void DeleteBadanie(Badanie instance);
-    partial void InsertKierownik_laboratorium(Kierownik_laboratorium instance);
-    partial void UpdateKierownik_laboratorium(Kierownik_laboratorium instance);
-    partial void DeleteKierownik_laboratorium(Kierownik_laboratorium instance);
     partial void InsertLaborant(Laborant instance);
     partial void UpdateLaborant(Laborant instance);
     partial void DeleteLaborant(Laborant instance);
@@ -98,14 +95,6 @@ namespace Przychodnia
 			get
 			{
 				return this.GetTable<Badanie>();
-			}
-		}
-		
-		public System.Data.Linq.Table<Kierownik_laboratorium> Kierownik_laboratoriums
-		{
-			get
-			{
-				return this.GetTable<Kierownik_laboratorium>();
 			}
 		}
 		
@@ -350,10 +339,6 @@ namespace Przychodnia
 		
 		private System.Nullable<byte> _Id_lab;
 		
-		private System.Nullable<byte> _Id_klab;
-		
-		private EntityRef<Kierownik_laboratorium> _Kierownik_laboratorium;
-		
 		private EntityRef<Laborant> _Laborant;
 		
 		private EntityRef<Sl_badan> _Sl_badan;
@@ -384,13 +369,10 @@ namespace Przychodnia
     partial void OnKodChanged();
     partial void OnId_labChanging(System.Nullable<byte> value);
     partial void OnId_labChanged();
-    partial void OnId_klabChanging(System.Nullable<byte> value);
-    partial void OnId_klabChanged();
     #endregion
 		
 		public Badanie()
 		{
-			this._Kierownik_laboratorium = default(EntityRef<Kierownik_laboratorium>);
 			this._Laborant = default(EntityRef<Laborant>);
 			this._Sl_badan = default(EntityRef<Sl_badan>);
 			this._Wizyta = default(EntityRef<Wizyta>);
@@ -597,60 +579,6 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id_klab", Storage="_Id_klab", DbType="TinyInt")]
-		public System.Nullable<byte> Id_klab
-		{
-			get
-			{
-				return this._Id_klab;
-			}
-			set
-			{
-				if ((this._Id_klab != value))
-				{
-					this.OnId_klabChanging(value);
-					this.SendPropertyChanging();
-					this._Id_klab = value;
-					this.SendPropertyChanged("Id_klab");
-					this.OnId_klabChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="FK_Badanie_Kierownik_laboratorium", Storage="_Kierownik_laboratorium", ThisKey="Id_klab", OtherKey="Id_klab", IsForeignKey=true)]
-		public Kierownik_laboratorium Kierownik_laboratorium
-		{
-			get
-			{
-				return this._Kierownik_laboratorium.Entity;
-			}
-			set
-			{
-				Kierownik_laboratorium previousValue = this._Kierownik_laboratorium.Entity;
-				if (((previousValue != value) 
-							|| (this._Kierownik_laboratorium.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Kierownik_laboratorium.Entity = null;
-						previousValue.Badanies.Remove(this);
-					}
-					this._Kierownik_laboratorium.Entity = value;
-					if ((value != null))
-					{
-						value.Badanies.Add(this);
-						this._Id_klab = value.Id_klab;
-					}
-					else
-					{
-						this._Id_klab = default(Nullable<byte>);
-					}
-					this.SendPropertyChanged("Kierownik_laboratorium");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="FK_Badanie_Laborant", Storage="_Laborant", ThisKey="Id_lab", OtherKey="Id_lab", IsForeignKey=true)]
 		public Laborant Laborant
 		{
@@ -774,192 +702,6 @@ namespace Przychodnia
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Kierownik_laboratorium")]
-	public partial class Kierownik_laboratorium : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private byte _Id_klab;
-		
-		private string _Nazwisko;
-		
-		private string _Imie;
-		
-		private string _Login;
-		
-		private string _Haslo;
-		
-		private EntitySet<Badanie> _Badanies;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnId_klabChanging(byte value);
-    partial void OnId_klabChanged();
-    partial void OnNazwiskoChanging(string value);
-    partial void OnNazwiskoChanged();
-    partial void OnImieChanging(string value);
-    partial void OnImieChanged();
-    partial void OnLoginChanging(string value);
-    partial void OnLoginChanged();
-    partial void OnHasloChanging(string value);
-    partial void OnHasloChanged();
-    #endregion
-		
-		public Kierownik_laboratorium()
-		{
-			this._Badanies = new EntitySet<Badanie>(new Action<Badanie>(this.attach_Badanies), new Action<Badanie>(this.detach_Badanies));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id_klab", Storage="_Id_klab", AutoSync=AutoSync.OnInsert, DbType="TinyInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public byte Id_klab
-		{
-			get
-			{
-				return this._Id_klab;
-			}
-			set
-			{
-				if ((this._Id_klab != value))
-				{
-					this.OnId_klabChanging(value);
-					this.SendPropertyChanging();
-					this._Id_klab = value;
-					this.SendPropertyChanged("Id_klab");
-					this.OnId_klabChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="nazwisko", Storage="_Nazwisko", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
-		public string Nazwisko
-		{
-			get
-			{
-				return this._Nazwisko;
-			}
-			set
-			{
-				if ((this._Nazwisko != value))
-				{
-					this.OnNazwiskoChanging(value);
-					this.SendPropertyChanging();
-					this._Nazwisko = value;
-					this.SendPropertyChanged("Nazwisko");
-					this.OnNazwiskoChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="imie", Storage="_Imie", DbType="VarChar(25) NOT NULL", CanBeNull=false)]
-		public string Imie
-		{
-			get
-			{
-				return this._Imie;
-			}
-			set
-			{
-				if ((this._Imie != value))
-				{
-					this.OnImieChanging(value);
-					this.SendPropertyChanging();
-					this._Imie = value;
-					this.SendPropertyChanged("Imie");
-					this.OnImieChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="login", Storage="_Login", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
-		public string Login
-		{
-			get
-			{
-				return this._Login;
-			}
-			set
-			{
-				if ((this._Login != value))
-				{
-					this.OnLoginChanging(value);
-					this.SendPropertyChanging();
-					this._Login = value;
-					this.SendPropertyChanged("Login");
-					this.OnLoginChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="haslo", Storage="_Haslo", DbType="Text NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
-		public string Haslo
-		{
-			get
-			{
-				return this._Haslo;
-			}
-			set
-			{
-				if ((this._Haslo != value))
-				{
-					this.OnHasloChanging(value);
-					this.SendPropertyChanging();
-					this._Haslo = value;
-					this.SendPropertyChanged("Haslo");
-					this.OnHasloChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="FK_Badanie_Kierownik_laboratorium", Storage="_Badanies", ThisKey="Id_klab", OtherKey="Id_klab", DeleteRule="NO ACTION")]
-		public EntitySet<Badanie> Badanies
-		{
-			get
-			{
-				return this._Badanies;
-			}
-			set
-			{
-				this._Badanies.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_Badanies(Badanie entity)
-		{
-			this.SendPropertyChanging();
-			entity.Kierownik_laboratorium = this;
-		}
-		
-		private void detach_Badanies(Badanie entity)
-		{
-			this.SendPropertyChanging();
-			entity.Kierownik_laboratorium = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Laborant")]
 	public partial class Laborant : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -975,6 +717,12 @@ namespace Przychodnia
 		private string _Login;
 		
 		private string _Haslo;
+		
+		private bool _Kier;
+		
+		private System.DateTime _Aktywny;
+		
+		private System.Nullable<System.DateTime> _Wygasa;
 		
 		private EntitySet<Badanie> _Badanies;
 		
@@ -992,6 +740,12 @@ namespace Przychodnia
     partial void OnLoginChanged();
     partial void OnHasloChanging(string value);
     partial void OnHasloChanged();
+    partial void OnKierChanging(bool value);
+    partial void OnKierChanged();
+    partial void OnAktywnyChanging(System.DateTime value);
+    partial void OnAktywnyChanged();
+    partial void OnWygasaChanging(System.Nullable<System.DateTime> value);
+    partial void OnWygasaChanged();
     #endregion
 		
 		public Laborant()
@@ -1100,6 +854,66 @@ namespace Przychodnia
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="kier", Storage="_Kier", DbType="Bit NOT NULL")]
+		public bool Kier
+		{
+			get
+			{
+				return this._Kier;
+			}
+			set
+			{
+				if ((this._Kier != value))
+				{
+					this.OnKierChanging(value);
+					this.SendPropertyChanging();
+					this._Kier = value;
+					this.SendPropertyChanged("Kier");
+					this.OnKierChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="aktywny", Storage="_Aktywny", DbType="DateTime NOT NULL")]
+		public System.DateTime Aktywny
+		{
+			get
+			{
+				return this._Aktywny;
+			}
+			set
+			{
+				if ((this._Aktywny != value))
+				{
+					this.OnAktywnyChanging(value);
+					this.SendPropertyChanging();
+					this._Aktywny = value;
+					this.SendPropertyChanged("Aktywny");
+					this.OnAktywnyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="wygasa", Storage="_Wygasa", DbType="DateTime")]
+		public System.Nullable<System.DateTime> Wygasa
+		{
+			get
+			{
+				return this._Wygasa;
+			}
+			set
+			{
+				if ((this._Wygasa != value))
+				{
+					this.OnWygasaChanging(value);
+					this.SendPropertyChanging();
+					this._Wygasa = value;
+					this.SendPropertyChanged("Wygasa");
+					this.OnWygasaChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="FK_Badanie_Laborant", Storage="_Badanies", ThisKey="Id_lab", OtherKey="Id_lab", DeleteRule="NO ACTION")]
 		public EntitySet<Badanie> Badanies
 		{
@@ -1164,6 +978,10 @@ namespace Przychodnia
 		
 		private short _Kod_spec;
 		
+		private System.DateTime _Aktywny;
+		
+		private System.Nullable<System.DateTime> _Wygasa;
+		
 		private EntityRef<Sl_specjalizacji> _Sl_specjalizacji;
 		
 		private EntitySet<Wizyta> _Wizytas;
@@ -1184,6 +1002,10 @@ namespace Przychodnia
     partial void OnHasloChanged();
     partial void OnKod_specChanging(short value);
     partial void OnKod_specChanged();
+    partial void OnAktywnyChanging(System.DateTime value);
+    partial void OnAktywnyChanged();
+    partial void OnWygasaChanging(System.Nullable<System.DateTime> value);
+    partial void OnWygasaChanged();
     #endregion
 		
 		public Lekarz()
@@ -1309,6 +1131,46 @@ namespace Przychodnia
 					this._Kod_spec = value;
 					this.SendPropertyChanged("Kod_spec");
 					this.OnKod_specChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="aktywny", Storage="_Aktywny", DbType="DateTime NOT NULL")]
+		public System.DateTime Aktywny
+		{
+			get
+			{
+				return this._Aktywny;
+			}
+			set
+			{
+				if ((this._Aktywny != value))
+				{
+					this.OnAktywnyChanging(value);
+					this.SendPropertyChanging();
+					this._Aktywny = value;
+					this.SendPropertyChanged("Aktywny");
+					this.OnAktywnyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="wygasa", Storage="_Wygasa", DbType="DateTime")]
+		public System.Nullable<System.DateTime> Wygasa
+		{
+			get
+			{
+				return this._Wygasa;
+			}
+			set
+			{
+				if ((this._Wygasa != value))
+				{
+					this.OnWygasaChanging(value);
+					this.SendPropertyChanging();
+					this._Wygasa = value;
+					this.SendPropertyChanged("Wygasa");
+					this.OnWygasaChanged();
 				}
 			}
 		}
@@ -1739,6 +1601,10 @@ namespace Przychodnia
 		
 		private string _Haslo;
 		
+		private System.DateTime _Aktywny;
+		
+		private System.Nullable<System.DateTime> _Wygasa;
+		
 		private EntitySet<Wizyta> _Wizytas;
 		
     #region Extensibility Method Definitions
@@ -1755,6 +1621,10 @@ namespace Przychodnia
     partial void OnLoginChanged();
     partial void OnHasloChanging(string value);
     partial void OnHasloChanged();
+    partial void OnAktywnyChanging(System.DateTime value);
+    partial void OnAktywnyChanged();
+    partial void OnWygasaChanging(System.Nullable<System.DateTime> value);
+    partial void OnWygasaChanged();
     #endregion
 		
 		public Rejestratorka()
@@ -1859,6 +1729,46 @@ namespace Przychodnia
 					this._Haslo = value;
 					this.SendPropertyChanged("Haslo");
 					this.OnHasloChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="aktywny", Storage="_Aktywny", DbType="DateTime NOT NULL")]
+		public System.DateTime Aktywny
+		{
+			get
+			{
+				return this._Aktywny;
+			}
+			set
+			{
+				if ((this._Aktywny != value))
+				{
+					this.OnAktywnyChanging(value);
+					this.SendPropertyChanging();
+					this._Aktywny = value;
+					this.SendPropertyChanged("Aktywny");
+					this.OnAktywnyChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="wygasa", Storage="_Wygasa", DbType="DateTime")]
+		public System.Nullable<System.DateTime> Wygasa
+		{
+			get
+			{
+				return this._Wygasa;
+			}
+			set
+			{
+				if ((this._Wygasa != value))
+				{
+					this.OnWygasaChanging(value);
+					this.SendPropertyChanging();
+					this._Wygasa = value;
+					this.SendPropertyChanged("Wygasa");
+					this.OnWygasaChanged();
 				}
 			}
 		}
