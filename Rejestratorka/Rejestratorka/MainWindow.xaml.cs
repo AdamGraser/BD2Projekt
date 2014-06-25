@@ -72,7 +72,7 @@ namespace Rejestratorka
                     addPatientDialog.PatientStreet, addPatientDialog.PatientPostCode, addPatientDialog.PatientCity))
                 {
                     System.Windows.MessageBox.Show("Pacjent został pomyślnie dodany do bazy danych.", "Dodanie nowego pacjenta", MessageBoxButton.OK, MessageBoxImage.Information);
-                    RefreshVisitsDataGrid(null);
+                    RefreshVisitsDataGrid(0);
                 }
                 else
                 {
@@ -252,21 +252,8 @@ namespace Rejestratorka
         private void findVisitButton_Click(object sender, RoutedEventArgs e)
         {
             clearFilterButton2.IsEnabled = true;
-            switch (visitStatusComboBox.SelectedIndex)
-            {
-                case 0: 
-                    RefreshVisitsDataGrid(null);
-                    break;
-                case 1:
-                    RefreshVisitsDataGrid(false);
-                    break;
-                case 2:
-                    RefreshVisitsDataGrid(true);
-                    break;
-                default:
-                    RefreshVisitsDataGrid(null);
-                    break;            
-            }
+            RefreshVisitsDataGrid((byte)visitStatusComboBox.SelectedIndex);       
+            
      
             //wyczyszczenie dotychczasowej zawartości tabeli:
             if (visitsDataGrid.ItemsSource != null && !registeredVisitsTable.DefaultView.Equals((DataView)visitsDataGrid.ItemsSource))
@@ -342,7 +329,7 @@ namespace Rejestratorka
             string dateOfVisit = (string)rowValues[4];
             string doctor = (string)rowValues[5];
             */
-            if (db.DeleteVisit(visitsIdList[visitsDataGrid.SelectedIndex]))
+            if (db.CancelVisit(visitsIdList[visitsDataGrid.SelectedIndex]))
             {
                 System.Windows.MessageBox.Show("Wizyta została anulowana.", "Anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Information);
                 visitsDataGrid.SelectedIndex = -1;
@@ -490,7 +477,7 @@ namespace Rejestratorka
 
             GetDataFromDB();
             */
-            RefreshVisitsDataGrid(null);
+            RefreshVisitsDataGrid(0);
         }
 
 
@@ -541,7 +528,7 @@ namespace Rejestratorka
             // <-- Tworzenie listy lekarzy.  
 
             //wypełnianie tabeli z wizytami:
-            RefreshVisitsDataGrid(null);
+            RefreshVisitsDataGrid(0);
         }
 
 
@@ -551,12 +538,14 @@ namespace Rejestratorka
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void clearFilterButton_Click(object sender, RoutedEventArgs e)
+        private void clearFilterButton2_Click(object sender, RoutedEventArgs e)
         {
             //wyczyszczenie pól filtra:
             patientNameTextBox2.Text = "";
             patientSurnameTextBox2.Text = "";
-            doctorsList2.SelectedIndex = -1; 
+            doctorsList2.SelectedIndex = -1;
+            visitStatusComboBox.SelectedIndex = 0;
+            visitDate2.SelectedDate = null;
            
             //przywrócenie zawartości tabeli:
             if (registeredVisitsTable.DefaultView.Count > 0)
@@ -772,6 +761,9 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void clearFilterButton1_Click(object sender, RoutedEventArgs e)
         {
+            patientNameTextBox1.Text = "";
+            patientSurnameTextBox1.Text = "";
+            peselTextBox.Text = "";
             ClearPatientsDataGrid();
         }
 
@@ -800,12 +792,12 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void PatientFilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (patientNameTextBox1.Text.Length > 0 || patientSurnameTextBox1.Text.Length > 0 || peselTextBox.IsMaskFull == true)
+            if (patientNameTextBox1.Text.Length > 0 || patientSurnameTextBox1.Text.Length > 0)
             {
                 findPatientButton.IsEnabled = true;
                 clearFilterButton1.IsEnabled = true;
             }
-            else
+            else if (peselTextBox.Text.Length == 0)
             {
                 findPatientButton.IsEnabled = false;
                 clearFilterButton1.IsEnabled = false;
@@ -821,7 +813,7 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void peselTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (peselTextBox.IsMaskFull == true)
+            if (peselTextBox.Text.Length > 0)
             {
                 findPatientButton.IsEnabled = true;
                 clearFilterButton1.IsEnabled = true;
@@ -838,7 +830,7 @@ namespace Rejestratorka
 
 
 
-        private void RefreshVisitsDataGrid(bool? visitStatus)
+        private void RefreshVisitsDataGrid(byte visitStatus)
         {
             //wypełnianie tabeli z wizytami:
             registeredVisitsTable = new DataTable();

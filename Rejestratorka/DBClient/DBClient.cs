@@ -450,7 +450,7 @@ namespace DBClient
         /// Wyszukuje w bazie danych wizyty, które się nie odbyły.
         /// </summary>
         /// <returns>Lista rekordów z tabeli Wizyta, które w kolumnie data_rej mają wartość mniejszą niż bieżący czas.</returns>
-        public Dictionary<int, VisitData> GetVisits(bool? status)
+        public Dictionary<int, VisitData> GetVisits(byte status)
         {
             Dictionary<int, VisitData> visitsList = new Dictionary<int, VisitData>();
             
@@ -494,14 +494,17 @@ namespace DBClient
                     visData.Doctor = vis.imie_lekarza + " " + vis.nazwisko_lekarza;
                     switch(vis.stan_wizyty)
                     {
-                        case null:
-                            visData.Status = "Niezrealizowana";
+                        case 0:
+                            visData.Status = "Zarejestowana";
                             break;
-                        case false:
-                            visData.Status = "W trakcie realizacji";
+                        case 1:
+                            visData.Status = "Realizowana";
                             break;
-                        case true:
-                            visData.Status = "Zrealizowana";
+                        case 2:
+                            visData.Status = "Anulowana";
+                            break;
+                        case 3:
+                            visData.Status = "Zakończona";
                             break;
                     }
                     visitsList.Add(vis.id, visData);
@@ -532,7 +535,7 @@ namespace DBClient
         /// <param name="id_wiz">ID wizyty, której stan ma być zmieniony.</param>
         /// <param name="nowy_stan">Nowy stan wizyty.</param>
         /// <returns>True jeśli aktualizacja rekordu w tabeli powiodła się, false jeśli wystąpił błąd.</returns>
-        public bool ChangeVisitState(int id_wiz, bool nowy_stan)
+        public bool ChangeVisitState(int id_wiz, byte nowy_stan)
         {
             bool retval = true;
 
@@ -807,11 +810,11 @@ namespace DBClient
 
 
         /// <summary>
-        /// Usuwa z bazy wizytę o wskazanym ID.
+        /// Anuluje wizytę o wskazanym ID.
         /// </summary>
         /// <param name="id_wiz">ID wizyty, która ma zostać usunięta.</param>
         /// <returns>true jeśli wizyta została pomyślnie usunięta z bazy danych, false jeśli wystąpił błąd.</returns>
-        public bool DeleteVisit(int id_wiz)
+        public bool CancelVisit(int id_wiz)
         {
             bool retval = true;
 
@@ -829,7 +832,7 @@ namespace DBClient
             //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
             foreach (Przychodnia.Wizyta wiz in query)
             {
-                db.Wizytas.DeleteOnSubmit(wiz);
+                wiz.Stan = 2; //zmiana stanu na "anulowana"
             }
 
             try

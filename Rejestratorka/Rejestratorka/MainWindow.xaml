@@ -29,10 +29,10 @@
                                 <xctk:MaskedTextBox x:Name="peselTextBox"  Width="300" Height="28" Mask="00000000000" TextChanged="peselTextBox_TextChanged" TabIndex="2"></xctk:MaskedTextBox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="20,10,0,20">
-                                <Button x:Name="findPatientButton"  Content="Szukaj" Width="90" Height="28" Click="findPatientButton_Click" IsEnabled="False" TabIndex="3" />                               
+                                <Button x:Name="findPatientButton"  Content="Szukaj" Width="90" Height="28" Click="findPatientButton_Click" IsEnabled="False" TabIndex="3" />
                                 <Button x:Name="clearFilterButton1"  Content="Wyczyść filtr" Width="90" Height="28" Margin="10,0,0,0" Click="clearFilterButton1_Click" IsEnabled="False" IsTabStop="False" />
                                 <Button Name="AddPatient" HorizontalAlignment="Center" Margin="10,0,0,0" Width="90" Height="28" Content="Dodaj pacjenta" Click="AddPatient_Click" IsTabStop="False" />
-                            </StackPanel>                           
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
@@ -46,7 +46,7 @@
                     <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65">
                         <Button x:Name="registerVisitButton" HorizontalAlignment="Center" Margin="0,10,0,0" Padding="4,0,4,0" Content="Rejestruj wizytę" Height="28" Click="registerVisitButton_Click" IsEnabled="False" TabIndex="7"/>
                     </StackPanel>
-                    <StackPanel DockPanel.Dock="Top">
+                    <StackPanel DockPanel.Dock="Top" Background="#FFE5E4E2">
                         <ScrollViewer Name="TabRejScrollViewer" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                             <StackPanel>
                                 <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
@@ -88,9 +88,10 @@
                             <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
                                 <Label Content="Stan wizyty:" Width="100" />
                                 <ComboBox x:Name="visitStatusComboBox" Width="300" Height="28" SelectionChanged="visitStatusComboBox_SelectionChanged" TabIndex="3" SelectedIndex="0">
-                                    <ComboBoxItem Content="Wizyta niezrealizowana"/>
-                                    <ComboBoxItem Content="Wizyta w trakcie realizacji"/>
-                                    <ComboBoxItem Content="Wizyta zrealizowana"/>
+                                    <ComboBoxItem Content="Zarejestrowana"/>
+                                    <ComboBoxItem Content="Realizowana"/>
+                                    <ComboBoxItem Content="Anulowana"/>
+                                    <ComboBoxItem Content="Zakończona"/>
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
@@ -98,8 +99,8 @@
                                 <DatePicker Name="visitDate2" Width="300" Height="28" SelectedDateChanged="visitDate2_SelectedDateChanged" TabIndex="4" IsTabStop="True"></DatePicker>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="20,10,0,20">
-                                <Button x:Name="findVisitButton" Content="Szukaj" Width="90" Height="28" Click="findVisitButton_Click" IsEnabled="False" TabIndex="5" />                                
-                                <Button x:Name="clearFilterButton2" Content="Wyczyść filtr" Width="90" Height="28" Margin="10,0,0,0" Click="clearFilterButton_Click" IsEnabled="False" IsTabStop="False" />
+                                <Button x:Name="findVisitButton" Content="Szukaj" Width="90" Height="28" Click="findVisitButton_Click" IsEnabled="False" TabIndex="5" />
+                                <Button x:Name="clearFilterButton2" Content="Wyczyść filtr" Width="90" Height="28" Margin="10,0,0,0" Click="clearFilterButton2_Click" IsEnabled="False" IsTabStop="False" />
                                 <Button x:Name="refreshButton2" Content="Odśwież dane" Width="90" Height="28" Margin="10,0,0,0" Click="refreshButton_Click" IsTabStop="False"/>
                             </StackPanel>
                         </StackPanel>
