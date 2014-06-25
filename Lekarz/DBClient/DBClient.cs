@@ -115,7 +115,7 @@ namespace DBClient
         /// </summary>
         /// <param name="id_lek">ID aktualnie zalogowanego lekarza (wizyty zarejestrowane do niego zostaną pobrane z bazy).</param>
         /// <returns>Zwraca listę dat, imion i nazwisk oddzielonych spacjami lub null, jeśli wystąpił błąd.</returns>
-        public Dictionary<int, string> GetVisits(byte id_lek)
+        public Dictionary<int, string> GetVisits(byte id_lek, string patientName, string patientSurname, string patientPesel, byte visitStatus, DateTime? visitDate)
         {
             Dictionary<int, string> visitsList = new Dictionary<int, string>();
 
@@ -131,7 +131,8 @@ namespace DBClient
                 //Utworzenie zapytania.
                 var query = from Wizyta in db.Wizytas
                             join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
-                            where (Wizyta.Id_lek == id_lek && Wizyta.Stan == null && Wizyta.Data_rej >= DateTime.Now)
+                            where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej == visitDate && Pacjent.Imie == patientName + '%' && Pacjent.Nazwisko == patientSurname + '%' && Pacjent.Pesel >= long.Parse(patientPesel))
+                            orderby Wizyta.Data_rej descending
                             select new
                             {
                                 id = Wizyta.Id_wiz,
@@ -227,7 +228,7 @@ namespace DBClient
         /// <param name="id_wiz">ID wizyty, której stan ma być zmieniony.</param>
         /// <param name="nowy_stan">Nowy stan wizyty.</param>
         /// <returns>True jeśli aktualizacja rekordu w tabeli powiodła się, false jeśli wystąpił błąd.</returns>
-        public bool ChangeVisitState(int id_wiz, bool nowy_stan)
+        public bool ChangeVisitState(int id_wiz, byte nowy_stan)
         {
             bool retval = true;
 
@@ -334,10 +335,10 @@ namespace DBClient
             foreach (Przychodnia.Wizyta wiz in query)
             {
                 //Dokonanie żądanych zmian.
-                wiz.Stan = true;
+                wiz.Stan = 3; //zmiana stanu na "zakończona"
                 
-                if (bad_fiz)
-                    wiz.Data_wyk_bad = DateTime.Now;
+                //if (bad_fiz)
+                //    wiz.Data_wyk_bad = DateTime.Now;
 
                 if (opis != null && opis.Length > 0)
                     wiz.Opis = opis;
@@ -1017,5 +1018,124 @@ namespace DBClient
             return retval;
         }
          */
+
+        public byte GetUserID(string login)
+        {
+            byte doctorID = 0;
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {               
+                //Utworzenie zapytania.
+                var query = from Lekarz in db.Lekarzs
+                            where Lekarz.Login == login                                  
+                            select Lekarz.Id_lek;                
+
+                foreach (byte q in query)
+                {
+                    doctorID = q;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);               
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+            return doctorID;
+        }
+
+
+
+        /// <summary>
+        /// Usuwa z bazy wizytę o wskazanym ID.
+        /// </summary>
+        /// <param name="id_wiz">ID wizyty, która ma zostać usunięta.</param>
+        /// <returns>true jeśli wizyta została pomyślnie usunięta z bazy danych, false jeśli wystąpił błąd.</returns>
+        public bool DeleteVisit(int id_wiz)
+        {
+            bool retval = true;
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            var query = from Wizyta in db.Wizytas
+                        where Wizyta.Id_wiz == id_wiz
+                        select Wizyta;
+
+            //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
+            foreach (Przychodnia.Wizyta wiz in query)
+            {
+                db.Wizytas.DeleteOnSubmit(wiz);
+            }
+
+            try
+            {
+                //Wysłanie danych (wykonanie inserta). Rzuca SqlException, np. gdy klucz obcy nie odpowiada kluczowi głównemu w tabeli nadrzędnej.
+                db.SubmitChanges();
+
+                //Jeśli nie rzucił mięsem, dojdzie tutaj, czyli wszystko ok. Jeśli zostało już zacommitowane/rollbacknięte przez serwer, rzuci InvalidOper..., jeśli coś
+                //innego, rzuci Exception
+                transaction.Commit();
+            }
+            catch (InvalidOperationException invOper)
+            {
+                Console.WriteLine("Transakcja została już zaakceptowana/odrzucona LUB połączenie zostało zerwane.");
+                Console.WriteLine(invOper.Message);
+                Console.WriteLine(invOper.Source);
+                Console.WriteLine(invOper.HelpLink);
+                Console.WriteLine(invOper.StackTrace);
+                retval = false;
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine("Wystąpił błąd przy dodawaniu nowego rekordu, np. niezgodność klucza obcego w tabeli podrzędnej z kluczem głównym w tabeli nadrzędnej.");
+                Console.WriteLine(sqlEx.Message);
+                Console.WriteLine(sqlEx.Source);
+                Console.WriteLine(sqlEx.HelpLink);
+                Console.WriteLine(sqlEx.StackTrace);
+                retval = false;
+
+                //Rollback, bo coś poszło nie tak.
+                transaction.Rollback();
+
+                //Zwolnienie zasobów, bo po co je zajmować.
+                db.Dispose();
+
+                //Utworzenie od razu nowego obiektu do użycia następnym razem.
+                db = new Przychodnia.Przychodnia(connection);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Wystąpił błąd podczas próby zaakceptowania transakcji.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.HelpLink);
+                Console.WriteLine(ex.StackTrace);
+                retval = false;
+            }
+            finally
+            {
+                //Zawsze należy zamknąć połączenie.
+                connection.Close();
+            }
+
+            return retval;
+        }
     }
 }

@@ -22,9 +22,11 @@ namespace Lekarz
     public partial class MainWindow : Window
     {
         DBClient.DBClient db;  // klient bazy danych
+        List<int> visitsIdList;
         int currentVisitID;    // przechowuje ID wizyty, która właśnie się odbywa lub -1, jeśli lekarz nie przyjmuje teraz żadnego pacjenta/podczas której zlecone zostało badanie currentLabTestID
         byte currentLabRow;    // przechowuje nr wiersza listy zleconych badań laboratoryjnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co zlecone badanie
         int currentPhyRow;     // przechowuje nr wiersza listy wykonanych badań fizykalnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co wykonane badanie
+        byte currentUserID;
 
 
 
@@ -43,7 +45,7 @@ namespace Lekarz
 
                     currentVisitID = -1;
                     currentLabRow = 0;
-                    currentPhyRow = 0;
+                    currentPhyRow = 0;                    
 
                     GetDataFromDB();
 
@@ -71,13 +73,14 @@ namespace Lekarz
                     }
                     // <-- Tworzenie listy badań laboratoryjnych.
 
+                    visitDate.SelectedDate = DateTime.Today;
                     break;
                 }
             }
         }
 
 
-
+        /*
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Przyjmij wizytę".
         /// </summary>
@@ -90,13 +93,11 @@ namespace Lekarz
                 ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
                 currentVisitID = (int)item.Tag;
 
-                if (db.ChangeVisitState(currentVisitID, false))
-                {
-                    stan.Text = "W trakcie realizacji";
+                if (db.ChangeVisitState(currentVisitID, 1))
+                {                    
 
                     visitsList.Items.RemoveAt(visitsList.SelectedIndex);
-                    visitsList.SelectedIndex = -1;
-                    changeVisitStateButton.IsEnabled = false;
+                    visitsList.SelectedIndex = -1;                    
 
                     diagnosisExpander.IsEnabled = true;
                     laboratoryTestsExpander.IsEnabled = true;
@@ -109,7 +110,7 @@ namespace Lekarz
                 }
             }
         }
-
+        */
 
 
         /// <summary>
@@ -176,7 +177,7 @@ namespace Lekarz
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SaveVisit_Click(object sender, RoutedEventArgs e)
+        private void saveVisitButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentVisitID > -1)
             {
@@ -203,7 +204,7 @@ namespace Lekarz
                 //Czyszczenie elementów i list, zwijanie i wyłączanie expander'ów.
                 if (db.SaveVisit(currentVisitID, visDesc, physicalTestIsDone, diagnoza.Text))
                 {
-                    data_rej.Text = nazwa_pac.Text = stan.Text = "";
+                    data_rej.Text = nazwa_pac.Text = "";
 
                     opis.Clear();
                     diagnoza.Clear();                    
@@ -245,6 +246,16 @@ namespace Lekarz
         /// <param name="e"></param>
         private void visitsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (visitsList.SelectedIndex != -1)
+            {
+                beginVisitButton.IsEnabled = true;
+            }
+            else
+            {
+                beginVisitButton.IsEnabled = false;
+            }
+
+            
             if (currentVisitID == -1)
             {
                 ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
@@ -253,13 +264,11 @@ namespace Lekarz
                 string[] visit = temp.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
                 data_rej.Text = visit[0];
-                nazwa_pac.Text = visit[1];
-                stan.Text = "Nierozpoczęta";
-                changeVisitStateButton.IsEnabled = true;
+                nazwa_pac.Text = visit[1];               
 
                 VisitExpander.IsEnabled = true;
                 VisitExpander.IsExpanded = true;
-            }
+            }            
         }
 
 
@@ -280,13 +289,13 @@ namespace Lekarz
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
             visitsList.Items.Clear();
             data_rej.Text = "";
-            nazwa_pac.Text = "";
-            stan.Text = "";
+            nazwa_pac.Text = "";            
             opis.Text = "";
             diagnoza.Text = "";
             LabTestsList.SelectedIndex = -1;
             LabTestDesc.Text = "";
             PhyTestDesc.Text = "";
+            currentUserID = 0;
 
             diagnosisExpander.IsEnabled = false;
             diagnosisExpander.IsExpanded = false;
@@ -329,6 +338,7 @@ namespace Lekarz
             if (result == true)
             {
                 Title += " - " + loginWindow.Login;
+                currentUserID = db.GetUserID(loginWindow.Login);
                 return true;
             }
             else if (hardExit.v == true) //zamknięcie okna logowania powoduje zamknięcie aplikacji
@@ -353,30 +363,23 @@ namespace Lekarz
 
 
 
-        /// <summary>
-        /// Metoda obsługująca klikniecie przycisku "Odśwież dane".
-        /// Klikniecie przycisku powoduje pobranie aktualnych danych z bazy.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void refreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            visitsList.Items.Clear();
-            GetDataFromDB();
-        }
-
-
-
+        
         /// <summary>
         /// Metoda pobierająca dane z bazy i inicjalizująca kontrolki odpowiedzialne za ich prezentację.
         /// </summary>
         private void GetDataFromDB()
-        {
+        {            
             // --> Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.
-            Dictionary<int, string> visits = db.GetVisits(3);
+            Dictionary<int, string> visits = db.GetVisits(currentUserID, patientNameTextBox.Text, patientSurnameTextBox.Text, peselTextBox.Text, (byte)visitStatusComboBox.SelectedIndex, visitDate.SelectedDate);
+
+            if (visitsList.Items != null)
+            {
+                visitsList.Items.Clear();
+            }          
 
             if (visits != null && visits.Count > 0)
             {
+                visitsIdList = new List<int>();
                 foreach (var v in visits)
                 {
                     ListBoxItem item = new ListBoxItem();
@@ -384,6 +387,7 @@ namespace Lekarz
                     item.Tag = v.Key;
 
                     visitsList.Items.Add(item);
+                    visitsIdList.Add(v.Key);
                 }
             }
             else
@@ -417,6 +421,127 @@ namespace Lekarz
             ++currentPhyRow;
 
             PhyTestDesc.Clear();
+        }
+
+       
+
+        
+        private void VisitFilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (patientNameTextBox.Text.Length > 0 || patientSurnameTextBox.Text.Length > 0)
+            {
+                findVisitButton.IsEnabled = true;
+                clearFilterButton.IsEnabled = true;
+            }
+            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && visitDate.SelectedDate != DateTime.Today && peselTextBox.Text.Length > 0)
+            {
+                findVisitButton.IsEnabled = false;
+                clearFilterButton.IsEnabled = false;
+            }
+        }
+
+     
+        private void visitDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (visitDate.SelectedDate != DateTime.Today)
+            {
+                findVisitButton.IsEnabled = true;
+                clearFilterButton.IsEnabled = true;
+            }
+            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && peselTextBox.Text.Length > 0)
+            {
+                findVisitButton.IsEnabled = false;
+                clearFilterButton.IsEnabled = false;
+            }
+        }
+
+        private void peselTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (peselTextBox.Text.Length > 0)
+            {
+                findVisitButton.IsEnabled = true;
+                clearFilterButton.IsEnabled = true;
+            }
+            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && visitDate.SelectedDate != DateTime.Today)
+            {
+                findVisitButton.IsEnabled = false;
+                clearFilterButton.IsEnabled = false;
+            }
+        }
+
+        private void visitStatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (visitStatusComboBox.SelectedIndex != 0)
+            {
+                findVisitButton.IsEnabled = true;
+                clearFilterButton.IsEnabled = true;
+            }
+            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0  && visitDate.SelectedDate != DateTime.Today)
+            {
+                findVisitButton.IsEnabled = false;
+                clearFilterButton.IsEnabled = false;
+            }
+        }
+
+        private void beginVisitButton_Click(object sender, RoutedEventArgs e)
+        {
+            cancelVisitButton.IsEnabled = true;
+            saveVisitButton.IsEnabled = true;
+
+            if (currentVisitID == -1)
+            {
+                ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
+                currentVisitID = visitsIdList[visitsList.SelectedIndex];
+
+                if (db.ChangeVisitState(currentVisitID, 1))
+                {
+
+                    visitsList.Items.RemoveAt(visitsList.SelectedIndex);
+                    visitsList.SelectedIndex = -1;
+
+                    diagnosisExpander.IsEnabled = true;
+                    laboratoryTestsExpander.IsEnabled = true;
+                    physicalTestsExpander.IsEnabled = true;
+                }
+                else
+                {
+                    MessageBox.Show("Wystąpił błąd podczas zmiany stanu wizyty i nie został on zmieniony.", "Błąd akceptacji wizyty", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    currentVisitID = -1;
+                }
+            }
+        }
+
+        private void cancelVisitButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentVisitID != -1)
+            {
+                if (db.DeleteVisit(currentVisitID))
+                {
+                    System.Windows.MessageBox.Show("Wizyta została anulowana.", "Anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Information);
+                    currentVisitID = -1;
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Nie udało się anulować wizyty!", "Błąd - anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        private void findVisitButton_Click(object sender, RoutedEventArgs e)
+        {
+            GetDataFromDB();
+        }
+
+        private void clearFilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            //wyczyszczenie pól filtra:
+            patientNameTextBox.Text = "";
+            patientSurnameTextBox.Text = "";
+            peselTextBox.Text = "";
+            visitStatusComboBox.SelectedIndex = 0;
+            visitDate.SelectedDate = DateTime.Today;
+            clearFilterButton.IsEnabled = false;
+            GetDataFromDB();
         }
     }
 }
