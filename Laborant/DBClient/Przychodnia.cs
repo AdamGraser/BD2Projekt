@@ -331,7 +331,7 @@ namespace Przychodnia
 		
 		private string _Wynik;
 		
-		private System.Nullable<bool> _Zatw;
+		private byte _Stan;
 		
 		private string _Uwagi;
 		
@@ -361,8 +361,8 @@ namespace Przychodnia
     partial void OnOpisChanged();
     partial void OnWynikChanging(string value);
     partial void OnWynikChanged();
-    partial void OnZatwChanging(System.Nullable<bool> value);
-    partial void OnZatwChanged();
+    partial void OnStanChanging(byte value);
+    partial void OnStanChanged();
     partial void OnUwagiChanging(string value);
     partial void OnUwagiChanged();
     partial void OnKodChanging(System.Nullable<short> value);
@@ -499,22 +499,22 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="zatw", Storage="_Zatw", DbType="Bit")]
-		public System.Nullable<bool> Zatw
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="stan", Storage="_Stan", DbType="TinyInt NOT NULL")]
+		public byte Stan
 		{
 			get
 			{
-				return this._Zatw;
+				return this._Stan;
 			}
 			set
 			{
-				if ((this._Zatw != value))
+				if ((this._Stan != value))
 				{
-					this.OnZatwChanging(value);
+					this.OnStanChanging(value);
 					this.SendPropertyChanging();
-					this._Zatw = value;
-					this.SendPropertyChanged("Zatw");
-					this.OnZatwChanged();
+					this._Stan = value;
+					this.SendPropertyChanged("Stan");
+					this.OnStanChanged();
 				}
 			}
 		}
@@ -2105,9 +2105,7 @@ namespace Przychodnia
 		
 		private System.DateTime _Data_rej;
 		
-		private System.Nullable<bool> _Stan;
-		
-		private System.Nullable<System.DateTime> _Data_wyk_bad;
+		private byte _Stan;
 		
 		private string _Opis;
 		
@@ -2135,10 +2133,8 @@ namespace Przychodnia
     partial void OnId_wizChanged();
     partial void OnData_rejChanging(System.DateTime value);
     partial void OnData_rejChanged();
-    partial void OnStanChanging(System.Nullable<bool> value);
+    partial void OnStanChanging(byte value);
     partial void OnStanChanged();
-    partial void OnData_wyk_badChanging(System.Nullable<System.DateTime> value);
-    partial void OnData_wyk_badChanged();
     partial void OnOpisChanging(string value);
     partial void OnOpisChanged();
     partial void OnDiagnozaChanging(string value);
@@ -2200,8 +2196,8 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="stan", Storage="_Stan", DbType="Bit")]
-		public System.Nullable<bool> Stan
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="stan", Storage="_Stan", DbType="TinyInt NOT NULL")]
+		public byte Stan
 		{
 			get
 			{
@@ -2216,26 +2212,6 @@ namespace Przychodnia
 					this._Stan = value;
 					this.SendPropertyChanged("Stan");
 					this.OnStanChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="data_wyk_bad", Storage="_Data_wyk_bad", DbType="DateTime")]
-		public System.Nullable<System.DateTime> Data_wyk_bad
-		{
-			get
-			{
-				return this._Data_wyk_bad;
-			}
-			set
-			{
-				if ((this._Data_wyk_bad != value))
-				{
-					this.OnData_wyk_badChanging(value);
-					this.SendPropertyChanging();
-					this._Data_wyk_bad = value;
-					this.SendPropertyChanged("Data_wyk_bad");
-					this.OnData_wyk_badChanged();
 				}
 			}
 		}
