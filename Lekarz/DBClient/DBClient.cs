@@ -1059,11 +1059,11 @@ namespace DBClient
 
 
         /// <summary>
-        /// Usuwa z bazy wizytę o wskazanym ID.
+        /// Anuluje wizytę o wskazanym ID.
         /// </summary>
         /// <param name="id_wiz">ID wizyty, która ma zostać usunięta.</param>
         /// <returns>true jeśli wizyta została pomyślnie usunięta z bazy danych, false jeśli wystąpił błąd.</returns>
-        public bool DeleteVisit(int id_wiz)
+        public bool CancelVisit(int id_wiz)
         {
             bool retval = true;
 
@@ -1081,7 +1081,7 @@ namespace DBClient
             //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
             foreach (Przychodnia.Wizyta wiz in query)
             {
-                db.Wizytas.DeleteOnSubmit(wiz);
+                wiz.Stan = 2; //zmiana stanu wizyty na "anulowana".
             }
 
             try
@@ -1132,6 +1132,57 @@ namespace DBClient
             finally
             {
                 //Zawsze należy zamknąć połączenie.
+                connection.Close();
+            }
+
+            return retval;
+        }
+
+        public bool? IsAccountExpired(string login)
+        {
+            bool? retval = false;
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {                
+
+                //Utworzenie zapytania.
+                var query = from Lekarz in db.Lekarzs
+                            where Lekarz.Login == login                                
+                            select Lekarz.Wygasa;
+
+                
+
+                foreach (DateTime? date in query)
+                {
+                    if (date == null || date > DateTime.Now)
+                    {                        
+                        retval = false;
+                    }
+                    else
+                    {
+                        retval = true;
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+                retval = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
                 connection.Close();
             }
 

@@ -412,15 +412,22 @@ namespace Lekarz
         /// <param name="e"></param>
         private void savePhysicalTestButton_Click(object sender, RoutedEventArgs e)
         {
-            TextBlock phyTest = new TextBlock();
-            phyTest.Text = PhyTestDesc.Text;
-            phyTest.TextWrapping = TextWrapping.Wrap;
+            DateTime lTT = DateTime.Now;
 
-            LaboratoryTests.Children.Insert(currentPhyRow, phyTest);
+            if (db.AddLabTest(currentVisitID, (byte)(currentPhyRow + 1), lTT, PhyTestDesc.Text, (short)(PhyTestsList.SelectedIndex + 1)))
+            {
+                TextBlock phyTest = new TextBlock();
+                phyTest.Text = PhyTestDesc.Text;
+                phyTest.TextWrapping = TextWrapping.Wrap;
 
-            ++currentPhyRow;
+                LaboratoryTests.Children.Insert(currentPhyRow, phyTest);
 
-            PhyTestDesc.Clear();
+                ++currentPhyRow;
+
+                PhyTestDesc.Clear();
+            }
+            else
+                MessageBox.Show("Wystąpił błąd podczas zapisu zlecenia badania laboratoryjnego i nie zostało ono zapisane.", "Błąd zapisu zlecenia", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
        
@@ -515,7 +522,7 @@ namespace Lekarz
         {
             if (currentVisitID != -1)
             {
-                if (db.DeleteVisit(currentVisitID))
+                if (db.CancelVisit(currentVisitID))
                 {
                     System.Windows.MessageBox.Show("Wizyta została anulowana.", "Anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Information);
                     currentVisitID = -1;

@@ -983,6 +983,59 @@ namespace DBClient
             }
 
             return retval;
-        }        
+        }
+
+
+
+        public bool? IsAccountExpired(string login)
+        {
+            bool? retval = false;
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {
+
+                //Utworzenie zapytania.
+                var query = from Lekarz in db.Lekarzs
+                            where Lekarz.Login == login
+                            select Lekarz.Wygasa;
+
+
+
+                foreach (DateTime? date in query)
+                {
+                    if (date == null || date > DateTime.Now)
+                    {
+                        retval = false;
+                    }
+                    else
+                    {
+                        retval = true;
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+                retval = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+
+            return retval;
+        }
     }
 }

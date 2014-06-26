@@ -39,16 +39,16 @@ namespace Rejestratorka
         {
             InitializeComponent();            
 
-           //while (true)
-           //{
-                //if (LogIn() == true)
-                //{
-                    //db = new DBClient.DBClient();
-                    //GetDataFromDB();
+           while (true)
+           {
+                if (LogIn() == true)
+                {
+                    db = new DBClient.DBClient();
+                    GetDataFromDB();
                     ClearPatientsDataGrid();
-                    //break;
-                //}                
-            //}
+                    break;
+                }                
+            }
         }
 
 

@@ -78,7 +78,18 @@ namespace Lekarz
             //Sprawdzanie czy w bazie istnieje podany użytkownik
             if (userFound == true)
             {
-                DialogResult = true;
+                if (db.IsAccountExpired(_login) == true)
+                {
+                    System.Windows.MessageBox.Show("Konto zostało zablokowane.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);
+                    DialogResult = false;
+                }
+                else if (db.IsAccountExpired(_login) == null)
+                {
+                    System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);
+                    DialogResult = false;
+                }
+                else
+                    DialogResult = true;
             }
             else
             {
