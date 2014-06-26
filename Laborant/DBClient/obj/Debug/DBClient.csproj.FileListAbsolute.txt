@@ -20,6 +20,5 @@ C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\DBClient
 C:\Users\Michal\Desktop\BD2Projekt-master(1)\BD2Projekt-master\Laborant\DBClient\obj\Debug\DBClient.pdb
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Laborant\DBClient\bin\Debug\DBClient.dll
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Laborant\DBClient\bin\Debug\DBClient.pdb
-C:\Users\Michal\Documents\GitHub\BD2Projekt\Laborant\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Laborant\DBClient\obj\Debug\DBClient.dll
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Laborant\DBClient\obj\Debug\DBClient.pdb

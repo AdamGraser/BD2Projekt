@@ -28,6 +28,8 @@ namespace Laborant
         bool done;                                    // determinuje czy laborant jest w trakcie wykonywania badania/edycji wykonanego badania (true) czy nie (false)
         Dictionary<int, List<byte>> labTestsAtVisit;  // kolekcja par <ID wizyty, liczba badań laboratoryjnych zleconych w trakcie tej wizyty> (tylko wizyty z dodatnią liczbą zleconych badań lab.)
 
+        // Stan badania po ostatnim szykaniu
+        byte currentState;
 
         /// <summary>
         /// Domyślny konstruktor. Obłsuguje logowanie. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
@@ -64,7 +66,7 @@ namespace Laborant
             Title = "Laborant";
             Visibility = System.Windows.Visibility.Hidden;
             db.ResetIdLab();
-            //db.Dispose(); TO NIE DZIAUA!!!!!!!!!!!111111111oneoneeleven1
+            db.Dispose();
             db = null;
 
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
@@ -135,6 +137,8 @@ namespace Laborant
         {
             ClearLabTestsLists();
             GetDataFromDB();
+            clearFilterButton.IsEnabled = true;
+            currentState = (byte)stateComboBox.SelectedIndex;
         }
 
         private void clearFilterButton_Click(object sender, RoutedEventArgs e)
@@ -144,6 +148,7 @@ namespace Laborant
             stateComboBox.SelectedIndex = 0;
             DateTo.SelectedDate = null;
             DateFrom.SelectedDate = null;
+            clearFilterButton.IsEnabled = true;
         }
 
         private void DateFromChanged(object sender, RoutedEventArgs e) { }
@@ -174,7 +179,19 @@ namespace Laborant
             if (done == true)
             {
                 Button s = (Button)sender;
-                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, (bool?)s.Tag);
+
+                byte stateToSave;
+
+                if ((bool?)s.Tag == false)
+                {
+                    stateToSave = 1; // Anulowane LAB
+                }
+                else
+                {
+                    stateToSave = 2; // Wykonane
+                }
+
+                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, stateToSave);
 
                 if (save == true)
                 {
@@ -232,8 +249,7 @@ namespace Laborant
         /// <param name="e"></param>
         void Lab_ExecuteLabTest_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: Poprawić warunek tak, żeby czytał to nie z ComboBoxa, a z zadania
-            if (stateComboBox.Text == "Zlecone")
+            if (currentState == 0) // Stan musi być "zlecone"
             {
                 Lab_Save.IsEnabled = true;
                 Lab_Cancel.IsEnabled = true;
@@ -335,7 +351,7 @@ namespace Laborant
         {
             // --> Tworzenie listy badań laboratoryjnych o wybranym stanie
 
-            Dictionary<int, List<string>> tests = db.GetLabTests(firstNameBox.Text, surnameBox.Text, stateComboBox.Text, DateFrom.SelectedDate, DateTo.SelectedDate);
+            Dictionary<int, List<string>> tests = db.GetLabTests(firstNameBox.Text, surnameBox.Text, stateComboBox.SelectedIndex, DateFrom.SelectedDate, DateTo.SelectedDate);
 
             if (tests != null && tests.Count > 0)
             {
@@ -345,9 +361,6 @@ namespace Laborant
                     foreach (var t in tests)
                     {
                         labTestsAtVisit.Add(t.Key, db.GetLabTestsIDs(t.Key));
-                        List<byte> dojpa = new List<byte>();
-                        dojpa.Add(2);
-                        labTestsAtVisit.Add(3,dojpa);
 
                         foreach (string str in t.Value)
                         {

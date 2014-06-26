@@ -28,12 +28,12 @@
                         <Label Content="Stan badania:"/>
                         <ComboBox x:Name="stateComboBox" Width="120" SelectedIndex="0">
                             <ComboBoxItem Content="Zlecone" HorizontalAlignment="Left" Width="118"/>
-                            <ComboBoxItem Content="Wykonane" HorizontalAlignment="Left" Width="118"/>
                             <ComboBoxItem Content="Anulowane LAB" HorizontalAlignment="Left" Width="118"/>
+                            <ComboBoxItem Content="Wykonane" HorizontalAlignment="Left" Width="118"/>
                             <ComboBoxItem Content="Anulowane KLAB" HorizontalAlignment="Left" Width="118"/>
                             <ComboBoxItem Content="Zatwierdzone" HorizontalAlignment="Left" Width="118"/>
                         </ComboBox>
-                        <Button x:Name="clearFilterButton" Margin="20,0,0,0" Padding="4,0,4,0" Content="Wyczyść filtr" Width="90" Height="28" Click="clearFilterButton_Click"/>
+                        <Button x:Name="clearFilterButton" Margin="20,0,0,0" Padding="4,0,4,0" Content="Wyczyść filtr" Width="90" Height="28" Click="clearFilterButton_Click" IsEnabled="False"/>
                         <Button x:Name="refreshButton" Margin="20,0,0,0" Padding="4,0,4,0" Content="Szukaj" Width="90" Height="28" Click="refreshButton_Click"/>
                     </StackPanel>
 

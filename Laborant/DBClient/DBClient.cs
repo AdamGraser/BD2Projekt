@@ -20,6 +20,7 @@ namespace DBClient
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
         static byte id_lab;   //ID laboranta obecnie zalogowanego w systemie
+        bool kier; //Informacja, czy dany laborant jest kierownikiem
 
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
@@ -43,6 +44,14 @@ namespace DBClient
             db.Dispose();
         }
 
+        /// <summary>
+        /// Akcesor do informacji nt. kierownika
+        /// </summary>
+        /// <returns></returns>
+        public bool isKier()
+        {
+            return kier;
+        }
 
 
         /// <summary>
@@ -91,6 +100,17 @@ namespace DBClient
                         break;
                     }
                 }
+
+                //Sprawdzanie, czy to jest kierownik
+                var query2 = from Laborant in db.Laborants
+                            where Laborant.Id_lab == id_lab
+                            select Laborant.Kier;
+
+                //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
+                foreach (bool q in query2)
+                {
+                    kier = q;
+                }
             }
             catch (Exception e)
             {
@@ -115,7 +135,7 @@ namespace DBClient
         /// Pobiera z tabel Badanie i Sl_badan nazwy + opisy i daty zlecenia, zrealizowanych lub nie, badań laboratoryjnych.
         /// </summary>
         /// <returns>Zwraca listę dat zlecenia i nazw wybranych badań laboratoryjnych lub null, jeśli wystąpił błąd.</returns>
-        public Dictionary<int, List<string>> GetLabTests(string docFirstName, string docSurname, string state, DateTime? dateFrom, DateTime? dateTo)
+        public Dictionary<int, List<string>> GetLabTests(string docFirstName, string docSurname, int state, DateTime? dateFrom, DateTime? dateTo)
         {
             Dictionary<int, List<string>> labTests = new Dictionary<int, List<string>>();
 
@@ -133,7 +153,7 @@ namespace DBClient
                             join Sl_badan in db.Sl_badans on Badanie.Kod equals Sl_badan.Kod
                             join Wizyta in db.Wizytas on Badanie.Id_wiz equals Wizyta.Id_wiz
                             join Lekarz in db.Lekarzs on Wizyta.Id_lek equals Lekarz.Id_lek
-                            orderby Badanie.Id_wiz, Badanie.Id_bad
+                            orderby Badanie.Id_wiz, Badanie.Id_bad where Badanie.Stan == state
                             select new
                             {
                                 idWiz = Badanie.Id_wiz,
@@ -146,8 +166,6 @@ namespace DBClient
 
                 int iw = -1;
                 List<string> lt = null;
-                
-                //TODO: Jakoś odfiltrować, żeby zwróciło tylko badania w konkretnym stanie
 
                 //Wykonanie zapytania.
                 foreach (var b in query)
@@ -406,7 +424,7 @@ namespace DBClient
         /// <param name="wynik">Wynik badania.</param>
         /// <param name="zatw">null jeśli badanie zatwierdzono, false jeśli anulowano.</param>
         /// <returns>True jeśli cały proces przebiegł prawidłowo, false jeśli nastąpił błąd przy wysyłaniu danych/próbie zapisu danych w bazie, null jeśli podano null jako argument "wynik".</returns>
-        public bool? SaveLabTest(int id_wiz, byte id_bad, DateTime data_wyk_bad, string wynik, bool? zatw)
+        public bool? SaveLabTest(int id_wiz, byte id_bad, DateTime data_wyk_bad, string wynik, byte state)
         {
             bool? retval = true;
 
@@ -429,7 +447,7 @@ namespace DBClient
                 {
                     bad.Data_wyk_bad = data_wyk_bad;
                     bad.Wynik = wynik;
-                    bad.Zatw = zatw;
+                    bad.Stan = state;
                 }
                 else
                     retval = null;
