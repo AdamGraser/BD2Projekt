@@ -370,7 +370,7 @@ namespace Lekarz
         private void GetDataFromDB()
         {            
             // --> Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.
-            Dictionary<int, string> visits = db.GetVisits(currentUserID, patientNameTextBox.Text, patientSurnameTextBox.Text, peselTextBox.Text, (byte)visitStatusComboBox.SelectedIndex, visitDate.SelectedDate);
+            Dictionary<int, string> visits = db.GetVisits(currentUserID, patientNameTextBox.Text, patientSurnameTextBox.Text, (byte)visitStatusComboBox.SelectedIndex, visitDate.SelectedDate);
 
             if (visitsList.Items != null)
             {
@@ -440,7 +440,7 @@ namespace Lekarz
                 findVisitButton.IsEnabled = true;
                 clearFilterButton.IsEnabled = true;
             }
-            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && visitDate.SelectedDate != DateTime.Today && peselTextBox.Text.Length > 0)
+            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && visitDate.SelectedDate != DateTime.Today)
             {
                 findVisitButton.IsEnabled = false;
                 clearFilterButton.IsEnabled = false;
@@ -455,26 +455,13 @@ namespace Lekarz
                 findVisitButton.IsEnabled = true;
                 clearFilterButton.IsEnabled = true;
             }
-            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && peselTextBox.Text.Length > 0)
+            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0)
             {
                 findVisitButton.IsEnabled = false;
                 clearFilterButton.IsEnabled = false;
             }
         }
-
-        private void peselTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (peselTextBox.Text.Length > 0)
-            {
-                findVisitButton.IsEnabled = true;
-                clearFilterButton.IsEnabled = true;
-            }
-            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && visitDate.SelectedDate != DateTime.Today)
-            {
-                findVisitButton.IsEnabled = false;
-                clearFilterButton.IsEnabled = false;
-            }
-        }
+        
 
         private void visitStatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -543,8 +530,7 @@ namespace Lekarz
         {
             //wyczyszczenie pól filtra:
             patientNameTextBox.Text = "";
-            patientSurnameTextBox.Text = "";
-            peselTextBox.Text = "";
+            patientSurnameTextBox.Text = "";           
             visitStatusComboBox.SelectedIndex = 0;
             visitDate.SelectedDate = DateTime.Today;
             clearFilterButton.IsEnabled = false;

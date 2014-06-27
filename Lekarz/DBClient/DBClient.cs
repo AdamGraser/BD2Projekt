@@ -115,7 +115,7 @@ namespace DBClient
         /// </summary>
         /// <param name="id_lek">ID aktualnie zalogowanego lekarza (wizyty zarejestrowane do niego zostaną pobrane z bazy).</param>
         /// <returns>Zwraca listę dat, imion i nazwisk oddzielonych spacjami lub null, jeśli wystąpił błąd.</returns>
-        public Dictionary<int, string> GetVisits(byte id_lek, string patientName, string patientSurname, string patientPesel, byte visitStatus, DateTime? visitDate)
+        public Dictionary<int, string> GetVisits(byte id_lek, string patientName, string patientSurname, byte visitStatus, DateTime? visitDate)
         {
             Dictionary<int, string> visitsList = new Dictionary<int, string>();
 
@@ -131,7 +131,7 @@ namespace DBClient
                 //Utworzenie zapytania.
                 var query = from Wizyta in db.Wizytas
                             join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
-                            where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej == visitDate && Pacjent.Imie == patientName + '%' && Pacjent.Nazwisko == patientSurname + '%' && Pacjent.Pesel >= long.Parse(patientPesel))
+                            where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej == visitDate && Pacjent.Imie == patientName + '%' && Pacjent.Nazwisko == patientSurname + '%')
                             orderby Wizyta.Data_rej descending
                             select new
                             {

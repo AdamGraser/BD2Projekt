@@ -25,11 +25,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
                                     <Label Content="Nazwisko:" Width="100"/>
                                     <TextBox x:Name="patientSurnameTextBox" Width="300" Height="28" TabIndex="1" TextChanged="VisitFilterTextBox_TextChanged"/>
-                                </StackPanel>
-                                <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
-                                    <Label Content="PESEL:" Width="100" />
-                                    <xctk:MaskedTextBox x:Name="peselTextBox"  Width="300" Height="28" Mask="00000000000" TextChanged="peselTextBox_TextChanged" TabIndex="2"></xctk:MaskedTextBox>
-                                </StackPanel>
+                                </StackPanel>                                
                                 <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
                                     <Label Content="Stan wizyty:" Width="100" />
                                     <ComboBox x:Name="visitStatusComboBox" Width="300" Height="28" SelectionChanged="visitStatusComboBox_SelectionChanged" TabIndex="3" SelectedIndex="0">
