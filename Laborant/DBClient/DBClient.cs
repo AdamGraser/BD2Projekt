@@ -27,7 +27,7 @@ namespace DBClient
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
         static byte id_lab;   //ID laboranta obecnie zalogowanego w systemie
-        bool kier; //Informacja, czy dany laborant jest kierownikiem
+        static bool kier; //Informacja, czy dany laborant jest kierownikiem
 
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
@@ -88,19 +88,24 @@ namespace DBClient
 
                 //Utworzenie zapytania.
                 var query = from Laborant in db.Laborants
-                                       where Laborant.Login == login &&
-                                             Laborant.Haslo.StartsWith(temp) &&
-                                             Laborant.Haslo.Length == temp.Length
-                                       select Laborant.Id_lab;
+                            where Laborant.Login == login &&
+                                  Laborant.Haslo.StartsWith(temp) &&
+                                  Laborant.Haslo.Length == temp.Length
+                            select new
+                            {
+                                id = Laborant.Id_lab,
+                                kier = Laborant.Kier
+                            };
 
                 id_lab = 0;
 
                 //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
-                foreach (byte q in query)
+                foreach (var q in query)
                 {
                     if (id_lab == 0)
                     {
-                        id_lab = q;
+                        id_lab = q.id;
+                        kier = q.kier;
                         retval = true;
                     }
                     else
@@ -109,17 +114,6 @@ namespace DBClient
                         retval = null;
                         break;
                     }
-                }
-
-                //Sprawdzanie, czy to jest kierownik
-                var query2 = from Laborant in db.Laborants
-                            where Laborant.Id_lab == id_lab
-                            select Laborant.Kier;
-
-                //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
-                foreach (bool q in query2)
-                {
-                    kier = q;
                 }
             }
             catch (Exception e)
