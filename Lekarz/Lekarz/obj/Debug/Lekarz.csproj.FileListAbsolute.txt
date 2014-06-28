@@ -1,22 +1,3 @@
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\bin\Debug\Lekarz.exe.config
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz.csprojResolveAssemblyReference.cache
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\MainWindow.baml
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\MainWindow.g.cs
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\App.g.cs
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz_MarkupCompile.cache
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz.g.resources
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz.Properties.Resources.resources
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz.csproj.GenerateResource.Cache
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\bin\Debug\Lekarz.exe
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\bin\Debug\Lekarz.pdb
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz.exe
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz.pdb
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\bin\Debug\DBClient.dll
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\bin\Debug\DBClient.pdb
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\LoginWindow.baml
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\LoginWindow.g.cs
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\AboutDialog.baml
-C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\AboutDialog.g.cs
 E:\Adam\House of dog\studia\bd-projekt\Lekarz\Lekarz\bin\Debug\Lekarz.exe.config
 E:\Adam\House of dog\studia\bd-projekt\Lekarz\Lekarz\obj\Debug\Lekarz.exe
 E:\Adam\House of dog\studia\bd-projekt\Lekarz\Lekarz\obj\Debug\Lekarz.pdb
@@ -55,3 +36,10 @@ C:\Users\Michal\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz_Marku
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz.g.resources
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz.Properties.Resources.resources
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Lekarz\Lekarz\obj\Debug\Lekarz.csproj.GenerateResource.Cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz.csprojResolveAssemblyReference.cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\AboutDialog.baml
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\LoginWindow.baml
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\AboutDialog.g.cs
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\LoginWindow.g.cs
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\App.g.cs
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz_MarkupCompile.cache

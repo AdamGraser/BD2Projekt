@@ -459,7 +459,7 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="opis", Storage="_Opis", DbType="VarChar(MAX) NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="opis", Storage="_Opis", DbType="Text NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
 		public string Opis
 		{
 			get
@@ -479,7 +479,7 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="wynik", Storage="_Wynik", DbType="VarChar(MAX)", UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="wynik", Storage="_Wynik", DbType="Text", UpdateCheck=UpdateCheck.Never)]
 		public string Wynik
 		{
 			get
@@ -2216,7 +2216,7 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="opis", Storage="_Opis", DbType="VarChar(MAX)", UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="opis", Storage="_Opis", DbType="Text", UpdateCheck=UpdateCheck.Never)]
 		public string Opis
 		{
 			get
