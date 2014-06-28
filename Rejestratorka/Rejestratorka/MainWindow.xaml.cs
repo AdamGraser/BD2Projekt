@@ -813,17 +813,18 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void peselTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (peselTextBox.Text.Length > 0)
+            if (findPatientButton != null && clearFilterButton1 != null)
             {
-                findPatientButton.IsEnabled = true;
-                clearFilterButton1.IsEnabled = true;
-            }
-            else if (patientSurnameTextBox1.Text.Length == 0 && patientSurnameTextBox1.Text.Length == 0)
-            {
-                if (findPatientButton != null) //bez tego przy pierwszym uruchomieniu wyrzuca wyjątek.
-                    findPatientButton.IsEnabled = false;
-                if (clearFilterButton1 != null)
-                    clearFilterButton1.IsEnabled = false;
+                if (peselTextBox.Text.Length > 0)
+                {                    
+                    findPatientButton.IsEnabled = true;                    
+                    clearFilterButton1.IsEnabled = true;
+                }
+                else if (patientSurnameTextBox1.Text.Length == 0 && patientSurnameTextBox1.Text.Length == 0)
+                {                   
+                   findPatientButton.IsEnabled = false;                    
+                   clearFilterButton1.IsEnabled = false;
+                }
             }
         }
 
