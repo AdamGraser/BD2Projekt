@@ -43,3 +43,4 @@ C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\AboutDialog.g.cs
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\LoginWindow.g.cs
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\App.g.cs
 C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\obj\Debug\Lekarz_MarkupCompile.cache
+C:\Users\Michał\OneDrive\Tymczasowe\BD\Lekarz\Lekarz\bin\Debug\Lekarz.exe.config

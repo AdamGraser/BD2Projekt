@@ -450,30 +450,36 @@ namespace Lekarz
      
         private void visitDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (visitDate.SelectedDate != DateTime.Today)
+            if (findVisitButton != null && clearFilterButton != null)
             {
-                findVisitButton.IsEnabled = true;
-                clearFilterButton.IsEnabled = true;
-            }
-            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0)
-            {
-                findVisitButton.IsEnabled = false;
-                clearFilterButton.IsEnabled = false;
+                if (visitDate.SelectedDate != DateTime.Today)
+                {
+                    findVisitButton.IsEnabled = true;
+                    clearFilterButton.IsEnabled = true;
+                }
+                else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0)
+                {
+                    findVisitButton.IsEnabled = false;
+                    clearFilterButton.IsEnabled = false;
+                }
             }
         }
         
 
         private void visitStatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (visitStatusComboBox.SelectedIndex != 0)
+            if (findVisitButton != null && clearFilterButton != null)
             {
-                findVisitButton.IsEnabled = true;
-                clearFilterButton.IsEnabled = true;
-            }
-            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0  && visitDate.SelectedDate != DateTime.Today)
-            {
-                findVisitButton.IsEnabled = false;
-                clearFilterButton.IsEnabled = false;
+                if (visitStatusComboBox.SelectedIndex != 0)
+                {
+                    findVisitButton.IsEnabled = true;
+                    clearFilterButton.IsEnabled = true;
+                }
+                else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitDate.SelectedDate != DateTime.Today)
+                {
+                    findVisitButton.IsEnabled = false;
+                    clearFilterButton.IsEnabled = false;
+                }
             }
         }
 
