@@ -25,10 +25,9 @@ namespace Laborant
         int currentVisitID;                           // przechowuje ID wizyty podczas której zlecone zostało badanie currentLabTestID
         byte currentLabTestID;                        // przechowuje ID badania lab. aktualnie wykonywanego przez laboranta lub -1 jeśli laborant nie wykonuje aktualnie żadnego badania lab.
         int currentLabTest;                           // przechowuje sumaryczny nr badania laboratoryjnego (sumowane są wszystkie niewykonane badania, zlecone we wszystkich wizytach, w kolejności rosnącej)
-        List<TestLabInfo> tests;                      // lista wyszukanych obecnie badań
-
-        // Stan badania po ostatnim szykaniu
-        byte currentState;
+        List<int> visitIDs;                           // lista ID wizyt kolejnych badań
+        List<byte> labTestIDs;                        // lista ID kolejnych badań
+        byte currentState;                            // aktualny stan badań widocznych na liście
 
         /// <summary>
         /// Domyślny konstruktor. Obłsuguje logowanie. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
@@ -60,6 +59,7 @@ namespace Laborant
             }
 
             Lab_Save.Tag = (bool?)null;
+            Lab_Accept.Tag = (bool?)null;
             Lab_Cancel.Tag = (bool?)false;
         }
 
@@ -75,9 +75,9 @@ namespace Laborant
         {
             Title = "Laborant";
             Visibility = System.Windows.Visibility.Hidden;
+            db.ResetIdLab();
             db.Dispose();
             db = null;
-            db.ResetIdLab();
 
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
             ClearLabTestsLists();
@@ -152,9 +152,6 @@ namespace Laborant
             clearFilterButton.IsEnabled = false;
         }
 
-        private void DateFromChanged(object sender, RoutedEventArgs e) { }
-        private void DateToChanged(object sender, RoutedEventArgs e) { }
-
         /// <summary>
         /// Czyści listę niewykonanych badań laboratoryjnych, ew. aktywuje ją i przywraca wyrównanie elementów do wartości domyślnych.
         /// Czyści również zbiór ID wizyt i ich list ID niewykonanych badań.
@@ -164,75 +161,93 @@ namespace Laborant
             Lab_LabTestsList.Items.Clear();
             Lab_LabTestsList.IsEnabled = true;
             Lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Top;
+
+            labTestIDs.Clear();
+            visitIDs.Clear();
         }
 
 
 
         /// <summary>
-        /// Obsługa kliknięcia przycisków "Wykonaj", Zatwierdź i "Anuluj".
+        /// Obsługa kliknięcia przycisków "Wykonaj", "Zatwierdź" i "Anuluj".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Lab_Save_Click(object sender, RoutedEventArgs e)
         {
 
-                Button s = (Button)sender;
+            Button s = (Button)sender;
 
-                byte stateToSave;
+            byte stateToSave;
 
-                if ((bool?)s.Tag == false)
+            if ((bool?)s.Tag == false) // Kliknięto "Anuluj"
+            {
+                if (currentState == 2) // Wykonane
                 {
-                    if (currentState == 2)
-                    {
-                        stateToSave = 3; // Anulowane KLAB
+                    stateToSave = 3; // Anulowane KLAB
 
-                        if (Lab_LabCancelInfo.Text.Length < 1) // Puste pole opisu
-                        {
-                            MessageBox.Show("Aby anulować badanie, trzeba podać powód!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            return;
-                        }
-                    }
-                    else
+                    if (Lab_LabCancelInfo.Text.Length < 1) // Puste pole opisu
                     {
-                        stateToSave = 1; // Anulowane LAB
+                        MessageBox.Show("Aby anulować badanie, należy podać powód!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
                     }
                 }
                 else
                 {
-                    if (currentState == 2)
+                    stateToSave = 1; // Anulowane LAB
+
+                    if (Lab_LabTestResult.Text.Length < 1) // Puste pole wyniku
                     {
-                        stateToSave = 4; // Zatwierdzone
-                    }
-                    else
-                    {
-                        stateToSave = 2; // Wykonane
+                        MessageBox.Show("Aby anulować badanie, należy podać powód anulowania w rubryce \"Wynik\"!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
                     }
                 }
-
-                bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, Lab_LabCancelInfo.Text, stateToSave, currentState);
-
-                if (save == true)
+            }
+            else // Kliknięto "Zatwierdź" lub "Wykonaj"
+            {
+                if (currentState == 2)
                 {
-                    //Usunięcie wybranego wiersza:
-                    Lab_LabTestsList.Items.RemoveAt(currentLabTest);
-
-                    //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
-                    ClearControlls();
-
-                    currentLabTest = -1;
-                    currentVisitID = -1;
-                    currentLabTestID = 0;
-
-                    Lab_LabTestsList.UnselectAll();
-
-                    //Dezaktywacja przycisków
-                    Lab_Save.IsEnabled = false;
-                    Lab_Cancel.IsEnabled = false;
+                    stateToSave = 4; // Zatwierdzone
                 }
-                else if (save == false)
-                    MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                 else
-                    MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku - prawdopodobnie stan badania został zmieniony przez innego laboranta", "Zmieniony rekord", MessageBoxButton.OK, MessageBoxImage.Warning);
+                {
+                    stateToSave = 2; // Wykonane
+
+                    if (Lab_LabTestResult.Text.Length < 1) // Puste pole wyniku
+                    {
+                        MessageBox.Show("Aby wykonać badanie, należy wpisać jego wynik!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                }
+            }
+
+            bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, Lab_LabCancelInfo.Text, stateToSave, currentState);
+
+            if (save == true)
+            {
+                //Usunięcie wybranego wiersza:
+                Lab_LabTestsList.Items.RemoveAt(currentLabTest);
+                visitIDs.RemoveAt(currentLabTest);
+                labTestIDs.RemoveAt(currentLabTest);
+
+                //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
+                ClearControlls();
+                
+                currentLabTest = -1;
+                currentVisitID = -1;
+                currentLabTestID = 0;
+
+                Lab_LabTestsList.UnselectAll();
+
+                //Dezaktywacja przycisków
+                Lab_Save.IsEnabled = false;
+                Lab_Accept.IsEnabled = false;
+                Lab_Cancel.IsEnabled = false;
+            }
+            else if (save == false)
+                MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+            else
+                MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku - prawdopodobnie stan badania został zmieniony przez innego laboranta", "Zmieniony rekord", MessageBoxButton.OK, MessageBoxImage.Warning);
             
         }
 
@@ -277,16 +292,16 @@ namespace Laborant
 
             // Wyszukanie szczegółów konkretnego badania
             currentLabTest = Lab_LabTestsList.SelectedIndex;
-            currentVisitID = tests[currentLabTest].id_wiz;
-            currentLabTestID = tests[currentLabTest].id_bad;
+            currentVisitID = visitIDs[currentLabTest];
+            currentLabTestID = labTestIDs[currentLabTest];
 
             ListBoxItem item = (ListBoxItem)Lab_LabTestsList.Items.GetItemAt(currentLabTest);
             string temp = (string)item.Content;
 
-            string[] labTest = temp.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+            string[] labTest = temp.Split(new char[] { ' ' }, 3, StringSplitOptions.RemoveEmptyEntries);
 
-            Lab_LabTestOrderDate.Text = labTest[0];
-            Lab_LabTestName.Text = labTest[1];
+            Lab_LabTestOrderDate.Text = labTest[0] + " " + labTest[1];
+            Lab_LabTestName.Text = labTest[2];
 
             List<string> labTestDetails = db.GetLabTestDetails(currentVisitID, currentLabTestID);
 
@@ -302,10 +317,16 @@ namespace Laborant
                     else
                         Lab_LabTestResult.Text = labTestDetails[3];
 
-                    if (labTestDetails[3] == null)
+                    if (labTestDetails[4] == null)
                         Lab_LabCancelInfo.Text = "";
                     else
                         Lab_LabCancelInfo.Text = labTestDetails[4];
+
+                    if (labTestDetails[5] == null)
+                        Lab_LabTestExecuteDate.Text = "";
+                    else
+                        Lab_LabTestExecuteDate.Text = labTestDetails[5];
+
                 }
                 else
                     MessageBox.Show("Podano nieprawidłowe ID wizyty lub nieprawidłowe ID badania.", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -348,23 +369,25 @@ namespace Laborant
         private void GetDataFromDB()
         {
             // --> Tworzenie listy badań laboratoryjnych o wybranym stanie
+            List<TestLabInfo> tests = db.GetLabTests(stateComboBox.SelectedIndex, DateFrom.SelectedDate, DateTo.SelectedDate);
 
-            tests = db.GetLabTests(stateComboBox.SelectedIndex, DateFrom.SelectedDate, DateTo.SelectedDate);
+            visitIDs = new List<int>();
+            labTestIDs = new List<byte>();
 
             if (tests != null && tests.Count > 0)
             {
-                int labTestNumber = 0; //int wystarczy, hardcore na 4 mld niewykonanych badań lab. się nawet w Polsce nie zdarza :D
-
                 //Zapisywanie list ID badań dla każdej wizyty
                 foreach (var t in tests)
                 {
-                    ++labTestNumber;
-
+                    // Dodanie badania do wyświetlanej tabeli
                     ListBoxItem item = new ListBoxItem();
-                    item.Content = t.short_opis;
+                    item.Content = t.opis;
                     item.Margin = new Thickness(0.0, 0.0, 10.0, 0.0);
-
                     Lab_LabTestsList.Items.Add(item);
+
+                    // Dodanie ID badania i wizyty do odpowiednich list
+                    visitIDs.Add(t.id_wiz);
+                    labTestIDs.Add(t.id_bad);
                 }
             }
             else
@@ -384,6 +407,7 @@ namespace Laborant
         private void ClearControlls()
         {
             Lab_LabTestOrderDate.Text = "";
+            Lab_LabTestExecuteDate.Text = "";
             Lab_LabTestName.Text = "";
             Lab_LabTestDoctorName.Text = "";
             Lab_LabTestDescription.Text = "";

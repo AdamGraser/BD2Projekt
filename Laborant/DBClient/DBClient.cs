@@ -15,9 +15,9 @@ namespace DBClient
     {
         public int id_wiz;
         public byte id_bad;
-        public string short_opis;
+        public string opis;
     }
-
+  
     /// <summary>
     /// Realizuje połączenie z bazą danych oraz wszystkie operacje na niej wykonywane.
     /// </summary>
@@ -40,8 +40,6 @@ namespace DBClient
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
         }
-
-
 
         /// <summary>
         /// Zwalnia zasoby zajmowane przez pole "db: Przychodnia".
@@ -163,7 +161,8 @@ namespace DBClient
                 //Utworzenie zapytania.
                 var query = from Badanie in db.Badanies
                             join Sl_badan in db.Sl_badans on Badanie.Kod equals Sl_badan.Kod
-                            orderby Badanie.Id_wiz, Badanie.Id_bad where Badanie.Stan == state
+                            orderby Badanie.Id_wiz, Badanie.Id_bad
+                            where (Badanie.Stan == state) && (Sl_badan.Lab == true)
                             select new
                             {
                                 idWiz = Badanie.Id_wiz,
@@ -185,7 +184,7 @@ namespace DBClient
                         TestLabInfo tli = new TestLabInfo();
                         tli.id_wiz = b.idWiz;
                         tli.id_bad = b.idBad;
-                        tli.short_opis = b.dataZle.ToString() + " " + b.nazwa + ", " + b.opis;
+                        tli.opis = b.dataZle.ToString() + " " + b.nazwa;
                         labTests.Add(tli);
                     }
                 }
@@ -245,7 +244,8 @@ namespace DBClient
                                 imie = Lekarz.Imie,
                                 nazwisko = Lekarz.Nazwisko,
                                 wynik = Badanie.Wynik,
-                                kier_info = Badanie.Uwagi
+                                kier_info = Badanie.Uwagi,
+                                data_wyk_bad = Badanie.Data_wyk_bad
                             };
 
                 //Wykonanie zapytania.
@@ -257,6 +257,7 @@ namespace DBClient
                     labTestDetails.Add(l.nazwisko);
                     labTestDetails.Add(l.wynik);
                     labTestDetails.Add(l.kier_info);
+                    labTestDetails.Add(l.data_wyk_bad.ToString());
                 }
             }
             catch (Exception e)
@@ -307,7 +308,9 @@ namespace DBClient
             {
                 if (stan_przed_zmiana == bad.Stan)
                 {
-                    bad.Data_wyk_bad = data_wyk_bad;
+                    if (stan_po_zmianie == 2) // Jeśli to jest wykonanie badania, trzeba przypisać datę
+                        bad.Data_wyk_bad = data_wyk_bad;
+
                     bad.Wynik = wynik;
                     bad.Uwagi = powod_anul;
                     bad.Stan = stan_po_zmianie;
@@ -370,4 +373,205 @@ namespace DBClient
             return retval;
         }
     }
+    
+    /*
+    // TYLKO DO DEBUGOWANIA, GDY NIE MA POLACZENIA Z BAZA DANYCH!!!
+    public class DBClient
+    {
+        private class FikcyjneBadanie
+        {
+            public int id_wid;
+            public byte id_bad;
+            public byte stan;
+            public DateTime dataZle;
+            public DateTime? dataWyk;
+            public string typ_badania;
+            public string opis;
+            public string wynik;
+            public string uwagi;
+            public string imielek;
+            public string nazwlek;
+        }
+
+        static bool kier; //Informacja, czy dany laborant jest kierownikiem
+        List<FikcyjneBadanie> fikcyjnaBaza;
+
+        public DBClient()
+        {
+            fikcyjnaBaza = new List<FikcyjneBadanie>();
+            FikcyjneBadanie nowe;
+
+            nowe = new FikcyjneBadanie();
+            nowe.stan = 0;
+            nowe.id_wid = 1;
+            nowe.id_bad = 1;
+            nowe.imielek = "Adam";
+            nowe.nazwlek = "Kubełek";
+            nowe.dataWyk = null;
+            nowe.opis = "Pilne!";
+            nowe.typ_badania = "Badanie krwi";
+            nowe.dataZle = new DateTime(2014, 6, 13);
+            nowe.wynik = "";
+            nowe.uwagi = "";
+            fikcyjnaBaza.Add(nowe);
+
+            nowe = new FikcyjneBadanie();
+            nowe.stan = 0;
+            nowe.id_wid = 1;
+            nowe.id_bad = 2;
+            nowe.imielek = "Adam";
+            nowe.nazwlek = "Kubełek";
+            nowe.dataWyk = null;
+            nowe.opis = "";
+            nowe.typ_badania = "Badanie moczu";
+            nowe.dataZle = new DateTime(2014, 6, 13);
+            nowe.wynik = "";
+            nowe.uwagi = "";
+            fikcyjnaBaza.Add(nowe);
+
+            nowe = new FikcyjneBadanie();
+            nowe.stan = 0;
+            nowe.id_wid = 2;
+            nowe.id_bad = 1;
+            nowe.imielek = "Jan";
+            nowe.nazwlek = "Kowalski";
+            nowe.dataWyk = null;
+            nowe.opis = "Nie musi być dokładne";
+            nowe.typ_badania = "Prześwietlenie ręki";
+            nowe.dataZle = new DateTime(2014, 3, 12);
+            nowe.wynik = "";
+            nowe.uwagi = "";
+            fikcyjnaBaza.Add(nowe);
+        }
+
+        /// <summary>
+        /// Zwalnia zasoby zajmowane przez pole "db: Przychodnia".
+        /// </summary>
+        public void Dispose()
+        {
+        }
+
+        /// <summary>
+        /// Akcesor do informacji nt. kierownika
+        /// </summary>
+        /// <returns></returns>
+        public bool isKier()
+        {
+            return kier;
+        }
+
+
+        /// <summary>
+        /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
+        /// Jeśli dane są prawidłowe, zapisuje pobrane z bazy ID w polu id_lab.
+        /// </summary>
+        /// <param name="login">Login do wyszukania w bazie</param>
+        /// <param name="passwordHash">Hash hasła</param>
+        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy, null w przypadku wystąpienia błędu.</returns>
+        public bool? FindUser(string login, byte[] passwordHash)
+        {
+            bool? retval = true;
+
+            if (login == "kier")
+            {
+                kier = true;
+            }
+            else
+            {
+                kier = false;
+            }
+
+            return retval;
+        }
+
+
+
+        /// <summary>
+        /// Pobiera z tabel Badanie i Sl_badan nazwy + opisy i daty zlecenia, zrealizowanych lub nie, badań laboratoryjnych.
+        /// </summary>
+        /// <returns>Zwraca listę dat zlecenia i nazw wybranych badań laboratoryjnych lub null, jeśli wystąpił błąd.</returns>
+        public List<TestLabInfo> GetLabTests(int state, DateTime? dateFrom, DateTime? dateTo)
+        {
+            List<TestLabInfo> labTests = new List<TestLabInfo>();
+
+            foreach (FikcyjneBadanie b in fikcyjnaBaza)
+            {
+                if (b.stan == state)
+                {
+                    TestLabInfo doDodania = new TestLabInfo();
+                    doDodania.id_bad = b.id_bad;
+                    doDodania.id_wiz = b.id_wid;
+                    doDodania.opis = b.dataZle.ToString() + " " + b.typ_badania;
+                    labTests.Add(doDodania);
+                }
+            }
+            return labTests;
+        }
+
+        /// <summary>
+        /// Pobiera z tabel Badanie i Lekarz imię i nazwisko lekarza, który zlecił to badanie, oraz podany przez niego opis (dodatkowe informacje dla laboranta).
+        /// </summary>
+        /// <param name="id_wiz">ID wizyty, w trakcie której to badanie zostało zlecone.</param>
+        /// <param name="id_bad">L.p. badania dla tej wizyty.</param>
+        /// <returns>Listę trzech informacji szczegółowych o badaniu w podanej kolejności: opis, imię lekarza, nazwisko lekarza, wynik badania; lub null w przypadku wystąpienia błędu.</returns>
+        public List<string> GetLabTestDetails(int id_wiz, byte id_bad)
+        {
+            List<string> labTestDetails = null;
+
+            foreach (FikcyjneBadanie b in fikcyjnaBaza)
+            {
+                if ((b.id_bad == id_bad) && (b.id_wid == id_wiz))
+                {
+                    labTestDetails = new List<string>();
+
+                    //Zapisanie wyników w odpowiednich elementach.
+                    labTestDetails.Add(b.opis);
+                    labTestDetails.Add(b.imielek);
+                    labTestDetails.Add(b.nazwlek);
+                    labTestDetails.Add(b.wynik);
+                    labTestDetails.Add(b.uwagi);
+                    labTestDetails.Add(b.dataWyk.ToString());
+
+                    break;
+                }
+            }
+            return labTestDetails;
+        }
+
+        public void ResetIdLab()
+        {
+        }
+
+        /// <summary>
+        /// Funkcja aktualizuje dane dotyczące wskazanego badania laboratoryjnego. Argument "wynik" nie może być null.
+        /// </summary>
+        /// <param name="id_wiz">ID wizyty, w trakcie której to badanie zostało zlecone.</param>
+        /// <param name="id_bad">L.p. badania dla tej wizyty.</param>
+        /// <param name="data_wyk_bad">Data wykonania badania (null jeśli nie trzeba).</param>
+        /// <param name="wynik">Wynik badania.</param>
+        /// <param name="zatw">null jeśli badanie zatwierdzono, false jeśli anulowano.</param>
+        /// <returns>True jeśli cały proces przebiegł prawidłowo, false jeśli nastąpił błąd przy wysyłaniu danych/próbie zapisu danych w bazie, null jeśli podano null jako argument "wynik".</returns>
+        public bool? SaveLabTest(int id_wiz, byte id_bad, DateTime data_wyk_bad, string wynik, string powod_anul, byte stan_po_zmianie, byte stan_przed_zmiana)
+        {
+            bool? retval = false;
+
+            foreach (FikcyjneBadanie b in fikcyjnaBaza)
+            {
+                if ((b.id_bad == id_bad) && (b.id_wid == id_wiz))
+                {
+                    b.wynik = wynik;
+                    b.uwagi = powod_anul;
+                    b.stan = stan_po_zmianie;
+                    b.dataWyk = data_wyk_bad;
+
+                    retval = true;
+                    break;
+                }
+            }
+
+            return retval;
+        }
+    }
+    */
 }
+

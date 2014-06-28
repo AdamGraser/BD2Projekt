@@ -46,8 +46,6 @@ namespace Laborant
             loginTextBox.Focus();
         }
 
-
-
         public string Login
         {
             get
