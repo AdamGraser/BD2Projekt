@@ -26,7 +26,6 @@ namespace Lekarz
         int currentVisitID;    // przechowuje ID wizyty, która właśnie się odbywa lub -1, jeśli lekarz nie przyjmuje teraz żadnego pacjenta/podczas której zlecone zostało badanie currentLabTestID
         byte currentLabRow;    // przechowuje nr wiersza listy zleconych badań laboratoryjnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co zlecone badanie
         int currentPhyRow;     // przechowuje nr wiersza listy wykonanych badań fizykalnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co wykonane badanie
-        byte currentUserID;
 
 
 
@@ -283,6 +282,7 @@ namespace Lekarz
         {
             Title = "Lekarz";
             Visibility = System.Windows.Visibility.Hidden;
+            db.ResetIdLek();
             db.Dispose();
             db = null;
 
@@ -295,7 +295,6 @@ namespace Lekarz
             LabTestsList.SelectedIndex = -1;
             LabTestDesc.Text = "";
             PhyTestDesc.Text = "";
-            currentUserID = 0;
 
             diagnosisExpander.IsEnabled = false;
             diagnosisExpander.IsExpanded = false;
@@ -338,7 +337,6 @@ namespace Lekarz
             if (result == true)
             {
                 Title += " - " + loginWindow.Login;
-                currentUserID = db.GetUserID(loginWindow.Login);
                 return true;
             }
             else if (hardExit.v == true) //zamknięcie okna logowania powoduje zamknięcie aplikacji
@@ -370,7 +368,7 @@ namespace Lekarz
         private void GetDataFromDB()
         {            
             // --> Tworzenie listy wizyt dla bieżąco zalogowanego lekarza.
-            Dictionary<int, string> visits = db.GetVisits(currentUserID, patientNameTextBox.Text, patientSurnameTextBox.Text, (byte)visitStatusComboBox.SelectedIndex, visitDate.SelectedDate);
+            Dictionary<int, string> visits = db.GetVisits(patientNameTextBox.Text, patientSurnameTextBox.Text, (byte)visitStatusComboBox.SelectedIndex, visitDate.SelectedDate);
 
             if (visitsList.Items != null)
             {
@@ -380,6 +378,9 @@ namespace Lekarz
             if (visits != null && visits.Count > 0)
             {
                 visitsIdList = new List<int>();
+
+                visitsList.IsEnabled = true;
+
                 foreach (var v in visits)
                 {
                     ListBoxItem item = new ListBoxItem();

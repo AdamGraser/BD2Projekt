@@ -177,9 +177,12 @@ namespace DBClient
             {                        
                 if (pesel != null && name.Length == 0 && surname.Length == 0)
                 {
+                    double temp = (long)pesel / 10000000000;
+                    ++temp;
+                    
                     //Utworzenie zapytania.
                     var query = from Pacjent in db.Pacjents
-                                where Pacjent.Pesel == pesel
+                                where Pacjent.Pesel >= pesel && Pacjent.Pesel < (long)temp * 10000000000
                                 orderby Pacjent.Nazwisko
                                 select new
                                 {
@@ -224,7 +227,7 @@ namespace DBClient
                 {
                     //Utworzenie zapytania.
                     var query = from Pacjent in db.Pacjents
-                                where Pacjent.Imie == name + '%' && Pacjent.Nazwisko == surname + '%'
+                                where Pacjent.Imie.ToLower().StartsWith(name.ToLower()) && Pacjent.Nazwisko.ToLower().StartsWith(surname.ToLower())
                                 select new
                                 {
                                     id = Pacjent.Id_pac,
@@ -268,7 +271,7 @@ namespace DBClient
                 {
                     //Utworzenie zapytania.
                     var query = from Pacjent in db.Pacjents
-                                where Pacjent.Imie == name + '%' && Pacjent.Nazwisko == surname + '%' && Pacjent.Pesel >= pesel
+                                where Pacjent.Imie.ToLower().StartsWith(name.ToLower()) && Pacjent.Nazwisko.ToLower().StartsWith(surname.ToLower()) && Pacjent.Pesel >= pesel
                                 select new
                                 {
                                     id = Pacjent.Id_pac,

@@ -656,10 +656,18 @@ namespace Rejestratorka
             }
             DataTable patientsTable = new DataTable();
             Dictionary<int, PatientData> patients;
+
+            long pesel = long.Parse(peselTextBox.Text.Replace('_', '0'));
            
-            if (peselTextBox.Text.Length > 0)
+            if (pesel > 0)
             {
-                patients = db.GetPatients(patientNameTextBox1.Text, patientSurnameTextBox1.Text, long.Parse(peselTextBox.Text));
+                if (peselTextBox.Text[0] == '_')
+                {
+                    patients = new Dictionary<int, PatientData>();
+                    System.Windows.MessageBox.Show("Musisz podać pierwszą cyfrę numeru PESEL!", "Nieprawidłowy PESEL", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                    patients = db.GetPatients(patientNameTextBox1.Text, patientSurnameTextBox1.Text, pesel);
             }
             else
             {
@@ -720,11 +728,11 @@ namespace Rejestratorka
             //kolumny tabeli:
             DataGridTextColumn nameColumn = new DataGridTextColumn();
             nameColumn.Header = "Imię";
-            DataGridColumn surnameColumn = new DataGridTextColumn();
+            DataGridTextColumn surnameColumn = new DataGridTextColumn();
             surnameColumn.Header = "Nazwisko";
-            DataGridColumn dateOfBirthColum = new DataGridTextColumn();
+            DataGridTextColumn dateOfBirthColum = new DataGridTextColumn();
             dateOfBirthColum.Header = "Data urodzenia";
-            DataGridColumn peselColumn = new DataGridTextColumn();
+            DataGridTextColumn peselColumn = new DataGridTextColumn();
             peselColumn.Header = "PESEL";
             DataGridTextColumn genderColumn = new DataGridTextColumn();
             genderColumn.Header = "Płeć";

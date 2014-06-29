@@ -19,6 +19,7 @@ namespace DBClient
         SqlConnection connection;
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
+        static byte id_lek;
 
 
 
@@ -42,6 +43,16 @@ namespace DBClient
         public void Dispose()
         {
             db.Dispose();
+        }
+
+
+
+        /// <summary>
+        /// Przypisuje polu id_lek wartość 0 - jest to swoisty reset tego pola, który powinien dla bezpieczeństwa być wykonywany przy wylogowaniu.
+        /// </summary>
+        public void ResetIdLek()
+        {
+            id_lek = 0;
         }
 
 
@@ -74,17 +85,16 @@ namespace DBClient
                                              Lekarz.Haslo.Length == temp.Length
                                        select Lekarz.Id_lek;
 
-                byte lek_id = 0;
-                
                 foreach (byte q in query)
                 {
-                    if (lek_id == 0)
+                    if (id_lek == 0)
                     {
-                        lek_id = q;
+                        id_lek = q;
                         retval = true;
                     }
                     else
                     {
+                        id_lek = 0;
                         retval = null;
                         break;
                     }
@@ -113,9 +123,12 @@ namespace DBClient
         /// Pobiera z tabeli Wizyta i Pacjent daty wizyt oraz imiona i nazwiska pacjentów, dla których te wizyty zostały zarejestrowane.
         /// Dotyczy to tylko wizyt nieodbytych, które jeszcze mogą się odbyć (Wizyta.Stan == null &amp;&amp; Wizyta.Data_rej &lt; DateTime.today)
         /// </summary>
-        /// <param name="id_lek">ID aktualnie zalogowanego lekarza (wizyty zarejestrowane do niego zostaną pobrane z bazy).</param>
+        /// <param name="patientName"></param>
+        /// <param name="patientSurname"></param>
+        /// <param name="visitDate"></param>
+        /// <param name="visitStatus"></param>
         /// <returns>Zwraca listę dat, imion i nazwisk oddzielonych spacjami lub null, jeśli wystąpił błąd.</returns>
-        public Dictionary<int, string> GetVisits(byte id_lek, string patientName, string patientSurname, byte visitStatus, DateTime? visitDate)
+        public Dictionary<int, string> GetVisits(string patientName, string patientSurname, byte visitStatus, DateTime? visitDate)
         {
             Dictionary<int, string> visitsList = new Dictionary<int, string>();
 
@@ -128,24 +141,49 @@ namespace DBClient
 
             try
             {
-                //Utworzenie zapytania.
-                var query = from Wizyta in db.Wizytas
-                            join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
-                            where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej == visitDate && Pacjent.Imie == patientName + '%' && Pacjent.Nazwisko == patientSurname + '%')
-                            orderby Wizyta.Data_rej descending
-                            select new
-                            {
-                                id = Wizyta.Id_wiz,
-                                dataRej = Wizyta.Data_rej,
-                                nazwisko = Pacjent.Nazwisko,
-                                imie = Pacjent.Imie
-                            };
-
-                //Wykonanie zapytania, rekord po rekordzie.
-                foreach (var vis in query)
+                if (patientName.Length > 0 || patientName.Length > 0)
                 {
-                    //Łączenie dat, imion i nazwisk, zapisywanie ich.
-                    visitsList.Add(vis.id, vis.dataRej.ToString() + "  " + vis.nazwisko + " " + vis.imie);
+                    //Utworzenie zapytania.
+                    var query = from Wizyta in db.Wizytas
+                                join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
+                                where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej.Date == visitDate && Pacjent.Imie.ToLower().StartsWith(patientName.ToLower()) && Pacjent.Nazwisko.ToLower().StartsWith(patientSurname.ToLower()))
+                                orderby Wizyta.Data_rej descending
+                                select new
+                                {
+                                    id = Wizyta.Id_wiz,
+                                    dataRej = Wizyta.Data_rej,
+                                    nazwisko = Pacjent.Nazwisko,
+                                    imie = Pacjent.Imie
+                                };
+
+                    //Wykonanie zapytania, rekord po rekordzie.
+                    foreach (var vis in query)
+                    {
+                        //Łączenie dat, imion i nazwisk, zapisywanie ich.
+                        visitsList.Add(vis.id, vis.dataRej.ToString() + "  " + vis.nazwisko + " " + vis.imie);
+                    }
+                }
+                else
+                {
+                    //Utworzenie zapytania.
+                    var query = from Wizyta in db.Wizytas
+                                join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
+                                where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej.Date == visitDate)
+                                orderby Wizyta.Data_rej descending
+                                select new
+                                {
+                                    id = Wizyta.Id_wiz,
+                                    dataRej = Wizyta.Data_rej,
+                                    nazwisko = Pacjent.Nazwisko,
+                                    imie = Pacjent.Imie
+                                };
+
+                    //Wykonanie zapytania, rekord po rekordzie.
+                    foreach (var vis in query)
+                    {
+                        //Łączenie dat, imion i nazwisk, zapisywanie ich.
+                        visitsList.Add(vis.id, vis.dataRej.ToString() + "  " + vis.nazwisko + " " + vis.imie);
+                    }
                 }
             }
             catch (Exception e)
