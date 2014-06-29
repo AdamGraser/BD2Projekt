@@ -334,6 +334,7 @@ namespace Rejestratorka
                 System.Windows.MessageBox.Show("Wizyta została anulowana.", "Anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Information);
                 visitsDataGrid.SelectedIndex = -1;
                 visitsDataGrid.SelectedItem = null;
+                RefreshVisitsDataGrid(0);
             }
             else
             {
@@ -579,11 +580,15 @@ namespace Rejestratorka
         {
             if (doctorsList.SelectedIndex > -1)
             {
-                //if (registerVisitButton.IsEnabled == false)
-                //{
-                    if (patientsDataGrid.SelectedIndex > -1 && visitDate.SelectedDate != null && visitTime.Value != null)
-                        registerVisitButton.IsEnabled = true;
-                //}
+                if (patientsDataGrid.SelectedIndex > -1 && visitDate.SelectedDate != null && visitTime.Value != null)
+                {
+                    registerVisitButton.IsEnabled = true;
+                    int? visNum = db.GetNumberOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate);
+                    if (visNum != null)
+                        numberOfVisitsTextBlock.Text = visNum.ToString();
+                    else
+                        numberOfVisitsTextBlock.Text = "0";
+                }
             }
             else
             {
@@ -713,6 +718,11 @@ namespace Rejestratorka
             {
                 patientsDataGrid.ItemsSource = patientsTable.DefaultView;
             }
+            else
+            {
+                //dodawanie nagłówków do pustej tabeli:
+                ClearPatientsDataGrid();
+            }
 
         }
 
@@ -773,6 +783,7 @@ namespace Rejestratorka
             patientSurnameTextBox1.Text = "";
             peselTextBox.Text = "";
             ClearPatientsDataGrid();
+            findPatientButton.IsEnabled = false;
         }
 
 
@@ -883,7 +894,7 @@ namespace Rejestratorka
             if (registeredVisitsTable.DefaultView.Count > 0)
             {
                 visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
-            }
+            }           
         }
 
 

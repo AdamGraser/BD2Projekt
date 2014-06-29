@@ -57,7 +57,7 @@ namespace DBClient
 
 
 
-        public int? GetNumberOfVisits(int doctorID, DateTime date)
+        public int? GetNumberOfVisits(byte doctorID, DateTime? date)
         {
             int? numberOfVisits = null;
 
@@ -71,7 +71,7 @@ namespace DBClient
             try
             {                             
                 numberOfVisits = (from Wizyta in db.Wizytas                            
-                            where (Wizyta.Stan == null && Wizyta.Id_lek == doctorID && Wizyta.Data_rej.Date == date.Date)
+                            where (Wizyta.Stan == null && Wizyta.Id_lek == doctorID && Wizyta.Data_rej.Date == date.GetValueOrDefault().Date)
                             select new
                             {
                                 Wizyta.Id_wiz
