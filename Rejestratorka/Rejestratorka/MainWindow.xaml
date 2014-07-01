@@ -109,7 +109,10 @@
                         </StackPanel>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Bottom" Background="#FFE5E4E2" Height="65">
-                        <Button x:Name="cancelVisitButton" Content="Anuluj wizytę" Margin="0,10,0,0" Width="75" Height="28" Click="cancelVisitButton_Click" IsEnabled="False" TabIndex="6" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button x:Name="cancelVisitButton" Content="Anuluj wizytę" Margin="0,10,0,0" Width="75" Height="28" Click="cancelVisitButton_Click" IsEnabled="False" TabIndex="6" />
+                                <Button x:Name="cancelUndoneVisitsButton" Content="Anuluj niedoszłe wizyty" Margin="10,10,0,0" Height="28" Click="cancelUndoneVisitsButton_Click" />
+                            </StackPanel>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Top">
                         <ScrollViewer x:Name="visitsScrollViewer" Height="240" >

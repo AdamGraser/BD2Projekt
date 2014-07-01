@@ -217,8 +217,10 @@ namespace DBClient
                             patientData.PatientGender = "Kobieta";
                         }
                         patientData.PatientDateOfBirth = p.dataUr.ToShortDateString();
-                        patientData.PatientCity = p.ulica;
+                        patientData.PatientCity = p.miasto;
+                        patientData.PatientStreet = p.ulica;
                         patientData.PatientNumberOfHouse = p.nrBud;
+                        patientData.PatientNumberOfFlat = p.nrMiesz;
                         patientData.PatientPostCode = p.kodPocz;
                         patients.Add(p.id, patientData);
                     }
@@ -1035,6 +1037,82 @@ namespace DBClient
             finally
             {
                 //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+
+            return retval;
+        }
+
+
+        public bool CancelUndoneVisits()
+        {
+            bool retval = true;
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            var query = from Wizyta in db.Wizytas
+                        where Wizyta.Data_rej.Date == DateTime.Today
+                        select Wizyta;
+
+            //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
+            foreach (Przychodnia.Wizyta wiz in query)
+            {
+                wiz.Stan = 2; //zmiana stanu na "anulowana"
+            }
+
+            try
+            {
+                //Wysłanie danych (wykonanie inserta). Rzuca SqlException, np. gdy klucz obcy nie odpowiada kluczowi głównemu w tabeli nadrzędnej.
+                db.SubmitChanges();
+
+                //Jeśli nie rzucił mięsem, dojdzie tutaj, czyli wszystko ok. Jeśli zostało już zacommitowane/rollbacknięte przez serwer, rzuci InvalidOper..., jeśli coś
+                //innego, rzuci Exception
+                transaction.Commit();
+            }
+            catch (InvalidOperationException invOper)
+            {
+                Console.WriteLine("Transakcja została już zaakceptowana/odrzucona LUB połączenie zostało zerwane.");
+                Console.WriteLine(invOper.Message);
+                Console.WriteLine(invOper.Source);
+                Console.WriteLine(invOper.HelpLink);
+                Console.WriteLine(invOper.StackTrace);
+                retval = false;
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine("Wystąpił błąd przy dodawaniu nowego rekordu, np. niezgodność klucza obcego w tabeli podrzędnej z kluczem głównym w tabeli nadrzędnej.");
+                Console.WriteLine(sqlEx.Message);
+                Console.WriteLine(sqlEx.Source);
+                Console.WriteLine(sqlEx.HelpLink);
+                Console.WriteLine(sqlEx.StackTrace);
+                retval = false;
+
+                //Rollback, bo coś poszło nie tak.
+                transaction.Rollback();
+
+                //Zwolnienie zasobów, bo po co je zajmować.
+                db.Dispose();
+
+                //Utworzenie od razu nowego obiektu do użycia następnym razem.
+                db = new Przychodnia.Przychodnia(connection);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Wystąpił błąd podczas próby zaakceptowania transakcji.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                Console.WriteLine(ex.HelpLink);
+                Console.WriteLine(ex.StackTrace);
+                retval = false;
+            }
+            finally
+            {
+                //Zawsze należy zamknąć połączenie.
                 connection.Close();
             }
 

@@ -28,7 +28,8 @@ namespace Rejestratorka
         DataTable registeredVisitsTable; // zawiera dane wyświetlane w tabeli z zarejestrowanymi wizytami.
         List<byte> doctorsIdList;
         List<int> patientsIdList;
-        List<int> visitsIdList;        
+        List<int> visitsIdList;
+        bool findVisitButtonClicked = false;
 
 
 
@@ -252,8 +253,8 @@ namespace Rejestratorka
         private void findVisitButton_Click(object sender, RoutedEventArgs e)
         {
             clearFilterButton2.IsEnabled = true;
-            RefreshVisitsDataGrid((byte)visitStatusComboBox.SelectedIndex);       
-            
+            RefreshVisitsDataGrid((byte)visitStatusComboBox.SelectedIndex);
+            findVisitButtonClicked = true;
      
             //wyczyszczenie dotychczasowej zawartości tabeli:
             if (visitsDataGrid.ItemsSource != null && !registeredVisitsTable.DefaultView.Equals((DataView)visitsDataGrid.ItemsSource))
@@ -286,10 +287,18 @@ namespace Rejestratorka
                 }
                 filterString += string.Format("Lekarz = '{0}'", doctorsList2.SelectedItem.ToString());
             }
+            if (visitDate2.SelectedDate != null)
+            {
+                if (patientNameTextBox2.Text.Length != 0 || patientSurnameTextBox2.Text.Length != 0)
+                {
+                    filterString += " && ";
+                }
+                filterString += string.Format("Data wizyty = '{0}'", visitDate2.SelectedDate.ToString());
+            }
 
             DataRow[] selectedRows = registeredVisitsTable.Select(filterString);
-            if (selectedRows.Count() > 0)
-            {
+            //if (selectedRows.Count() > 0)
+            //{
                 DataTable filteredTable = new DataTable();
                 DataColumn patientNameColumn = new DataColumn("Imię", typeof(string));
                 DataColumn patientSurnameColumn = new DataColumn("Nazwisko", typeof(string));
@@ -307,7 +316,7 @@ namespace Rejestratorka
 	            }
 
                 visitsDataGrid.ItemsSource = filteredTable.DefaultView;
-            }
+            //}
         }
 
 
@@ -352,7 +361,7 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void visitsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (visitsDataGrid.SelectedItem != null)
+            if (visitsDataGrid.SelectedItem != null && visitStatusComboBox.SelectedIndex == 0)
             {
                 cancelVisitButton.IsEnabled = true;
             }
@@ -554,6 +563,7 @@ namespace Rejestratorka
                 visitsDataGrid.ItemsSource = registeredVisitsTable.DefaultView;
             }
             clearFilterButton2.IsEnabled = false;
+            findVisitButtonClicked = false;
         }
 
 
@@ -577,18 +587,19 @@ namespace Rejestratorka
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void doctorsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (doctorsList.SelectedIndex > -1)
-            {
-                if (patientsDataGrid.SelectedIndex > -1 && visitDate.SelectedDate != null && visitTime.Value != null)
+        {            
+            if (doctorsList.SelectedIndex > -1 && visitDate.SelectedDate != null)
+            {                
+                int? visNum = db.GetNumberOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate);
+                if (visNum != null)
+                    numberOfVisitsTextBlock.Text = visNum.ToString();
+                else
+                    numberOfVisitsTextBlock.Text = "0";
+
+                if (patientsDataGrid.SelectedIndex > -1 && visitTime.Value != null)
                 {
                     registerVisitButton.IsEnabled = true;
-                    int? visNum = db.GetNumberOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate);
-                    if (visNum != null)
-                        numberOfVisitsTextBlock.Text = visNum.ToString();
-                    else
-                        numberOfVisitsTextBlock.Text = "0";
-                }
+                }                
             }
             else
             {
@@ -734,6 +745,13 @@ namespace Rejestratorka
         private void ClearPatientsDataGrid()
         {
             patientsDataGrid.Columns.Clear();
+            
+            if (patientsDataGrid.ItemsSource != null)
+            {
+                DataView src = (DataView)patientsDataGrid.ItemsSource;
+                src.Dispose();
+                patientsDataGrid.ItemsSource = null;
+            }
 
             //kolumny tabeli:
             DataGridTextColumn nameColumn = new DataGridTextColumn();
@@ -928,7 +946,10 @@ namespace Rejestratorka
             {
                 if (findVisitButton != null && clearFilterButton2 != null)
                 {
-                    findVisitButton.IsEnabled = false;
+                    if (findVisitButtonClicked == false)
+                    {
+                        findVisitButton.IsEnabled = false;
+                    }
                     clearFilterButton2.IsEnabled = false;
                 }
             }
@@ -946,6 +967,24 @@ namespace Rejestratorka
                 findVisitButton.IsEnabled = false;
                 clearFilterButton2.IsEnabled = false;
             } 
+        }
+
+        
+        private void cancelUndoneVisitsButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result;
+            result = System.Windows.MessageBox.Show(this, "Czy na pewno anulować wszystkie dzisiejsze niezrealizowane wizyty", "Potwierdzenie", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes);
+            if (result == MessageBoxResult.Yes)
+            {
+                if (db.CancelUndoneVisits() == true)
+                {
+                    System.Windows.MessageBox.Show(this, "Niezrealizowane wizyty zostały anulowane");
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show(this, "Nie udało się anulować niezrealizowanych wizyt.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
         }
     }
 }
