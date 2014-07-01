@@ -71,11 +71,8 @@ namespace DBClient
             try
             {                             
                 numberOfVisits = (from Wizyta in db.Wizytas                            
-                            where (Wizyta.Stan == null && Wizyta.Id_lek == doctorID && Wizyta.Data_rej.Date == date.GetValueOrDefault().Date)
-                            select new
-                            {
-                                Wizyta.Id_wiz
-                            }).Count();                
+                            where (Wizyta.Stan == 0 && Wizyta.Id_lek == doctorID && Wizyta.Data_rej.Date == date.GetValueOrDefault().Date)
+                            select Wizyta.Id_wiz).Count();
             }
             catch (Exception e)
             {
@@ -263,8 +260,10 @@ namespace DBClient
                             patientData.PatientGender = "Kobieta";
                         }
                         patientData.PatientDateOfBirth = p.dataUr.ToShortDateString();
-                        patientData.PatientCity = p.ulica;
+                        patientData.PatientCity = p.miasto;
+                        patientData.PatientStreet = p.ulica;
                         patientData.PatientNumberOfHouse = p.nrBud;
+                        patientData.PatientNumberOfFlat = p.nrMiesz;
                         patientData.PatientPostCode = p.kodPocz;
                         patients.Add(p.id, patientData);
                     }
@@ -307,8 +306,10 @@ namespace DBClient
                             patientData.PatientGender = "Kobieta";
                         }
                         patientData.PatientDateOfBirth = p.dataUr.ToShortDateString();
-                        patientData.PatientCity = p.ulica;
+                        patientData.PatientCity = p.miasto;
+                        patientData.PatientStreet = p.ulica;
                         patientData.PatientNumberOfHouse = p.nrBud;
+                        patientData.PatientNumberOfFlat = p.nrMiesz;
                         patientData.PatientPostCode = p.kodPocz;
                         patients.Add(p.id, patientData);
                     }

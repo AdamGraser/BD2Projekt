@@ -163,18 +163,18 @@ namespace DBClient
                                 idBad = Badanie.Id_bad,
                                 dataZle = Badanie.Data_zle,
                                 nazwa = Sl_badan.Nazwa,
-                                opis = Sl_badan.Opis,
+                                opis = Sl_badan.Opis
                             };
 
                 //Żeby pokazało daty do godziny 0:00 dnia następnego
-                dateTo.Value.AddDays(1);
+                DateTime? dT = dateTo == null ? null : (DateTime?)dateTo.Value.AddDays(1);
 
                 //Wykonanie zapytania.
                 foreach (var b in query)
                 {
                     //Sprawdzenie, czy nasze zapytanie spełnia kryteria
                     if ( ((dateFrom == null) || (b.dataZle >= dateFrom)) &&
-                         ((dateTo == null) || (b.dataZle < dateTo)) )
+                         ((dT == null) || (b.dataZle < dT)))
                     {
                         //Zapisanie wyników.
 

@@ -591,6 +591,7 @@ namespace Rejestratorka
             if (doctorsList.SelectedIndex > -1 && visitDate.SelectedDate != null)
             {                
                 int? visNum = db.GetNumberOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate);
+
                 if (visNum != null)
                     numberOfVisitsTextBlock.Text = visNum.ToString();
                 else
@@ -620,8 +621,18 @@ namespace Rejestratorka
             {
                 //if (registerVisitButton.IsEnabled == false)
                 //{
-                    if (patientsDataGrid.SelectedIndex > -1 && doctorsList.SelectedIndex > -1 && visitTime.Value != null)
+                if (doctorsList.SelectedIndex > -1)
+                {
+                    int? visNum = db.GetNumberOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate);
+
+                    if (visNum != null)
+                        numberOfVisitsTextBlock.Text = visNum.ToString();
+                    else
+                        numberOfVisitsTextBlock.Text = "0";
+
+                    if(patientsDataGrid.SelectedIndex > -1 && visitTime.Value != null)
                         registerVisitButton.IsEnabled = true;
+                }
                 //}
 
             }
