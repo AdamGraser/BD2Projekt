@@ -84,7 +84,7 @@ namespace DBClient
 
             try
             {
-                string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
+                 string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
 
                 //Utworzenie zapytania.
                 var query = from Laborant in db.Laborants
@@ -166,19 +166,22 @@ namespace DBClient
                                 opis = Sl_badan.Opis,
                             };
 
+                //Żeby pokazało daty do godziny 0:00 dnia następnego
+                dateTo.Value.AddDays(1);
+
                 //Wykonanie zapytania.
                 foreach (var b in query)
                 {
                     //Sprawdzenie, czy nasze zapytanie spełnia kryteria
                     if ( ((dateFrom == null) || (b.dataZle >= dateFrom)) &&
-                         ((dateTo == null) || (b.dataZle <= dateTo)) )
+                         ((dateTo == null) || (b.dataZle < dateTo)) )
                     {
                         //Zapisanie wyników.
 
                         TestLabInfo tli = new TestLabInfo();
                         tli.id_wiz = b.idWiz;
                         tli.id_bad = b.idBad;
-                        tli.opis = b.dataZle.ToString() + " " + b.nazwa;
+                        tli.opis = b.dataZle.ToString() + " " + b.nazwa + ", " + b.opis;
                         labTests.Add(tli);
                     }
                 }
@@ -568,4 +571,3 @@ namespace DBClient
     }
     */
 }
-

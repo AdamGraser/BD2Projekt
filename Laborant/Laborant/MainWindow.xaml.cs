@@ -82,7 +82,10 @@ namespace Laborant
             //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
             ClearLabTestsLists();
             Lab_LabTestResult.Clear();
-            clearFilterButton_Click(null, null);
+            stateComboBox.SelectedIndex = currentState = 0;
+            DateTo.SelectedDate = null;
+            DateFrom.SelectedDate = null;
+            clearFilterButton.IsEnabled = false;
             ClearControlls();
 
             while (true)
@@ -146,10 +149,12 @@ namespace Laborant
 
         private void clearFilterButton_Click(object sender, RoutedEventArgs e)
         {
-            stateComboBox.SelectedIndex = 0;
+            ClearLabTestsLists();
+            stateComboBox.SelectedIndex = currentState = 0;
             DateTo.SelectedDate = null;
             DateFrom.SelectedDate = null;
             clearFilterButton.IsEnabled = false;
+            GetDataFromDB();
         }
 
         /// <summary>

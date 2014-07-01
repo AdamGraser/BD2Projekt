@@ -9,16 +9,16 @@
                 <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"></MenuItem>
             </MenuItem>
         </Menu>
-        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="397" Width="507">
+        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="auto" Width="auto">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="auto">
                         <Label Content="Badania od:"/>
                         <DatePicker x:Name="DateFrom" Height="28" Width="125"/>
                         <Label Content="Do:"/>
                         <DatePicker x:Name="DateTo" Height="28" Width="125"/>
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="auto">
                         <Label Content="Stan badania:"/>
                         <ComboBox x:Name="stateComboBox" Width="120" SelectedIndex="0">
                             <ComboBoxItem Content="Zlecone" HorizontalAlignment="Left" Width="118"/>
@@ -78,13 +78,13 @@
                         <Label Content="Uwagi kierownika:" Grid.Row="5" Grid.Column="0" Width="auto" MinHeight="26" Height="auto" Margin="0,0,5,5"/>
                         <TextBox x:Name="Lab_LabCancelInfo" ToolTip="Wynik badania" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3"  TextWrapping="Wrap" IsEnabled="False"/>
                     </Grid>
-                    <StackPanel Height="39" Width="496" >
-                        <StackPanel Orientation="Horizontal" Margin="35,10,58,0" HorizontalAlignment="Center" Width="403">
-                            <Button x:Name="Lab_Save" Content="Wykonaj" Height="26" Padding="4,0,4,0"  Click="Lab_Save_Click" IsEnabled="False" Width="100" />
-                            <Button x:Name="Lab_Accept" Content="Zatwierdź" Height="26" Padding="4,0,4,0" Margin="50,0,0,0" Click="Lab_Save_Click" IsEnabled="False" Width="100" RenderTransformOrigin="-0.08,0.423"/>
-                            <Button x:Name="Lab_Cancel" Content="Anuluj" Height="26" Padding="4,0,4,0" Margin="50,0,0,0" Click="Lab_Save_Click" IsEnabled="False" Width="100" />
-                        </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center" Width="auto">
+                        <Button x:Name="Lab_Save" Content="Wykonaj" Height="26" Padding="4,0,4,0"  Click="Lab_Save_Click" IsEnabled="False" Width="100" />
+                        <Button x:Name="Lab_Accept" Content="Zatwierdź" Height="26" Padding="4,0,4,0" Margin="50,0,0,0" Click="Lab_Save_Click" IsEnabled="False" Width="100" RenderTransformOrigin="-0.08,0.423"/>
+                        <Button x:Name="Lab_Cancel" Content="Anuluj" Height="26" Padding="4,0,4,0" Margin="50,0,0,0" Click="Lab_Save_Click" IsEnabled="False" Width="100" />
                     </StackPanel>
+                    
                 </StackPanel>
             </ScrollViewer>
             <Grid Height="36" Width="73"/>
