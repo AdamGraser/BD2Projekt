@@ -17,7 +17,7 @@ namespace DBClient
         public byte id_bad;
         public string opis;
     }
-  
+
     /// <summary>
     /// Realizuje połączenie z bazą danych oraz wszystkie operacje na niej wykonywane.
     /// </summary>

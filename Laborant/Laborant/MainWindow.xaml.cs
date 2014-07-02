@@ -134,8 +134,17 @@ namespace Laborant
         {
             ClearLabTestsLists();
             GetDataFromDB();
-            clearFilterButton.IsEnabled = true;
             currentState = (byte)stateComboBox.SelectedIndex;
+
+            //Czyszczenie filtra - tylko wtedy, gdy coś wnosi
+            if ((stateComboBox.SelectedIndex != 0) || (DateFrom.SelectedDate != null) || (DateTo.SelectedDate != null))
+            {
+                clearFilterButton.IsEnabled = true;
+            }
+            else
+            {
+                clearFilterButton.IsEnabled = false;
+            }
 
             // Czyszczenie kontrolek
             ClearControlls();
