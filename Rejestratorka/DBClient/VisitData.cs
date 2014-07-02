@@ -15,7 +15,7 @@ namespace DBClient
         private string _patientSurname;
         private string _patientPesel;
         private string _patientDateOfBirth;
-        private DateTime _date;
+        private string _date;
         private string _doctor;
         private string _visitStatus;
 
@@ -92,7 +92,7 @@ namespace DBClient
         /// <summary>
         /// Właściwość zwracająca datę wizyty.
         /// </summary>
-        public DateTime Date
+        public string Date
         {
             get
             {

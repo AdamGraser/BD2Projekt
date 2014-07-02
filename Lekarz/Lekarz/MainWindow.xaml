@@ -64,7 +64,7 @@
 
                                         <!-- Pierwsza kolumna -->
                                         <Label Grid.Row="0" Grid.Column="0" Content="Data odbycia wizyty" Margin="0,0,0,5" />
-                                        <Label Grid.Row="1" Grid.Column="0" Content="Imię i nazwisko" Margin="0,0,0,5" />
+                                        <Label Grid.Row="1" Grid.Column="0" Content="Nazwisko i imię" Margin="0,0,0,5" />
 
                                         <Label Grid.Row="3" Grid.Column="0" Content="Opis" Margin="0,0,0,5" />
 

@@ -260,15 +260,15 @@ namespace Lekarz
             }
 
             
-            if (currentVisitID == -1)
+            if (currentVisitID == -1 && visitsList.SelectedIndex > -1)
             {
                 ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
                 string temp = (string)item.Content;
 
                 string[] visit = temp.Split(new char[] { ' ' }, 3, StringSplitOptions.RemoveEmptyEntries);
 
-                data_rej.Text = visit[0];
-                nazwa_pac.Text = visit[1];               
+                data_rej.Text = visit[0] + " " + visit[1];
+                nazwa_pac.Text = visit[2];
 
                 //VisitExpander.IsEnabled = true;
                 //VisitExpander.IsExpanded = true;
@@ -583,12 +583,13 @@ namespace Lekarz
             visitStatusComboBox.SelectedIndex = 0;
             visitDate.SelectedDate = DateTime.Today;
             clearFilterButton.IsEnabled = false;
+            
             if (findVisitButtonClicked == true)
             {
                 GetDataFromDB();
             }
+
             findVisitButtonClicked = false;
-            currentVisitID = -1;
         }        
     }
 }

@@ -496,7 +496,7 @@ namespace DBClient
                     visData.PatientSurname = vis.nazwisko_pacjenta;
                     visData.PatientDateOfBirth = vis.data_urodzenia.ToString();
                     visData.PatientPesel = vis.pesel.ToString();
-                    visData.Date = vis.dataRej;
+                    visData.Date = vis.dataRej.ToString();
                     visData.Doctor = vis.imie_lekarza + " " + vis.nazwisko_lekarza;
                     switch(vis.stan_wizyty)
                     {
