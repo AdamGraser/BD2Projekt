@@ -179,6 +179,10 @@ namespace Lekarz
         /// <param name="e"></param>
         private void saveVisitButton_Click(object sender, RoutedEventArgs e)
         {
+            if (findVisitButtonClicked) 
+            { 
+                clearFilterButton.IsEnabled = true; 
+            }
             if (currentVisitID > -1)
             {
                 bool physicalTestIsDone;
@@ -261,13 +265,13 @@ namespace Lekarz
                 ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
                 string temp = (string)item.Content;
 
-                string[] visit = temp.Split(new char[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                string[] visit = temp.Split(new char[] { ' ' }, 3, StringSplitOptions.RemoveEmptyEntries);
 
                 data_rej.Text = visit[0];
                 nazwa_pac.Text = visit[1];               
 
-                VisitExpander.IsEnabled = true;
-                VisitExpander.IsExpanded = true;
+                //VisitExpander.IsEnabled = true;
+                //VisitExpander.IsExpanded = true;
             }            
         }
 
@@ -397,7 +401,7 @@ namespace Lekarz
                 visitsList.IsEnabled = false;
                 visitsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
                 visitsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
-                visitsList.Items.Add(new ListBoxItem().Content = "Brak zarejestrowanych wizyt!");
+                visitsList.Items.Add(new ListBoxItem().Content = "Brak wizyt!");
 
                 if (visits == null)
                     MessageBox.Show("Wystąpił błąd podczas pobierania listy wizyt.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -442,7 +446,7 @@ namespace Lekarz
                 findVisitButton.IsEnabled = true;
                 clearFilterButton.IsEnabled = true;
             }
-            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && visitDate.SelectedDate != DateTime.Today)
+            else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitStatusComboBox.SelectedIndex == 0 && visitDate.SelectedDate == DateTime.Today)
             {
                 findVisitButton.IsEnabled = false;
                 clearFilterButton.IsEnabled = false;
@@ -477,7 +481,7 @@ namespace Lekarz
                     findVisitButton.IsEnabled = true;
                     clearFilterButton.IsEnabled = true;
                 }
-                else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitDate.SelectedDate != DateTime.Today)
+                else if (patientNameTextBox.Text.Length == 0 && patientSurnameTextBox.Text.Length == 0 && visitDate.SelectedDate == DateTime.Today)
                 {
                     if (findVisitButtonClicked == false)
                     {
@@ -492,6 +496,7 @@ namespace Lekarz
         {
             cancelVisitButton.IsEnabled = true;
             saveVisitButton.IsEnabled = true;
+            clearFilterButton.IsEnabled = false;
 
             if (currentVisitID == -1)
             {
@@ -513,6 +518,7 @@ namespace Lekarz
                         diagnosisExpander.IsEnabled = true;
                         laboratoryTestsExpander.IsEnabled = true;
                         physicalTestsExpander.IsEnabled = true;
+                        VisitExpander.IsExpanded = true;
                     }
                     else
                     {
@@ -536,6 +542,10 @@ namespace Lekarz
 
         private void cancelVisitButton_Click(object sender, RoutedEventArgs e)
         {
+            if (findVisitButtonClicked) 
+            { 
+                clearFilterButton.IsEnabled = true; 
+            }
             if (currentVisitID != -1)
             {
                 if (db.CancelVisit(currentVisitID))
@@ -578,6 +588,7 @@ namespace Lekarz
                 GetDataFromDB();
             }
             findVisitButtonClicked = false;
-        }
+            currentVisitID = -1;
+        }        
     }
 }
