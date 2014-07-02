@@ -442,7 +442,7 @@ namespace DBClient
 
 
         /// <summary>
-        /// Dodaje do tabeli Badanie nowy rekord z informacjami o badaniu laboratoryjnym, zleconym w trakcie wskazanej wizyty.
+        /// Dodaje do tabeli Badanie nowy rekord z informacjami o badaniu, zleconym w trakcie wskazanej wizyty.
         /// </summary>
         /// <param name="id_wiz">ID wizyty, w trakcie której zostało zlecone to badanie.</param>
         /// <param name="id_bad">LP badania dla tej wizyty.</param>
@@ -450,7 +450,7 @@ namespace DBClient
         /// <param name="opis">Opis (dodatkowe informacje) badania do wykonania.</param>
         /// <param name="kod">Kod badania w słowniku badań.</param>
         /// <returns>Wartość true jeśli nowy rekord został pomyślnie dodany do tabeli. W razie wystąpienia błędu zwraca wartość false.</returns>
-        public bool AddLabTest(int id_wiz, byte id_bad, DateTime data_zle, string opis, short kod)
+        public bool AddTest(int id_wiz, byte id_bad, DateTime data_zle, string opis, short kod)
         {
             bool retval = true;
 
@@ -1225,6 +1225,98 @@ namespace DBClient
             }
 
             return retval;
+        }
+
+
+
+        public string GetVisitDescription(int visitID)
+        {
+            string description = null;
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {                
+                //Utworzenie zapytania.
+                var query = from Wizyta in db.Wizytas                            
+                            where (Wizyta.Id_wiz == visitID)                            
+                            select new
+                            {
+                                Wizyta.Opis
+                            };
+
+                //Wykonanie zapytania, rekord po rekordzie.
+                foreach (var vis in query)
+                {
+                    //Łączenie dat, imion i nazwisk, zapisywanie ich.
+                    description = vis.Opis;
+                }                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+
+                description = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+            return description;
+        }
+
+
+
+        public string GetVisitDiagnosis(int visitID)
+        {
+            string diagnosis = null;
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {
+                //Utworzenie zapytania.
+                var query = from Wizyta in db.Wizytas
+                            where (Wizyta.Id_wiz == visitID)
+                            select new
+                            {
+                                Wizyta.Diagnoza
+                            };
+
+                //Wykonanie zapytania, rekord po rekordzie.
+                foreach (var vis in query)
+                {
+                    //Łączenie dat, imion i nazwisk, zapisywanie ich.
+                    diagnosis = vis.Diagnoza;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+
+                diagnosis = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+            return diagnosis;
         }
     }
 }
