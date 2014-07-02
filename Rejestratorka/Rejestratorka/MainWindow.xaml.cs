@@ -293,7 +293,7 @@ namespace Rejestratorka
                 {
                     filterString += " && ";
                 }
-                filterString += string.Format("Data wizyty = '{0}'", visitDate2.SelectedDate.ToString());
+                filterString += string.Format("Data wizyty = '{0}'", visitDate2.SelectedDate);
             }
 
             DataRow[] selectedRows = registeredVisitsTable.Select(filterString);
@@ -304,7 +304,7 @@ namespace Rejestratorka
                 DataColumn patientSurnameColumn = new DataColumn("Nazwisko", typeof(string));
                 DataColumn patientDateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
                 DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
-                DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
+                DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(DateTime));
                 DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
                 DataColumn statusColumn = new DataColumn("Stan wizyty", typeof(string));
                 filteredTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
@@ -891,7 +891,7 @@ namespace Rejestratorka
             DataColumn patientSurnameColumn = new DataColumn("Nazwisko", typeof(string));
             DataColumn patientDateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
             DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
-            DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
+            DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(DateTime));
             DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
             DataColumn statusColumn = new DataColumn("Stan wizyty", typeof(string));
             registeredVisitsTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
