@@ -18,7 +18,6 @@ namespace DBClient
         public string opis;
     }
 
-    /*
     /// <summary>
     /// Realizuje połączenie z bazą danych oraz wszystkie operacje na niej wykonywane.
     /// </summary>
@@ -372,8 +371,7 @@ namespace DBClient
         }
     }
     
-    */
-    // TYLKO DO DEBUGOWANIA, GDY NIE MA POLACZENIA Z BAZA DANYCH!!!
+    /*// TYLKO DO DEBUGOWANIA, GDY NIE MA POLACZENIA Z BAZA DANYCH!!!
     public class DBClient
     {
         private class FikcyjneBadanie
@@ -569,5 +567,5 @@ namespace DBClient
 
             return retval;
         }
-    }
+    }*/
 }
