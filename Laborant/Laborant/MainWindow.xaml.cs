@@ -55,7 +55,7 @@ namespace Laborant
                     }
 
                     break;
-                }                
+                }
             }
 
             Lab_Save.Tag = (bool?)null;
@@ -148,12 +148,6 @@ namespace Laborant
 
             // Czyszczenie kontrolek
             ClearControlls();
-
-
-            // Dezaktywacja
-            Lab_Accept.IsEnabled = false;
-            Lab_Cancel.IsEnabled = false;
-            Lab_Save.IsEnabled = false;
         }
 
         private void clearFilterButton_Click(object sender, RoutedEventArgs e)
@@ -164,6 +158,9 @@ namespace Laborant
             DateFrom.SelectedDate = null;
             clearFilterButton.IsEnabled = false;
             GetDataFromDB();
+
+            // Dezaktywacja
+            ClearControlls();
         }
 
         /// <summary>
@@ -246,7 +243,7 @@ namespace Laborant
 
                 //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
                 ClearControlls();
-                
+
                 currentLabTest = -1;
                 currentVisitID = -1;
                 currentLabTestID = 0;
@@ -262,7 +259,7 @@ namespace Laborant
                 MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
             else
                 MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku - prawdopodobnie stan badania został zmieniony przez innego laboranta", "Zmieniony rekord", MessageBoxButton.OK, MessageBoxImage.Warning);
-            
+
         }
 
 
@@ -275,7 +272,7 @@ namespace Laborant
         void ListBoxSelectionChange(object sender, RoutedEventArgs e)
         {
             //Zeby nie robilo sie bez potrzeby
-            if(Lab_LabTestsList.SelectedIndex < 0)
+            if (Lab_LabTestsList.SelectedIndex < 0)
                 return;
 
             //Aktywacja kontrolek
@@ -360,7 +357,7 @@ namespace Laborant
         {
             RefBool hardExit = new RefBool();
             LoginWindow loginWindow = new LoginWindow(hardExit);
-            
+
             bool? result = loginWindow.ShowDialog();
 
             if (result == true)
@@ -409,7 +406,7 @@ namespace Laborant
                 Lab_LabTestsList.IsEnabled = false;
                 Lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
                 Lab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak badań odpowiadających podanym kryteriom!");
-               
+
                 if (tests == null)
                     MessageBox.Show("Wystąpił błąd podczas pobierania listy badań.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
@@ -427,6 +424,12 @@ namespace Laborant
             Lab_LabTestDescription.Text = "";
             Lab_LabTestResult.Text = "";
             Lab_LabCancelInfo.Text = "";
+
+            Lab_Accept.IsEnabled = false;
+            Lab_Cancel.IsEnabled = false;
+            Lab_Save.IsEnabled = false;
+            Lab_LabCancelInfo.IsEnabled = false;
+            Lab_LabTestResult.IsEnabled = false;
         }
     }
 }
