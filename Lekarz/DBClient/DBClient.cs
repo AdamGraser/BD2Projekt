@@ -168,7 +168,7 @@ namespace DBClient
                     //Utworzenie zapytania.
                     var query = from Wizyta in db.Wizytas
                                 join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
-                                where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej.Date == visitDate)
+                                where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej.Date == visitDate.Value)
                                 orderby Wizyta.Data_rej descending
                                 select new
                                 {
@@ -234,7 +234,7 @@ namespace DBClient
                 //Wykonanie zapytania, rekord po rekordzie.
                 foreach (var test in query)
                 {
-                    //Łączenie imion i nazwisk, zapisywanie ich.
+                    //Łączenie nazw i opisów badań, zapisywanie ich.
                     if(test.opis != null)
                         labTests.Add(test.nazwa + " " + test.opis);
                     else
@@ -350,10 +350,9 @@ namespace DBClient
         /// </summary>
         /// <param name="id_wiz">ID wizyty, która ma zostać zaktualizowana.</param>
         /// <param name="opis">Nowy opis wizyty.</param>
-        /// <param name="bad_fiz">Determinuje, czy lekarz wykonał badania fizykalne (czy odpowiednie pole obok opisu wizyty zostało zaznaczone).</param>
         /// <param name="diagnoza">Nowa diagnoza przedstawiona przez lekarza podczas tej wizyty.</param>
         /// <returns>True jeśli aktualizacja rekordu w tabeli powiodła się, false jeśli wystąpił błąd.</returns>
-        public bool SaveVisit(int id_wiz, string opis, bool bad_fiz, string diagnoza)
+        public bool SaveVisit(int id_wiz, string opis, string diagnoza)
         {
             bool retval = true;
 
@@ -375,9 +374,6 @@ namespace DBClient
                 //Dokonanie żądanych zmian.
                 wiz.Stan = 3; //zmiana stanu na "zakończona"
                 
-                //if (bad_fiz)
-                //    wiz.Data_wyk_bad = DateTime.Now;
-
                 if (opis != null && opis.Length > 0)
                     wiz.Opis = opis;
 
