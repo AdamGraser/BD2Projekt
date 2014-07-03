@@ -250,13 +250,26 @@ namespace Lekarz
         /// <param name="e"></param>
         private void visitsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (visitsList.SelectedIndex != -1)
+            if (visitsList.SelectedIndex != -1 && selectedVisitStatus == 0)
             {
                 beginVisitButton.IsEnabled = true;
             }
             else
             {
                 beginVisitButton.IsEnabled = false;
+                visitDescription.IsEnabled = false;
+                visitDescription.Text = db.GetVisitDescription(currentVisitID);
+                diagnosis.IsEnabled = false;
+                diagnosis.Text = db.GetVisitDiagnosis(currentVisitID);
+
+                VisitExpander.IsEnabled = true;
+                VisitExpander.IsExpanded = true;
+                if (selectedVisitStatus != 1)
+                {
+                    diagnosisExpander.IsEnabled = true;
+                }
+                laboratoryTestsExpander.IsEnabled = false;
+                physicalTestsExpander.IsEnabled = false;
             }
 
             
@@ -502,41 +515,27 @@ namespace Lekarz
             {
                 ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
                 currentVisitID = visitsIdList[visitsList.SelectedIndex];
-
-                if (selectedVisitStatus == 0)
+                
+                if (db.ChangeVisitState(currentVisitID, 1))
                 {
-                    if (db.ChangeVisitState(currentVisitID, 1))
-                    {
 
-                        visitsList.Items.RemoveAt(visitsList.SelectedIndex);
-                        visitsList.SelectedIndex = -1;
+                    visitsList.Items.RemoveAt(visitsList.SelectedIndex);
+                    visitsList.SelectedIndex = -1;
 
-                        visitDescription.IsEnabled = true;
-                        diagnosis.IsEnabled = true;
-                       
+                    visitDescription.IsEnabled = true;
+                    diagnosis.IsEnabled = true;
+                   
 
-                        diagnosisExpander.IsEnabled = true;
-                        laboratoryTestsExpander.IsEnabled = true;
-                        physicalTestsExpander.IsEnabled = true;
-                        VisitExpander.IsExpanded = true;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Wystąpił błąd podczas zmiany stanu wizyty i nie został on zmieniony.", "Błąd akceptacji wizyty", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        currentVisitID = -1;
-                    }
+                    diagnosisExpander.IsEnabled = true;
+                    laboratoryTestsExpander.IsEnabled = true;
+                    physicalTestsExpander.IsEnabled = true;
+                    VisitExpander.IsExpanded = true;
                 }
                 else
                 {
-                    visitDescription.IsEnabled = false;
-                    visitDescription.Text = db.GetVisitDescription(currentVisitID);
-                    diagnosis.IsEnabled = false;
-                    diagnosis.Text = db.GetVisitDiagnosis(currentVisitID);
-
-                    diagnosisExpander.IsEnabled = true;
-                    laboratoryTestsExpander.IsEnabled = false;
-                    physicalTestsExpander.IsEnabled = false;
-                }
+                    MessageBox.Show("Wystąpił błąd podczas zmiany stanu wizyty i nie został on zmieniony.", "Błąd akceptacji wizyty", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    currentVisitID = -1;
+                }                            
             }
         }
 
@@ -565,6 +564,7 @@ namespace Lekarz
             GetDataFromDB();
             findVisitButtonClicked = true;
             selectedVisitStatus = visitStatusComboBox.SelectedIndex;
+            /*
             if (selectedVisitStatus != 0)
             {
                 beginVisitButton.Content = "Wyświetl dane wizyty";
@@ -573,6 +573,7 @@ namespace Lekarz
             {
                 beginVisitButton.Content = "Rozpocznij wizytę";
             }
+            */
         }
 
         private void clearFilterButton_Click(object sender, RoutedEventArgs e)
