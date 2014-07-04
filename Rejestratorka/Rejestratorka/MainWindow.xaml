@@ -32,7 +32,7 @@
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="20,10,0,20">
                                     <Button x:Name="findPatientButton"  Content="Szukaj" Width="90" Height="28" Click="findPatientButton_Click" IsEnabled="False" TabIndex="3" />
                                     <Button x:Name="clearFilterButton1"  Content="Wyczyść filtr" Width="90" Height="28" Margin="10,0,0,0" Click="clearFilterButton1_Click" IsEnabled="False" IsTabStop="False" />
-                                    <Button Name="AddPatient" HorizontalAlignment="Center" Margin="10,0,0,0" Width="90" Height="28" Content="Dodaj pacjenta" Click="AddPatient_Click" IsTabStop="False" />
+                                    <Button x:Name="addPatientButton" HorizontalAlignment="Center" Margin="10,0,0,0" Width="90" Height="28" Content="Dodaj pacjenta" Click="addPatientButton_Click" IsTabStop="False" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>

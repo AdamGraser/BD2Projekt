@@ -389,70 +389,6 @@ namespace DBClient
         }
 
 
-        /*
-        /// <summary>
-        /// Pobiera z tabeli Pacjent szczegółowe informacje o wskazanym pacjencie.
-        /// Zwrócona struktura następujące tekstowe indeksy: "pesel", "plec", "dataur", "adres".
-        /// </summary>
-        /// <param name="id_pac">ID pacjenta, którego szczegóły mają zostać zwrócone.</param>
-        /// <returns>Zestaw szczegółów o wskazanym pacjencie lub null, jeśli wystąpił błąd.</returns>
-        public Dictionary<string, string> GetPatientDetails(int id_pac)
-        {
-            Dictionary<string, string> patientDetails = new Dictionary<string, string>();
-
-            //Łączenie się z bazą danych.
-            connection.Open();
-
-            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
-            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
-            db.Transaction = transaction;
-
-            try
-            {
-                //Utworzenie zapytania.
-                var query = from Pacjent in db.Pacjents
-                            where Pacjent.Id_pac == id_pac
-                            select new
-                            {
-                                pesel = Pacjent.Pesel,
-                                plec = Pacjent.Plec,
-                                dataUr = Pacjent.Data_ur,
-                                ulica = Pacjent.Ulica,
-                                nrBud = Pacjent.Nr_bud,
-                                nrMiesz = Pacjent.Nr_miesz,
-                                kodPocz = Pacjent.Kod_pocz,
-                                miasto = Pacjent.Miasto
-                            };
-
-                //Wykonanie zapytania.
-                foreach (var p in query)
-                {
-                    //Zapisanie wyników w odpowiednich elementach.
-                    patientDetails.Add("pesel", p.pesel.ToString());
-                    patientDetails.Add("plec", p.plec ? "Kobieta" : "Mężczyzna");
-                    patientDetails.Add("dataur", p.dataUr.ToString());
-                    patientDetails.Add("adres", p.ulica + " " + p.nrBud.ToString() + (p.nrMiesz != null ? " " + p.nrMiesz.ToString() + ", " : ", ") + p.kodPocz + " " + p.miasto);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.HelpLink);
-                Console.WriteLine(e.StackTrace);
-
-                patientDetails = null;
-            }
-            finally
-            {
-                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
-                connection.Close();
-            }
-
-            return patientDetails;
-        }
-        */
-
 
         /// <summary>
         /// Pobiera z tabeli Lekarz imiona i nazwiska wszystkich lekarzy.
@@ -773,103 +709,7 @@ namespace DBClient
         }
 
 
-        /*
-        /// <summary>
-        /// Metoda usuwająca wizytę z bazy.
-        /// </summary>
-        /// <param name="visitID">ID wizyty</param>
-        /// <returns></returns>
-        public bool DeleteVisit(int visitID)
-        {
-            bool retval = true;
-
-            //Łączenie się z bazą danych.
-            connection.Open();
-
-            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
-            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
-            db.Transaction = transaction;
-
-            
-            //Pobranie z bazy id pacjenta na podstawie PESEL-u.
-            var patientIdQuery = from Pacjent in db.Pacjents
-                        where Pacjent.Pesel == long.Parse(patientPesel)
-                        select Pacjent.Id_pac;
-
-            int patientId = -1; //inicjalizacja, ponieważ inaczej w poniższym zapytaniu patientId mogło być niezainicjalizowane
-            
-            foreach (int p in patientIdQuery)
-            {
-                patientId = p;
-            }
-            
-
-            var query = from Wizyta in db.Wizytas
-                        where Wizyta.Id_wiz == visitID
-                        select Wizyta;
-
-            //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
-            foreach (Przychodnia.Wizyta wiz in query)
-            {
-                db.Wizytas.DeleteOnSubmit(wiz);
-            }
-
-            try
-            {
-                //Wysłanie danych (wykonanie inserta). Rzuca SqlException, np. gdy klucz obcy nie odpowiada kluczowi głównemu w tabeli nadrzędnej.
-                db.SubmitChanges();
-
-                //Jeśli nie rzucił mięsem, dojdzie tutaj, czyli wszystko ok. Jeśli zostało już zacommitowane/rollbacknięte przez serwer, rzuci InvalidOper..., jeśli coś
-                //innego, rzuci Exception
-                transaction.Commit();
-            }
-            catch (InvalidOperationException invOper)
-            {
-                Console.WriteLine("Transakcja została już zaakceptowana/odrzucona LUB połączenie zostało zerwane.");
-                Console.WriteLine(invOper.Message);
-                Console.WriteLine(invOper.Source);
-                Console.WriteLine(invOper.HelpLink);
-                Console.WriteLine(invOper.StackTrace);
-                retval = false;
-            }
-            catch (SqlException sqlEx)
-            {
-                Console.WriteLine("Wystąpił błąd przy dodawaniu nowego rekordu, np. niezgodność klucza obcego w tabeli podrzędnej z kluczem głównym w tabeli nadrzędnej.");
-                Console.WriteLine(sqlEx.Message);
-                Console.WriteLine(sqlEx.Source);
-                Console.WriteLine(sqlEx.HelpLink);
-                Console.WriteLine(sqlEx.StackTrace);
-                retval = false;
-
-                //Rollback, bo coś poszło nie tak.
-                transaction.Rollback();
-
-                //Zwolnienie zasobów, bo po co je zajmować.
-                db.Dispose();
-
-                //Utworzenie od razu nowego obiektu do użycia następnym razem.
-                db = new Przychodnia.Przychodnia(connection);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Wystąpił błąd podczas próby zaakceptowania transakcji.");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.Source);
-                Console.WriteLine(ex.HelpLink);
-                Console.WriteLine(ex.StackTrace);
-                retval = false;
-            }
-            finally
-            {
-                //Zawsze należy zamknąć połączenie.
-                connection.Close();
-            }
-
-            return retval;
-        }
-        */
-
-
+        
         /// <summary>
         /// Anuluje wizytę o wskazanym ID.
         /// </summary>
@@ -1047,7 +887,11 @@ namespace DBClient
         }
 
 
-
+        /// <summary>
+        /// Sprawdza czy konto użytkownika wygasło.
+        /// </summary>
+        /// <param name="login">Login użytkownika</param>
+        /// <returns>true jeżeli konto wygasło, else jeżeli konto jest nadal aktywne lub null w przypadku błędu</returns>
         public bool? IsAccountExpired(string login)
         {
             bool? retval = false;
@@ -1100,6 +944,11 @@ namespace DBClient
         }
 
 
+
+        /// <summary>
+        /// Anuluje niedoszłe wizyty. Anulowane są wszystkie niezrealizowane wizyty z danego dnia.
+        /// </summary>
+        /// <returns>true w przypdaku powodzenia lub false jeżeli wystąpił błąd</returns>
         public bool CancelUndoneVisits()
         {
             bool retval = true;

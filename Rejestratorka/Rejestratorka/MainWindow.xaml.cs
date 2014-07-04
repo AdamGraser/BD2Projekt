@@ -61,7 +61,7 @@ namespace Rejestratorka
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AddPatient_Click(object sender, RoutedEventArgs e)
+        private void addPatientButton_Click(object sender, RoutedEventArgs e)
         {
             AddPatientDialog addPatientDialog = new AddPatientDialog();
             
@@ -393,7 +393,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca zmianę wybranego elementu w comboboksie służącym do wyboru lekarza w karcie "Zarejestrowane wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -406,7 +406,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca zmianę wybranego elementu w comboboksie służącym do wyboru lekarza w karcie "Rejestracja wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -470,7 +470,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obługująca zmianę wybranej daty w kontrolce określającej datę wizyty w karcie "Rejestracja wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -582,7 +582,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obługująca zmianę wybranej godziny w kontrolce określającej czas wizyty w karcie "Rejestracja wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -751,7 +751,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca kliknięcie przycisku "Wyczyść filtr" w karcie "Rejestracja wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -767,7 +767,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca zmianę wyboru wiersza w tabeli zawierającej dane pacjentów w karcie "Rejestracja wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -783,7 +783,7 @@ namespace Rejestratorka
 
                        
         /// <summary>
-        /// 
+        /// Metoda obsługująca zmianę tekstu w polach tekstowych filtra w karcie "Rejestracja wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -804,7 +804,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca zmianę zawartości pola z PESEL-em w filtrze w karcie "Rejestracja wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -828,7 +828,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda odświeżająca zawartość tabeli zawierającej dane dotyczące wizyt w karcie "Zarejestrowane wizyty".
         /// </summary>
         /// <param name="visitStatus"></param>
         private void RefreshVisitsDataGrid(byte visitStatus)
@@ -881,7 +881,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca zmianę tekstu w polach tekstowych filtra w karcie "Zarejestrowane wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -902,7 +902,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca zmianę wybranego stanu wizyty w comboboksie w filtrze w karcie "Zarejestrowane wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -929,7 +929,7 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca zmianę daty w filtrze w karcie "Zarejestrowane wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -950,7 +950,7 @@ namespace Rejestratorka
         
 
         /// <summary>
-        /// 
+        /// Metoda obsługująca klikniecie przycisku "Anuluj niedoszłe wizyty".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
