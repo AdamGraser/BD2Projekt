@@ -57,6 +57,12 @@ namespace DBClient
 
 
 
+        /// <summary>
+        /// Zlicza wizyty zarejestrowane na podany dzień do podanego lekarza.
+        /// </summary>
+        /// <param name="doctorID">ID lekarza, do którego zarejestrowane są zliczane wizyty</param>
+        /// <param name="date">Dzień, z którego wizyty są zliczane</param>
+        /// <returns>Liczba wizyt zarejestrowanych na podany dzień do podanego lekarza, lub null w przypadku wystąpienia błędu.</returns>
         public int? GetNumberOfVisits(byte doctorID, DateTime? date)
         {
             int? numberOfVisits = null;
@@ -90,6 +96,55 @@ namespace DBClient
             }
 
             return numberOfVisits;
+        }
+
+
+
+        /// <summary>
+        /// Pobiera z bazy godziny, na które zarejestrowane są wizyty do podanego lekarza w podanym dniu.
+        /// </summary>
+        /// <param name="id_lek">ID lekarza, dla którego pobierane są godziny wizyt.</param>
+        /// <param name="day">Dzień, z którego godziny wizyt mają zostać pobrane.</param>
+        /// <returns>Lista obiektów DateTime z godzinami zarejestrowanych wizyt i datą podaną w argumencie, posortowanych rosnąco.</returns>
+        public List<DateTime> GetHoursOfVisits(byte id_lek, DateTime day)
+        {
+            List<DateTime> hoursOfVisits = new List<DateTime>();
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {
+                var query = from Wizyta in db.Wizytas
+                            where Wizyta.Id_lek == id_lek && Wizyta.Data_rej.Date == day
+                            orderby Wizyta.Data_rej
+                            select Wizyta.Data_rej;
+
+                foreach (DateTime visitDate in query)
+                {
+                    hoursOfVisits.Add(visitDate);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+
+                hoursOfVisits = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+
+            return hoursOfVisits;
         }
 
 

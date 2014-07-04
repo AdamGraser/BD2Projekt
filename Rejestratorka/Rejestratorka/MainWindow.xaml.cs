@@ -29,6 +29,7 @@ namespace Rejestratorka
         List<byte> doctorsIdList;
         List<int> patientsIdList;
         List<int> visitsIdList;
+        List<DateTime> hoursOfVisits;        // lista godzin we wskazanym przy rejestracji wizyt dniu, na które zarejestrowane są do wybranego lekarza wizyty
         bool findVisitButtonClicked = false;
 
 
@@ -47,6 +48,7 @@ namespace Rejestratorka
                     db = new DBClient.DBClient();
                     GetDataFromDB();
                     ClearPatientsDataGrid();
+                    visitTime.TimeInterval = new TimeSpan(0, 30, 0);
                     break;
                 }                
             }
@@ -83,30 +85,6 @@ namespace Rejestratorka
         }
 
 
-        /*
-        /// <summary>
-        /// Metoda odświeżająca zawartość combobox'a zawierającego listę pacjentów.
-        /// </summary>
-        private void RefreshPatientsList()
-        {            
-            List<string> patients = db.GetPatients(null, null, null);
-
-            PatientsList.Items.Clear();
-
-            if (patients != null && patients.Count > 0)
-            {
-                foreach (string p in patients)
-                {
-                    PatientsList.Items.Add(new ComboBoxItem().Content = p);
-                }
-            }
-            else
-                System.Windows.MessageBox.Show("Brak pacjentów w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
-                                "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        */
-
-
         /// <summary>
         /// Metoda obsługująca kliknięcie przycisku "Rejestruj wizytę".
         /// </summary>
@@ -115,134 +93,21 @@ namespace Rejestratorka
         private void registerVisitButton_Click(object sender, RoutedEventArgs e)
         {
             
-            DateTime? timeOfVisit = visitTime.Value;
-            /*
-            if (visitDate.SelectedDate == null)
-            {
-                System.Windows.MessageBox.Show("Nie podano daty odbycia się wizyty!", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            else if (timeOfVisit == null)
-            {
-                System.Windows.MessageBox.Show("Nie podano godziny odbyczia się wizyty!", "Nieprawidłowe dane", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            else
-            {
-            */
-                DateTime dateOfVisit = (DateTime)visitDate.SelectedDate;
-                DateTime dateToSaveInDB = new DateTime(dateOfVisit.Year, dateOfVisit.Month, dateOfVisit.Day, timeOfVisit.Value.Hour, timeOfVisit.Value.Minute, timeOfVisit.Value.Second);                
+            DateTime dateOfVisit = ((DateTime)visitDate.SelectedDate).AddHours(visitTime.Value.Value.Hour).AddMinutes(visitTime.Value.Value.Minute);
 
-                if (db.AddVisit(dateToSaveInDB, doctorsIdList[doctorsList.SelectedIndex], patientsIdList[patientsDataGrid.SelectedIndex]))
-                {
-                    System.Windows.MessageBox.Show("Zarejestrowano nową wizytę.", "Informacja", MessageBoxButton.OK, MessageBoxImage.Information);
-                    patientsDataGrid.SelectedIndex = -1;                    
-                    doctorsList.SelectedIndex = -1;
-                    visitDate.SelectedDate = null;
-                    visitTime.Value = null;                   
-                    registerVisitButton.IsEnabled = false;
+            if (db.AddVisit(dateOfVisit, doctorsIdList[doctorsList.SelectedIndex], patientsIdList[patientsDataGrid.SelectedIndex]))
+            {
+                System.Windows.MessageBox.Show("Zarejestrowano nową wizytę.", "Informacja", MessageBoxButton.OK, MessageBoxImage.Information);
+                patientsDataGrid.SelectedIndex = -1;                    
+                doctorsList.SelectedIndex = -1;
+                visitDate.SelectedDate = null;
+                visitTime.Value = null;                   
+                registerVisitButton.IsEnabled = false;
                 }
                 else
-                    System.Windows.MessageBox.Show("Wystąpił błąd podczas rejestrowania wizyty i nie została ona zarejestrowana.", "Błąd rejestracji", MessageBoxButton.OK, MessageBoxImage.Warning);                 
-            //}
+                    System.Windows.MessageBox.Show("Wystąpił błąd podczas rejestrowania wizyty i nie została ona zarejestrowana.", "Błąd rejestracji", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
-
-        /*
-        /// <summary>
-        /// Metoda obsługująca zwinięcie expandera zawierającego szczegółowe dane pacjenta.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PatientDetails_Collapsed(object sender, RoutedEventArgs e)
-        {
-            PatientName.Text = "";
-            PatientPesel.Text = "";
-            PatientGender.Text = "";
-            PatientBirthDate.Text = "";
-            PatientAddress.Text = "";
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Metoda obsługująca rozwinięcie expandera zawierającego szczegółowe dane pacjenta.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PatientDetails_Expanded(object sender, RoutedEventArgs e)
-        {
-            Dictionary<string, string> patientDetails = db.GetPatientDetails(PatientsList.SelectedIndex + 1);
-
-            if (patientDetails != null)
-            {
-                if (patientDetails.Count > 0)
-                {
-                    PatientName.Text = PatientsList.SelectedValue.ToString();
-                    PatientPesel.Text = patientDetails["pesel"];
-                    PatientGender.Text = patientDetails["plec"];
-                    PatientBirthDate.Text = patientDetails["dataur"];
-                    PatientAddress.Text = patientDetails["adres"];
-
-                    TabRejScrollViewer.ScrollToEnd();
-                }
-                else
-                {
-                    System.Windows.MessageBox.Show("Pacjent o podanym numerze nie istnieje.", "Nieprawidłowy nr pacjenta", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    PatientDetails.IsExpanded = false;
-                }
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("Wystąpił błąd podczas pobierania szczegółowych danych o pacjencie.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                PatientDetails.IsExpanded = false;
-            }
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Metoda obsługująca zaznaczenie elementu na liście pacjentów.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PatientsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (PatientsList.SelectedIndex > -1)
-            {
-                PatientDetails.IsEnabled = true;
-
-                if (RegisterVisit.IsEnabled == false)
-                    if (doctorsList.SelectedIndex > -1 && visitDate.SelectedDate != null && visitTime.Value != null)
-                        RegisterVisit.IsEnabled = true;
-
-                if (PatientDetails.IsExpanded)
-                {
-                    Dictionary<string, string> patientDetails = db.GetPatientDetails(PatientsList.SelectedIndex + 1);
-
-                    if (patientDetails != null)
-                    {
-                        if (patientDetails.Count > 0)
-                        {
-                            PatientName.Text = PatientsList.SelectedValue.ToString();
-                            PatientPesel.Text = patientDetails["pesel"];
-                            PatientGender.Text = patientDetails["plec"];
-                            PatientBirthDate.Text = patientDetails["dataur"];
-                            PatientAddress.Text = patientDetails["adres"];
-                        }
-                        else
-                        {
-                            System.Windows.MessageBox.Show("Pacjent o podanym numerze nie istnieje.", "Nieprawidłowy nr pacjenta", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            PatientDetails.IsExpanded = false;
-                        }
-                    }
-                    else
-                    {
-                        System.Windows.MessageBox.Show("Wystąpił błąd podczas pobierania szczegółowych danych o pacjencie.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        PatientDetails.IsExpanded = false;
-                    }
-                }
-            }
-        }
-       */
 
 
         /// <summary>
@@ -297,26 +162,23 @@ namespace Rejestratorka
             }
 
             DataRow[] selectedRows = registeredVisitsTable.Select(filterString);
-            //if (selectedRows.Count() > 0)
-            //{
-                DataTable filteredTable = new DataTable();
-                DataColumn patientNameColumn = new DataColumn("Imię", typeof(string));
-                DataColumn patientSurnameColumn = new DataColumn("Nazwisko", typeof(string));
-                DataColumn patientDateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
-                DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
-                DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
-                DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
-                DataColumn statusColumn = new DataColumn("Stan wizyty", typeof(string));
-                filteredTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
-                    patientPeselColumn, dateOfVisitColumn, doctorColumn, statusColumn});
+            DataTable filteredTable = new DataTable();
+            DataColumn patientNameColumn = new DataColumn("Imię", typeof(string));
+            DataColumn patientSurnameColumn = new DataColumn("Nazwisko", typeof(string));
+            DataColumn patientDateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
+            DataColumn patientPeselColumn = new DataColumn("PESEL", typeof(string));
+            DataColumn dateOfVisitColumn = new DataColumn("Data wizyty", typeof(string));
+            DataColumn doctorColumn = new DataColumn("Lekarz", typeof(string));
+            DataColumn statusColumn = new DataColumn("Stan wizyty", typeof(string));
+            filteredTable.Columns.AddRange(new DataColumn[] {patientNameColumn, patientSurnameColumn, patientDateOfBirthColum,
+                patientPeselColumn, dateOfVisitColumn, doctorColumn, statusColumn});
                 
-                foreach (DataRow row in selectedRows)
-	            {
-                    filteredTable.ImportRow(row);
-	            }
+            foreach (DataRow row in selectedRows)
+	        {
+                filteredTable.ImportRow(row);
+	        }
 
-                visitsDataGrid.ItemsSource = filteredTable.DefaultView;
-            //}
+            visitsDataGrid.ItemsSource = filteredTable.DefaultView;
         }
 
 
@@ -328,16 +190,6 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void cancelVisitButton_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            System.Data.DataRowView selectedRow = (System.Data.DataRowView)visitsDataGrid.SelectedItem;
-            object[] rowValues = selectedRow.Row.ItemArray;
-            string patientName = (string)rowValues[0];
-            string patientSurname = (string)rowValues[1];
-            //string patientDateOfBirth = (string)rowValues[2];
-            string patientPesel = (string)rowValues[3];
-            string dateOfVisit = (string)rowValues[4];
-            string doctor = (string)rowValues[5];
-            */
             if (db.CancelVisit(visitsIdList[visitsDataGrid.SelectedIndex]))
             {
                 System.Windows.MessageBox.Show("Wizyta została anulowana.", "Anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -476,17 +328,6 @@ namespace Rejestratorka
         private void refreshButton_Click(object sender, RoutedEventArgs e)
         {
             
-            /*
-            visitTime.Value = null;
-            visitDate.SelectedDate = null;
-            registerVisitButton.IsEnabled = false;
-            
-            //PatientsList.Items.Clear();
-            doctorsList.Items.Clear();
-            doctorsList2.Items.Clear();
-
-            GetDataFromDB();
-            */
             RefreshVisitsDataGrid(0);
         }
 
@@ -497,44 +338,27 @@ namespace Rejestratorka
         /// </summary>
         private void GetDataFromDB()
         {
-            /*
-            // --> Tworzenie listy pacjentów.
-            List<string> patients = db.GetPatients();
-
-            if (patients != null && patients.Count > 0)
-            {
-                foreach (string p in patients)
-                {
-                    PatientsList.Items.Add(new ComboBoxItem().Content = p);
-                }
-            }
-            else
-                System.Windows.MessageBox.Show("Brak pacjentów w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
-                                "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-            // <-- Tworzenie listy pacjentów.
-            */
             // --> Tworzenie listy lekarzy.
             Dictionary<byte, string> doctorsDataList = db.GetDoctors();
             doctorsIdList = new List<byte>();
-            List<string> doctors = new List<string>();
 
-            foreach (KeyValuePair<byte, string> doctorData in doctorsDataList)
+            if (doctorsDataList != null && doctorsDataList.Count > 0)
             {
-                doctorsIdList.Add(doctorData.Key);
-                doctors.Add(doctorData.Value);
-            }
-
-            if (doctors != null && doctors.Count > 0)
-            {
-                foreach (string d in doctors)
+                foreach (KeyValuePair<byte, string> doctorData in doctorsDataList)
                 {
-                    doctorsList.Items.Add(new ComboBoxItem().Content = d);
-                    doctorsList2.Items.Add(new ComboBoxItem().Content = d);
+                    doctorsIdList.Add(doctorData.Key);
+                    doctorsList.Items.Add(new ComboBoxItem().Content = doctorData.Value);
+                    doctorsList2.Items.Add(new ComboBoxItem().Content = doctorData.Value);
                 }
             }
             else
+            {
                 System.Windows.MessageBox.Show("Brak lekarzy w bazie danych lub wystąpił błąd podczas łączenia się z bazą. Skontaktuj się z administratorem systemu.",
                                 "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                doctorsList.IsEnabled = false;
+                doctorsList2.IsEnabled = false;
+            }
             // <-- Tworzenie listy lekarzy.  
 
             //wypełnianie tabeli z wizytami:
@@ -587,24 +411,59 @@ namespace Rejestratorka
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void doctorsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {            
-            if (doctorsList.SelectedIndex > -1 && visitDate.SelectedDate != null)
-            {                
-                int? visNum = db.GetNumberOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate);
-
-                if (visNum != null)
-                    numberOfVisitsTextBlock.Text = visNum.ToString();
-                else
-                    numberOfVisitsTextBlock.Text = "0";
-
-                if (patientsDataGrid.SelectedIndex > -1 && visitTime.Value != null)
+        {
+            if (doctorsList.SelectedIndex > -1)
+            {
+                if (visitDate.SelectedDate != null)
                 {
-                    registerVisitButton.IsEnabled = true;
-                }                
+                    //pobranie listy godzin zajętych u wybranego lekarza
+                    hoursOfVisits = db.GetHoursOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate.Value);
+                    hoursOfVisitsList.Items.Clear();
+
+                    //zapobieganie wyjątkom, uproszczenie dalszej części metody, poinformowanie o wystąpieniu błędu
+                    if (hoursOfVisits == null)
+                    {
+                        hoursOfVisits = new List<DateTime>();
+                        System.Windows.MessageBox.Show("Wystąpił błąd podczas pobierania z bazy danych zajętych wizyt dla wybranego lekarza.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                    //wpisanie zajętych godzin do listy obok listy lekarzy
+                    foreach (DateTime hour in hoursOfVisits)
+                    {
+                        hoursOfVisitsList.Items.Add(new ComboBoxItem().Content = hour.Hour + ":" + (hour.Minute < 10 ? "0" + hour.Minute.ToString() : hour.Minute.ToString()));
+                    }
+
+                    if (visitTime.Value != null)
+                    {
+                        int i;
+
+                        //sprawdzenie czy wskazana godzina jest już zajęta
+                        for (i = 0; i < hoursOfVisits.Count; ++i)
+                        {
+                            if (visitTime.Value.Value.TimeOfDay >= hoursOfVisits[i].TimeOfDay && visitTime.Value.Value.TimeOfDay < hoursOfVisits[i].AddMinutes(30.0).TimeOfDay)
+                            {
+                                System.Windows.MessageBox.Show("Wybrana godzina wizyty jest już zajęta!", "Konflikt wizyt", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                break;
+                            }
+                        }
+
+                        //jeśli wybrana godzina jest wolna oraz podano wszystkie inne, niezbędne informacje, to można zarejestrować wizytę
+                        if (i == hoursOfVisits.Count && patientsDataGrid.SelectedIndex > -1)
+                            registerVisitButton.IsEnabled = true;
+                        else
+                            registerVisitButton.IsEnabled = false;
+                    }
+                }
+                else
+                {
+                    registerVisitButton.IsEnabled = false;
+                    hoursOfVisitsList.Items.Clear();
+                }
             }
             else
             {
                 registerVisitButton.IsEnabled = false;
+                hoursOfVisitsList.Items.Clear();
             }
         }
 
@@ -617,28 +476,106 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void visitDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
+            string newItem;
+            
             if (visitDate.SelectedDate != null)
             {
-                //if (registerVisitButton.IsEnabled == false)
-                //{
+                int? visNum;
+
+                //zapisanie numeru obecnie wybranego lekarza (modyfikacja wybranego elementu powoduje jego odznaczenie)
+                int currentDoctor = doctorsList.SelectedIndex;
+                
+                for (byte i = 0; i < doctorsList.Items.Count; ++i)
+                {
+                    //pobranie liczby wizyt zarejestrowanych dla danego lekarza na wybrany dzień
+                    visNum = db.GetNumberOfVisits(doctorsIdList[i], visitDate.SelectedDate);
+
+                    //dopisanie tej liczby obok imienia i nazwiska lekarza
+
+                    newItem = (string)doctorsList.Items[i];
+
+                    if (newItem[newItem.Length - 2] == ' ')
+                        newItem = newItem.Substring(0, newItem.Length - 1);
+                    else if (newItem[newItem.Length - 3] == ' ')
+                        newItem = newItem.Substring(0, newItem.Length - 2);
+                    else
+                        newItem += " ";
+
+                    newItem += (visNum != null) ? visNum.ToString() : "0";
+
+                    doctorsList.Items[i] = new ComboBoxItem().Content = newItem;
+                }
+
                 if (doctorsList.SelectedIndex > -1)
                 {
-                    int? visNum = db.GetNumberOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate);
+                    //pobranie listy godzin zajętych u wybranego lekarza
+                    hoursOfVisits = db.GetHoursOfVisits(doctorsIdList[doctorsList.SelectedIndex], visitDate.SelectedDate.Value);
+                    hoursOfVisitsList.Items.Clear();
 
-                    if (visNum != null)
-                        numberOfVisitsTextBlock.Text = visNum.ToString();
-                    else
-                        numberOfVisitsTextBlock.Text = "0";
+                    //zapobieganie wyjątkom, uproszczenie dalszej części metody, poinformowanie o wystąpieniu błędu
+                    if (hoursOfVisits == null)
+                    {
+                        hoursOfVisits = new List<DateTime>();
+                        System.Windows.MessageBox.Show("Wystąpił błąd podczas pobierania z bazy danych zajętych wizyt dla wybranego lekarza.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
 
-                    if(patientsDataGrid.SelectedIndex > -1 && visitTime.Value != null)
-                        registerVisitButton.IsEnabled = true;
+                    //wpisanie zajętych godzin do listy obok listy lekarzy
+                    foreach (DateTime hour in hoursOfVisits)
+                    {
+                        hoursOfVisitsList.Items.Add(new ComboBoxItem().Content = hour.Hour + ":" + (hour.Minute < 10 ? "0" + hour.Minute.ToString() : hour.Minute.ToString()));
+                    }
+
+                    if (visitTime.Value != null)
+                    {
+                        int i;
+
+                        //sprawdzenie czy wskazana godzina jest już zajęta
+                        for (i = 0; i < hoursOfVisits.Count; ++i)
+                        {
+                            if (visitTime.Value.Value.TimeOfDay >= hoursOfVisits[i].TimeOfDay && visitTime.Value.Value.TimeOfDay < hoursOfVisits[i].AddMinutes(30.0).TimeOfDay)
+                            {
+                                System.Windows.MessageBox.Show("Wybrana godzina wizyty jest już zajęta!", "Konflikt wizyt", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                break;
+                            }
+                        }
+
+                        //jeśli wybrana godzina jest wolna oraz podano wszystkie inne, niezbędne informacje, to można zarejestrować wizytę
+                        if (i == hoursOfVisits.Count && patientsDataGrid.SelectedIndex > -1)
+                            registerVisitButton.IsEnabled = true;
+                        else
+                            registerVisitButton.IsEnabled = false;
+                    }
                 }
-                //}
+                else
+                {
+                    registerVisitButton.IsEnabled = false;
+                    hoursOfVisitsList.Items.Clear();
+                }
 
+                //przywrócenie na liście lekarza wybranego przed zmianami
+                doctorsList.SelectedIndex = currentDoctor;
             }
             else
             {
                 registerVisitButton.IsEnabled = false;
+                hoursOfVisitsList.Items.Clear();
+
+                //usunięcie liczb z listy lekarzy
+                for (int i = 0; i < doctorsList.Items.Count; ++i)
+                {
+                    newItem = (string)doctorsList.Items[i];
+
+                    if (newItem[newItem.Length - 2] == ' ')
+                    {
+                        newItem = newItem.Substring(0, newItem.Length - 2);
+                        doctorsList.Items[i] = new ComboBoxItem().Content = newItem;
+                    }
+                    else if (newItem[newItem.Length - 3] == ' ')
+                    {
+                        newItem = newItem.Substring(0, newItem.Length - 3);
+                        doctorsList.Items[i] = new ComboBoxItem().Content = newItem;
+                    }
+                }
             }
         }
 
@@ -651,13 +588,25 @@ namespace Rejestratorka
         /// <param name="e"></param>
         private void visitTime_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (visitTime.Value != null)
+            if (visitTime.Value != null && doctorsList.SelectedIndex > -1)
             {
-                //if (registerVisitButton.IsEnabled == false)
-                //{
-                    if (patientsDataGrid.SelectedIndex > -1 && doctorsList.SelectedIndex > -1 && visitDate.SelectedDate != null)
-                        registerVisitButton.IsEnabled = true;
-                //}
+                int i;
+
+                //sprawdzenie czy wskazana godzina jest już zajęta
+                for (i = 0; i < hoursOfVisits.Count; ++i)
+                {
+                    if (visitTime.Value.Value.TimeOfDay >= hoursOfVisits[i].TimeOfDay && visitTime.Value.Value.TimeOfDay < hoursOfVisits[i].AddMinutes(30.0).TimeOfDay)
+                    {
+                        System.Windows.MessageBox.Show("Wybrana godzina wizyty jest już zajęta!", "Konflikt wizyt", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        break;
+                    }
+                }
+
+                //jeśli wybrana godzina jest wolna oraz podano wszystkie inne, niezbędne informacje, to można zarejestrować wizytę
+                if (i == hoursOfVisits.Count && patientsDataGrid.SelectedIndex > -1 && visitDate.SelectedDate != null)
+                    registerVisitButton.IsEnabled = true;
+                else
+                    registerVisitButton.IsEnabled = false;
             }
             else
             {
@@ -878,7 +827,10 @@ namespace Rejestratorka
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="visitStatus"></param>
         private void RefreshVisitsDataGrid(byte visitStatus)
         {
             //wypełnianie tabeli z wizytami:
@@ -928,7 +880,11 @@ namespace Rejestratorka
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void VisitFilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (patientNameTextBox2.Text.Length > 0 || patientSurnameTextBox2.Text.Length > 0 || doctorsList2.SelectedIndex != -1)
@@ -945,7 +901,11 @@ namespace Rejestratorka
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void visitStatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (visitStatusComboBox.SelectedIndex != 0) //0 - wartość domyślna, oznacza niezrealizowane wizyty
@@ -966,6 +926,13 @@ namespace Rejestratorka
             }
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void visitDate2_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             if (visitDate2.SelectedDate != null)
@@ -981,6 +948,12 @@ namespace Rejestratorka
         }
 
         
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cancelUndoneVisitsButton_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result;

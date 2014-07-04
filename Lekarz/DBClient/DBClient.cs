@@ -1096,8 +1096,9 @@ namespace DBClient
         /// Anuluje wizytę o wskazanym ID.
         /// </summary>
         /// <param name="id_wiz">ID wizyty, która ma zostać usunięta.</param>
+        /// <param name="opis">Opis wizyty (z założenia: powód anulowania wizyty).</param>
         /// <returns>true jeśli wizyta została pomyślnie usunięta z bazy danych, false jeśli wystąpił błąd.</returns>
-        public bool CancelVisit(int id_wiz)
+        public bool CancelVisit(int id_wiz, string opis)
         {
             bool retval = true;
 
@@ -1115,7 +1116,8 @@ namespace DBClient
             //id_wiz jest kluczem głównym tabeli Wizyta, co zapewnia unikalność wartości w tej kolumnie - taka wizyta jest tylko jedna
             foreach (Przychodnia.Wizyta wiz in query)
             {
-                wiz.Stan = 2; //zmiana stanu wizyty na "anulowana".
+                wiz.Stan = 2;    //zmiana stanu wizyty na "anulowana"
+                wiz.Opis = opis; //zapisanie powodu anulowania wizyty
             }
 
             try
