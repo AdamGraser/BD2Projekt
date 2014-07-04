@@ -431,6 +431,11 @@ namespace Laborant
             Lab_LabCancelInfo.IsEnabled = false;
             Lab_LabTestResult.IsEnabled = false;
         }
+
+        private void helpMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.Help.ShowHelp(null, "Laborant - pomoc.chm");
+        }
     }
 }
 

@@ -9,7 +9,8 @@
         <Menu DockPanel.Dock="Top" Height="25">
             <MenuItem x:Name="logoutMenuItem" Header="Wyloguj się" Click="logoutMenuItem_Click" />
             <MenuItem Header="Pomoc">
-                <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"></MenuItem>
+                <MenuItem x:Name="helpMenuItem" Header="Pomoc" Click="helpMenuItem_Click"/>
+                <MenuItem x:Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
        
