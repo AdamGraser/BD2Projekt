@@ -335,7 +335,7 @@ namespace Przychodnia
 		
 		private string _Uwagi;
 		
-		private System.Nullable<short> _Kod;
+		private short _Kod;
 		
 		private System.Nullable<byte> _Id_lab;
 		
@@ -365,7 +365,7 @@ namespace Przychodnia
     partial void OnStanChanged();
     partial void OnUwagiChanging(string value);
     partial void OnUwagiChanged();
-    partial void OnKodChanging(System.Nullable<short> value);
+    partial void OnKodChanging(short value);
     partial void OnKodChanged();
     partial void OnId_labChanging(System.Nullable<byte> value);
     partial void OnId_labChanged();
@@ -539,8 +539,8 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="kod", Storage="_Kod", DbType="SmallInt")]
-		public System.Nullable<short> Kod
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="kod", Storage="_Kod", DbType="SmallInt NOT NULL")]
+		public short Kod
 		{
 			get
 			{
@@ -640,7 +640,7 @@ namespace Przychodnia
 					}
 					else
 					{
-						this._Kod = default(Nullable<short>);
+						this._Kod = default(short);
 					}
 					this.SendPropertyChanged("Sl_badan");
 				}
@@ -1895,7 +1895,7 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="opis", Storage="_Opis", DbType="Text", UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="opis", Storage="_Opis", DbType="VarChar(50)")]
 		public string Opis
 		{
 			get
@@ -1935,7 +1935,7 @@ namespace Przychodnia
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="FK_Badanie_Sl_badan", Storage="_Badanies", ThisKey="Kod", OtherKey="Kod", DeleteRule="SET NULL")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="FK_Badanie_Sl_badan", Storage="_Badanies", ThisKey="Kod", OtherKey="Kod", DeleteRule="NO ACTION")]
 		public EntitySet<Badanie> Badanies
 		{
 			get
