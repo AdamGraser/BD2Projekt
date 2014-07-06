@@ -19,7 +19,9 @@ namespace DBClient
         SqlConnection connection;
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
-        static byte id_rej;   //ID rejestratorki obecnie zalogowanej w systemie
+        static byte id_rej;         //ID rejestratorki obecnie zalogowanej w systemie
+        static bool isExpired;      //determinuje ważność konta (false = aktywne, true = wygasło)
+        string name;                //przechowuje imię i nazwisko zalogowanego użytkownika
 
 
 
@@ -33,16 +35,47 @@ namespace DBClient
 
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
+
+            name = null;
         }
 
 
 
         /// <summary>
-        /// Przypisuje polu id_rej wartość 0 - jest to swoisty reset tego pola, który powinien dla bezpieczeństwa być wykonywany przy wylogowaniu.
+        /// Zwraca wartość determinującą ważność konta (false = aktywne, true = wygasło).
         /// </summary>
-        public void ResetIdRej()
+        public bool IsAccountExpired
+        {
+            get
+            {
+                return isExpired;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Zwraca imię i nazwisko zalogowanego użytkownika.
+        /// </summary>
+        public string UserName
+        {
+            get
+            {
+                return name;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Przypisuje polu id_rej wartość 0, a polu idExpired wartość true.
+        /// Jest to swoisty reset tych pól, który powinien dla bezpieczeństwa być wykonywany przy wylogowaniu.
+        /// </summary>
+        public void ResetClient()
         {
             id_rej = 0;
+            isExpired = true;
+            name = null;
         }
 
 
@@ -53,6 +86,84 @@ namespace DBClient
         public void Dispose()
         {
             db.Dispose();
+        }
+
+
+
+        /// <summary>
+        /// Sprawdza czy podane poświadczenia są prawidłowe oraz czy wskazane konto jest aktywne.
+        /// Informacja nt. aktywności konta jest zapisywana we właściwości IsAccountExpired.
+        /// Zapisywana jest również nazwa (imię i nazwisko) użytkownika we właściwości UserName.
+        /// </summary>
+        /// <param name="login">Login do wyszukania w bazie</param>
+        /// <param name="passwordHash">Hash hasła</param>
+        /// <returns>true jeżeli podane poświadczenia są prawidłowe, false jeżeli są nieprawidłowe, null jeśli wystąpił błąd.</returns>
+        public bool? FindUser(string login, byte[] passwordHash)
+        {
+            bool? retval = false;
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {
+                string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
+
+                //Utworzenie zapytania.
+                var query = from Rejestratorka in db.Rejestratorkas
+                            where Rejestratorka.Login == login &&
+                                  Rejestratorka.Haslo.StartsWith(temp) &&
+                                  Rejestratorka.Haslo.Length == temp.Length
+                            select new
+                            {
+                                id = Rejestratorka.Id_rej,
+                                exp = Rejestratorka.Wygasa,
+                                imie = Rejestratorka.Imie,
+                                nazw = Rejestratorka.Nazwisko
+                            };
+
+                //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
+                foreach (var q in query)
+                {
+                    if (id_rej == 0)
+                    {
+                        id_rej = q.id;
+                        isExpired = (q.exp <= DateTime.Now);
+                        name = q.imie + " " + q.nazw;
+
+                        retval = true;
+                    }
+                    else
+                    {
+                        id_rej = 0;
+                        isExpired = true;
+                        name = null;
+
+                        retval = null;
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+
+                retval = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+
+            return retval;
         }
 
 
@@ -145,67 +256,6 @@ namespace DBClient
             }
 
             return hoursOfVisits;
-        }
-
-
-
-        /// <summary>
-        /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
-        /// </summary>
-        /// <param name="login">Login do wyszukania w bazie</param>
-        /// <param name="passwordHash">Hash hasła</param>
-        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy, null jeśli wystąpił błąd.</returns>
-        public bool? FindUser(string login, byte[] passwordHash)
-        {
-            bool? retval = false;
-            //Łączenie się z bazą danych.
-            connection.Open();
-
-            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
-            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
-            db.Transaction = transaction;
-
-            try
-            {
-                string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
-
-                //Utworzenie zapytania.
-                var query = from Rejestratorka in db.Rejestratorkas                                       
-                          where Rejestratorka.Login == login &&
-                                  Rejestratorka.Haslo.StartsWith(temp) &&
-                                  Rejestratorka.Haslo.Length == temp.Length
-                          select Rejestratorka.Id_rej;
-
-                foreach (byte q in query)
-                {
-                    if (id_rej == 0)
-                    {
-                        id_rej = q;
-                        retval = true;
-                    }
-                    else
-                    {
-                        id_rej = 0;
-                        retval = null;
-                        break;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.HelpLink);
-                Console.WriteLine(e.StackTrace);
-
-                retval = null;
-            }
-            finally
-            {
-                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
-                connection.Close();
-            }
-            return retval;
         }
 
 
@@ -880,63 +930,6 @@ namespace DBClient
             finally
             {
                 //Zawsze należy zamknąć połączenie.
-                connection.Close();
-            }
-
-            return retval;
-        }
-
-
-        /// <summary>
-        /// Sprawdza czy konto użytkownika wygasło.
-        /// </summary>
-        /// <param name="login">Login użytkownika</param>
-        /// <returns>true jeżeli konto wygasło, else jeżeli konto jest nadal aktywne lub null w przypadku błędu</returns>
-        public bool? IsAccountExpired(string login)
-        {
-            bool? retval = false;
-
-            //Łączenie się z bazą danych.
-            connection.Open();
-
-            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
-            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
-            db.Transaction = transaction;
-
-            try
-            {
-
-                //Utworzenie zapytania.
-                var query = from Lekarz in db.Lekarzs
-                            where Lekarz.Login == login
-                            select Lekarz.Wygasa;
-
-
-
-                foreach (DateTime? date in query)
-                {
-                    if (date == null || date > DateTime.Now)
-                    {
-                        retval = false;
-                    }
-                    else
-                    {
-                        retval = true;
-                        break;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.Source);
-                Console.WriteLine(e.HelpLink);
-                Console.WriteLine(e.StackTrace);
-                retval = null;
-            }
-            finally
-            {
-                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
                 connection.Close();
             }
 

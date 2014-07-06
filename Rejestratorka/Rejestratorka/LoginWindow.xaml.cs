@@ -17,31 +17,21 @@ using System.Security;
 namespace Rejestratorka
 {
     /// <summary>
-    /// Opakowany typ bool (możliwy do przekazywania przez referencję)
-    /// </summary>
-    public class RefBool
-    {
-        public bool v;
-    }
-
-    /// <summary>
     /// Logika interakcji dla klasy LoginWindow.xaml
     /// </summary>
     public partial class LoginWindow : Window
     {
-        private byte[] _hash;
-        private string _login;
-        private RefBool hardExit;
+        private string name;   //zawiera imię i nazwisko zalogowanego użytkownika
+        private bool hardExit; //determinuje sposób zamknięcia okna (true = naciśnięto krzyżyk, false = naciśnięto "Zaloguj")
+
 
 
         /// <summary>
         /// Konstruktor.
-        /// <param name="exit">Referencja do zmiennej, w której zostanie zapamiętana informacja, czy wymuszono zamnięcie okna</param>
         /// </summary>
-        public LoginWindow(RefBool exit)
+        public LoginWindow()
         {
-            hardExit = exit;
-            hardExit.v = true;
+            hardExit = true;
 
             InitializeComponent();
             loginTextBox.Focus();
@@ -50,13 +40,26 @@ namespace Rejestratorka
 
 
         /// <summary>
-        /// Właściwość zwracająca login zalogowanego użytkownika.
+        /// Właściwość zwracająca imię i nazwisko zalogowanego użytkownika.
         /// </summary>
-        public string Login
+        public string UserName
         {
             get
             {
-                return _login;
+                return name;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Właściwość determinująca sposób zamknięcia okna.
+        /// </summary>
+        public bool WindowClosed
+        {
+            get
+            {
+                return hardExit;
             }
         }
         
@@ -71,29 +74,25 @@ namespace Rejestratorka
         {
             DBClient.DBClient db = new DBClient.DBClient();  // klient bazy danych
             HashAlgorithm sha = HashAlgorithm.Create("SHA512");            
-            byte[] passwordBytes = System.Text.Encoding.ASCII.GetBytes(passwordBox.Password);
-            _hash = sha.ComputeHash(passwordBytes);
-            _login = loginTextBox.Text;
+            
+            bool? userFound = db.FindUser(loginTextBox.Text, sha.ComputeHash(System.Text.Encoding.ASCII.GetBytes(passwordBox.Password)));
 
-            bool? userFound = db.FindUser(_login, _hash);
-
-            hardExit.v = false;
+            hardExit = false;
 
             //Sprawdzanie czy w bazie istnieje podany użytkownik
             if (userFound == true)
             {
-                if (db.IsAccountExpired(_login) == true)
+                if (db.IsAccountExpired)
                 {
-                    System.Windows.MessageBox.Show("Konto zostało zablokowane.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);
-                    DialogResult = false;
-                }
-                else if (db.IsAccountExpired(_login) == null)
-                {
-                    System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Windows.MessageBox.Show("Konto zostało zablokowane.", "Brak uprawnień", MessageBoxButton.OK, MessageBoxImage.Warning);
                     DialogResult = false;
                 }
                 else
+                {
+                    //zapisanie imienia i nazwiska użytkownika, do użycia w oknie głównym aplikacji
+                    name = db.UserName;
                     DialogResult = true;
+                }
             }
             else
             {
@@ -102,9 +101,6 @@ namespace Rejestratorka
                 if (userFound == null)
                     System.Windows.MessageBox.Show("Wystąpił błąd podczas sprawdzania poświadczeń w bazie danych.", "Błąd sprawdzania poświadczeń", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            //wyczyszczenie hashu (dla bezpieczeństwa)
-            _hash = null;
         }
 
 

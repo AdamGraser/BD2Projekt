@@ -26,8 +26,12 @@ namespace DBClient
         SqlConnection connection;
         SqlTransaction transaction;
         Przychodnia.Przychodnia db;
-        static byte id_lab;   //ID laboranta obecnie zalogowanego w systemie
-        static bool kier; //Informacja, czy dany laborant jest kierownikiem
+        static byte id_lab;         //ID laboranta obecnie zalogowanego w systemie
+        static bool kier;           //Informacja, czy dany laborant jest kierownikiem
+        static bool isExpired;      //determinuje ważność konta (false = aktywne, true = wygasło)
+        string name;                //przechowuje imię i nazwisko zalogowanego użytkownika
+
+
 
         /// <summary>
         /// Domyślny konstruktor. Tworzy i otwiera połączenie z bazą danych.
@@ -39,7 +43,64 @@ namespace DBClient
 
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
+
+            name = null;
         }
+
+
+
+        /// <summary>
+        /// Zwraca wartość determinującą posiadanie przez zalogowanego użytkownika uprawnień kierownika laboratorium.
+        /// </summary>
+        public bool HeadLab
+        {
+            get
+            {
+                return kier;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Zwraca wartość determinującą ważność konta (false = aktywne, true = wygasło).
+        /// </summary>
+        public bool IsAccountExpired
+        {
+            get
+            {
+                return isExpired;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Zwraca imię i nazwisko zalogowanego użytkownika.
+        /// </summary>
+        public string UserName
+        {
+            get
+            {
+                return name;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Przypisuje polu id_lek wartość 0, polu kier wartość false, a polu idExpired wartość true.
+        /// Jest to swoisty reset tych pól, który powinien dla bezpieczeństwa być wykonywany przy wylogowaniu.
+        /// </summary>
+        public void ResetClient()
+        {
+            id_lab = 0;
+            kier = false;
+            isExpired = true;
+            name = null;
+        }
+
+
 
         /// <summary>
         /// Zwalnia zasoby zajmowane przez pole "db: Przychodnia".
@@ -49,28 +110,16 @@ namespace DBClient
             db.Dispose();
         }
 
-        public void ResetIdLab()
-        {
-            id_lab = 0;
-        }
-
-        /// <summary>
-        /// Akcesor do informacji nt. kierownika
-        /// </summary>
-        /// <returns></returns>
-        public bool isKier()
-        {
-            return kier;
-        }
 
 
         /// <summary>
-        /// Pobiera z bazy dane potrzebne do logowania i sprawdza czy zgadzają się z podanymi parametrami.
-        /// Jeśli dane są prawidłowe, zapisuje pobrane z bazy ID w polu id_lab.
+        /// Sprawdza czy podane poświadczenia są prawidłowe oraz czy wskazane konto jest aktywne.
+        /// Informacja nt. aktywności konta jest zapisywana we właściwości IsAccountExpired.
+        /// Zapisywana jest również nazwa (imię i nazwisko) użytkownika we właściwości UserName.
         /// </summary>
         /// <param name="login">Login do wyszukania w bazie</param>
         /// <param name="passwordHash">Hash hasła</param>
-        /// <returns>true - jeżeli użytkownik został znaleziony, false gdy podane parametry nie zgadzają się z zawartością bazy, null w przypadku wystąpienia błędu.</returns>
+        /// <returns>true jeżeli podane poświadczenia są prawidłowe, false jeżeli są nieprawidłowe, null jeśli wystąpił błąd.</returns>
         public bool? FindUser(string login, byte[] passwordHash)
         {
             bool? retval = false;
@@ -84,7 +133,7 @@ namespace DBClient
 
             try
             {
-                 string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
+                string temp = System.Text.Encoding.ASCII.GetString(passwordHash);
 
                 //Utworzenie zapytania.
                 var query = from Laborant in db.Laborants
@@ -94,10 +143,11 @@ namespace DBClient
                             select new
                             {
                                 id = Laborant.Id_lab,
-                                kier = Laborant.Kier
+                                kier = Laborant.Kier,
+                                exp = Laborant.Wygasa,
+                                imie = Laborant.Imie,
+                                nazw = Laborant.Nazwisko
                             };
-
-                id_lab = 0;
 
                 //Sprawdzenie czy w bazie istnieje dokładnie 1 rekord z podanymi wartościami w kolumnach login i haslo.
                 foreach (var q in query)
@@ -106,11 +156,18 @@ namespace DBClient
                     {
                         id_lab = q.id;
                         kier = q.kier;
+                        isExpired = (q.exp <= DateTime.Now);
+                        name = q.imie + " " + q.nazw;
+
                         retval = true;
                     }
                     else
                     {
                         id_lab = 0;
+                        kier = false;
+                        isExpired = true;
+                        name = null;
+
                         retval = null;
                         break;
                     }
@@ -122,6 +179,7 @@ namespace DBClient
                 Console.WriteLine(e.Source);
                 Console.WriteLine(e.HelpLink);
                 Console.WriteLine(e.StackTrace);
+
                 retval = null;
             }
             finally
@@ -205,12 +263,13 @@ namespace DBClient
         }
 
 
+
         /// <summary>
         /// Pobiera z tabel Badanie i Lekarz szczegóły badania.
         /// </summary>
         /// <param name="id_wiz">ID wizyty, w trakcie której to badanie zostało zlecone.</param>
         /// <param name="id_bad">L.p. badania dla tej wizyty.</param>
-        /// <returns>Listę trzech informacji szczegółowych o badaniu w podanej kolejności:
+        /// <returns>Listę szczegółowych informacji o badaniu w podanej kolejności:
         /// - opis
         /// - imię lekarza
         /// - nazwisko lekarza
@@ -234,7 +293,7 @@ namespace DBClient
                 var query = from Badanie in db.Badanies
                             join Wizyta in db.Wizytas on Badanie.Id_wiz equals Wizyta.Id_wiz
                             join Lekarz in db.Lekarzs on Wizyta.Id_lek equals Lekarz.Id_lek
-                            where (Badanie.Id_wiz == id_wiz && Badanie.Id_bad == id_bad)
+                            where Badanie.Id_wiz == id_wiz && Badanie.Id_bad == id_bad
                             select new
                             {
                                 opis = Badanie.Opis,
@@ -275,6 +334,8 @@ namespace DBClient
             return labTestDetails;
         }
         
+
+
         /// <summary>
         /// Funkcja aktualizuje dane dotyczące wskazanego badania laboratoryjnego. Argument "wynik" nie może być null.
         /// </summary>
@@ -283,7 +344,7 @@ namespace DBClient
         /// <param name="data_wyk_bad">Data wykonania badania (null jeśli nie trzeba).</param>
         /// <param name="wynik">Wynik badania.</param>
         /// <param name="zatw">null jeśli badanie zatwierdzono, false jeśli anulowano.</param>
-        /// <returns>True jeśli cały proces przebiegł prawidłowo, false jeśli nastąpił błąd przy wysyłaniu danych/próbie zapisu danych w bazie, null jeśli w bazie coś się zmieniło.</returns>
+        /// <returns>True jeśli cały proces przebiegł prawidłowo, false jeśli nastąpił błąd przy wysyłaniu danych/próbie zapisu danych w bazie, null jeśli w bazie danych nastąpiła zmiana.</returns>
         public bool? SaveLabTest(int id_wiz, byte id_bad, DateTime data_wyk_bad, string wynik, string powod_anul, byte stan_po_zmianie, byte stan_przed_zmiana)
         {
             bool? retval = true;
@@ -332,6 +393,7 @@ namespace DBClient
                 Console.WriteLine(invOper.Source);
                 Console.WriteLine(invOper.HelpLink);
                 Console.WriteLine(invOper.StackTrace);
+
                 retval = false;
             }
             catch (SqlException sqlEx)
@@ -341,6 +403,7 @@ namespace DBClient
                 Console.WriteLine(sqlEx.Source);
                 Console.WriteLine(sqlEx.HelpLink);
                 Console.WriteLine(sqlEx.StackTrace);
+
                 retval = false;
 
                 //Rollback, bo coś poszło nie tak.
@@ -359,6 +422,7 @@ namespace DBClient
                 Console.WriteLine(ex.Source);
                 Console.WriteLine(ex.HelpLink);
                 Console.WriteLine(ex.StackTrace);
+
                 retval = false;
             }
             finally

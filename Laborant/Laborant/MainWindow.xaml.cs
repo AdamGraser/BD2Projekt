@@ -45,7 +45,7 @@ namespace Laborant
 
                     Visibility = System.Windows.Visibility.Visible;
 
-                    if (db.isKier()) // Ustawienie kontrolek widocznych tylko dla kierownika
+                    if (db.HeadLab) // Ustawienie kontrolek widocznych tylko dla kierownika
                     {
                         Lab_Accept.Visibility = System.Windows.Visibility.Visible;
                     }
@@ -75,7 +75,7 @@ namespace Laborant
         {
             Title = "Laborant";
             Visibility = System.Windows.Visibility.Hidden;
-            db.ResetIdLab();
+            db.ResetClient();
             db.Dispose();
             db = null;
 
@@ -96,7 +96,7 @@ namespace Laborant
                     GetDataFromDB();
                     Visibility = System.Windows.Visibility.Visible;
 
-                    if (db.isKier()) // Ustawienie kontrolek widocznych tylko dla kierownika
+                    if (db.HeadLab) // Ustawienie kontrolek widocznych tylko dla kierownika
                     {
                         Lab_Accept.Visibility = System.Windows.Visibility.Visible;
                     }
@@ -284,7 +284,7 @@ namespace Laborant
                 Lab_LabTestResult.IsEnabled = true;
                 Lab_LabCancelInfo.IsEnabled = false;
             }
-            else if ((currentState == 2) && (db.isKier() == true)) // Jeśli stan jest "wykonane" i jesteśmy kierownikiem
+            else if ((currentState == 2) && (db.HeadLab == true)) // Jeśli stan jest "wykonane" i jesteśmy kierownikiem
             {
                 Lab_Cancel.IsEnabled = true;
                 Lab_Save.IsEnabled = false;
@@ -355,17 +355,16 @@ namespace Laborant
         /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
-            RefBool hardExit = new RefBool();
-            LoginWindow loginWindow = new LoginWindow(hardExit);
+            LoginWindow loginWindow = new LoginWindow();
 
             bool? result = loginWindow.ShowDialog();
 
             if (result == true)
             {
-                Title += " - " + loginWindow.Login;
+                Title += " - " + loginWindow.UserName;
                 return true;
             }
-            else if (hardExit.v == true) //zamknięcie okna logowania
+            else if (loginWindow.WindowClosed) //zamknięcie okna logowania
                 Environment.Exit(0);
 
             return false;

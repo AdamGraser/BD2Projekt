@@ -59,8 +59,9 @@ namespace Administrator
         /// <param name="e"></param>
         private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Title = "Lekarz";
+            Title = "Administrator";
             Visibility = System.Windows.Visibility.Hidden;
+            db.ResetClient();
             db.Dispose();
             db = null;
 
@@ -89,17 +90,16 @@ namespace Administrator
         /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
-            RefBool hardExit = new RefBool();
-            LoginWindow loginWindow = new LoginWindow(hardExit);
+            LoginWindow loginWindow = new LoginWindow();
 
             bool? result = loginWindow.ShowDialog();
 
             if (result == true)
             {
-                Title += " - " + loginWindow.Login;
+                Title += " - " + loginWindow.UserName;
                 return true;
             }
-            else if (hardExit.v == true) //zamknięcie okna logowania
+            else if (loginWindow.WindowClosed) //zamknięcie okna logowania
                 Environment.Exit(0);
 
             return false;

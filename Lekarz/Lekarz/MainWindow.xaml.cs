@@ -180,11 +180,10 @@ namespace Lekarz
                     visitsList.SelectedIndex = -1;
                     cancelVisitButton.IsEnabled = false;
                     saveVisitButton.IsEnabled = false;
+                    todayButton.IsEnabled = true;
 
                     if (visitsList.Items.Count == 0)
                     {
-                        visitsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-                        visitsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
                         visitsList.Items.Add(new ListBoxItem().Content = "Brak wizyt!");
                     }
                     else if (findVisitButtonClicked)
@@ -255,7 +254,7 @@ namespace Lekarz
         {
             Title = "Lekarz";
             Visibility = System.Windows.Visibility.Hidden;
-            db.ResetIdLek();
+            db.ResetClient();
             db.Dispose();
             db = null;
 
@@ -301,19 +300,18 @@ namespace Lekarz
         /// <returns>Zwraca true jeśli podano poprawne poświadczenia, w przeciwnym razie zwraca false.</returns>
         private bool LogIn()
         {
-            RefBool hardExit = new RefBool();
-            LoginWindow loginWindow = new LoginWindow(hardExit);
+            LoginWindow loginWindow = new LoginWindow();
 
             bool? result = loginWindow.ShowDialog();
 
             if (result == true)
             {
-                Title += " - " + loginWindow.Login;
+                Title += " - " + loginWindow.UserName;
                 return true;
             }
-            else if (hardExit.v == true) //zamknięcie okna logowania powoduje zamknięcie aplikacji
+            else if (loginWindow.WindowClosed) //zamknięcie okna logowania
                 Environment.Exit(0);
-            
+
             return false;
         }
 
@@ -367,8 +365,6 @@ namespace Lekarz
             else
             {
                 visitsList.IsEnabled = false;
-                visitsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-                visitsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
                 visitsList.Items.Add(new ListBoxItem().Content = "Brak wizyt!");
 
                 if (visits == null)
@@ -423,7 +419,7 @@ namespace Lekarz
         {
             if (findVisitButton != null && clearFilterButton != null)
             {
-                if (visitDate.SelectedDate != DateTime.Today)
+                if (findVisitButtonClicked || visitDate.SelectedDate != DateTime.Today)
                 {
                     findVisitButton.IsEnabled = true;
                     clearFilterButton.IsEnabled = true;
@@ -466,6 +462,7 @@ namespace Lekarz
             beginVisitButton.IsEnabled = false;
             clearFilterButton.IsEnabled = false;
             findVisitButton.IsEnabled = false;
+            todayButton.IsEnabled = false;
             visitsList.IsEnabled = false;
 
             if (db.ChangeVisitState(visitsIdList[visitsList.SelectedIndex], 1))
@@ -497,7 +494,7 @@ namespace Lekarz
                     MessageBox.Show("Wizyta została anulowana.", "Anulowanie wizyty", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     findVisitButton.IsEnabled = true;
-                    visitsList.IsEnabled = true;
+                    todayButton.IsEnabled = true;
 
                     visitsIdList.RemoveAt(visitsList.SelectedIndex);
                     visitsList.Items.RemoveAt(visitsList.SelectedIndex);
@@ -507,8 +504,6 @@ namespace Lekarz
 
                     if (visitsList.Items.Count == 0)
                     {
-                        visitsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-                        visitsList.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
                         visitsList.Items.Add(new ListBoxItem().Content = "Brak wizyt!");
                     }
                     else if (findVisitButtonClicked)
@@ -571,6 +566,36 @@ namespace Lekarz
             }
 
             findVisitButtonClicked = false;
+        }
+
+
+
+        /// <summary>
+        /// Obsługa zdarzenia zamykania okna głównego aplikacji.
+        /// Anuluje zamknięcie okna i wyświetla odpowiednią informację, jeśli zdarzenie to ma miejsce w trakcie odbywania się wizyty.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //przycisk "Zakończ wizytę" jest aktywny tylko wtedy, gdy jakaś wizyta się odbywa
+            if (saveVisitButton.IsEnabled == true)
+            {
+                MessageBox.Show("Nie można zamknąć aplikacji w trakcie odbywania się wizyty.", "Ostrzeżenie", MessageBoxButton.OK, MessageBoxImage.Warning);
+                e.Cancel = true;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Obsługa zdarzenia kliknięcia przycisku "Dziś". Ustawia dzisiejszą datę jako datę odbycia się wizyty w filtrze.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void todayButton_Click(object sender, RoutedEventArgs e)
+        {
+            visitDate.SelectedDate = DateTime.Today;
         }        
     }
 }
