@@ -754,7 +754,7 @@ namespace Przychodnia
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id_lab", Storage="_Id_lab", AutoSync=AutoSync.OnInsert, DbType="TinyInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id_lab", Storage="_Id_lab", DbType="TinyInt NOT NULL", IsPrimaryKey=true)]
 		public byte Id_lab
 		{
 			get
@@ -1015,7 +1015,7 @@ namespace Przychodnia
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id_lek", Storage="_Id_lek", AutoSync=AutoSync.OnInsert, DbType="TinyInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id_lek", Storage="_Id_lek", DbType="TinyInt NOT NULL", IsPrimaryKey=true)]
 		public byte Id_lek
 		{
 			get
@@ -1633,7 +1633,7 @@ namespace Przychodnia
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id_rej", Storage="_Id_rej", AutoSync=AutoSync.OnInsert, DbType="TinyInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="id_rej", Storage="_Id_rej", DbType="TinyInt NOT NULL", IsPrimaryKey=true)]
 		public byte Id_rej
 		{
 			get
