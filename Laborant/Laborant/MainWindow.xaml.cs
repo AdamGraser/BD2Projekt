@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DBClient;
 
+
+
 namespace Laborant
 {
     /// <summary>
@@ -28,6 +30,8 @@ namespace Laborant
         List<int> visitIDs;                           // lista ID wizyt kolejnych badań
         List<byte> labTestIDs;                        // lista ID kolejnych badań
         byte currentState;                            // aktualny stan badań widocznych na liście
+
+
 
         /// <summary>
         /// Domyślny konstruktor. Obłsuguje logowanie. Inicjalizuje elementy interfejsu, klienta bazy danych oraz pola pomocnicze. Wypełnia odpowiednie elementy danymi.
@@ -47,20 +51,20 @@ namespace Laborant
 
                     if (db.HeadLab) // Ustawienie kontrolek widocznych tylko dla kierownika
                     {
-                        Lab_Accept.Visibility = System.Windows.Visibility.Visible;
+                        lab_Accept.Visibility = System.Windows.Visibility.Visible;
                     }
                     else
                     {
-                        Lab_Accept.Visibility = System.Windows.Visibility.Hidden;
+                        lab_Accept.Visibility = System.Windows.Visibility.Hidden;
                     }
 
                     break;
                 }
             }
 
-            Lab_Save.Tag = (bool?)null;
-            Lab_Accept.Tag = (bool?)null;
-            Lab_Cancel.Tag = (bool?)false;
+            lab_Execute.Tag = (bool?)null;
+            lab_Accept.Tag = (bool?)null;
+            lab_Cancel.Tag = (bool?)false;
         }
 
 
@@ -71,7 +75,7 @@ namespace Laborant
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void logoutMenuItem_Click(object sender, RoutedEventArgs e)
+        private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Title = "Laborant";
             Visibility = System.Windows.Visibility.Hidden;
@@ -79,9 +83,9 @@ namespace Laborant
             db.Dispose();
             db = null;
 
-            //wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa):
+            //Wyczyszczenie kontrolek i zmiennych zawierających ważne dane (dla bezpieczeństwa).
             ClearLabTestsLists();
-            Lab_LabTestResult.Clear();
+            lab_LabTestResult.Clear();
             stateComboBox.SelectedIndex = currentState = 0;
             DateTo.SelectedDate = null;
             DateFrom.SelectedDate = null;
@@ -98,11 +102,11 @@ namespace Laborant
 
                     if (db.HeadLab) // Ustawienie kontrolek widocznych tylko dla kierownika
                     {
-                        Lab_Accept.Visibility = System.Windows.Visibility.Visible;
+                        lab_Accept.Visibility = System.Windows.Visibility.Visible;
                     }
                     else
                     {
-                        Lab_Accept.Visibility = System.Windows.Visibility.Hidden;
+                        lab_Accept.Visibility = System.Windows.Visibility.Hidden;
                     }
 
                     break;
@@ -114,23 +118,24 @@ namespace Laborant
 
         /// <summary>
         /// Metoda wywoływana po kliknięciu przycisku "O programie".
-        /// Wyświetala okno dialogowe prezentujące informacje o autorach programu.
+        /// Wyświetla okno dialogowe prezentujące informacje o autorach programu.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
+        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             AboutDialog aboutDialog = new AboutDialog();
             aboutDialog.ShowDialog();
         }
 
-        // OBSLUGA KONTROLEK
+        
+
         /// <summary>
         /// Obsługa kliknięcia przycisku "Szukaj".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void refreshButton_Click(object sender, RoutedEventArgs e)
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             ClearLabTestsLists();
             GetDataFromDB();
@@ -150,7 +155,9 @@ namespace Laborant
             ClearControlls();
         }
 
-        private void clearFilterButton_Click(object sender, RoutedEventArgs e)
+
+
+        private void ClearFilterButton_Click(object sender, RoutedEventArgs e)
         {
             ClearLabTestsLists();
             stateComboBox.SelectedIndex = currentState = 0;
@@ -163,15 +170,17 @@ namespace Laborant
             ClearControlls();
         }
 
+
+
         /// <summary>
         /// Czyści listę niewykonanych badań laboratoryjnych, ew. aktywuje ją i przywraca wyrównanie elementów do wartości domyślnych.
         /// Czyści również zbiór ID wizyt i ich list ID niewykonanych badań.
         /// </summary>
         private void ClearLabTestsLists()
         {
-            Lab_LabTestsList.Items.Clear();
-            Lab_LabTestsList.IsEnabled = true;
-            Lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Top;
+            lab_LabTestsList.Items.Clear();
+            lab_LabTestsList.IsEnabled = true;
+            lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Top;
 
             labTestIDs.Clear();
             visitIDs.Clear();
@@ -197,7 +206,7 @@ namespace Laborant
                 {
                     stateToSave = 3; // Anulowane KLAB
 
-                    if (Lab_LabCancelInfo.Text.Length < 1) // Puste pole opisu
+                    if (lab_LabCancelInfo.Text.Length < 1) // Puste pole opisu
                     {
                         MessageBox.Show("Aby anulować badanie, należy podać powód!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
@@ -207,7 +216,7 @@ namespace Laborant
                 {
                     stateToSave = 1; // Anulowane LAB
 
-                    if (Lab_LabTestResult.Text.Length < 1) // Puste pole wyniku
+                    if (lab_LabTestResult.Text.Length < 1) // Puste pole wyniku
                     {
                         MessageBox.Show("Aby anulować badanie, należy podać powód anulowania w rubryce \"Wynik\"!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
@@ -224,7 +233,7 @@ namespace Laborant
                 {
                     stateToSave = 2; // Wykonane
 
-                    if (Lab_LabTestResult.Text.Length < 1) // Puste pole wyniku
+                    if (lab_LabTestResult.Text.Length < 1) // Puste pole wyniku
                     {
                         MessageBox.Show("Aby wykonać badanie, należy wpisać jego wynik!", "Błąd!", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
@@ -232,12 +241,12 @@ namespace Laborant
                 }
             }
 
-            bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, Lab_LabTestResult.Text, Lab_LabCancelInfo.Text, stateToSave, currentState);
+            bool? save = db.SaveLabTest(currentVisitID, currentLabTestID, DateTime.Now, lab_LabTestResult.Text, lab_LabCancelInfo.Text, stateToSave, currentState);
 
             if (save == true)
             {
                 //Usunięcie wybranego wiersza:
-                Lab_LabTestsList.Items.RemoveAt(currentLabTest);
+                lab_LabTestsList.Items.RemoveAt(currentLabTest);
                 visitIDs.RemoveAt(currentLabTest);
                 labTestIDs.RemoveAt(currentLabTest);
 
@@ -248,12 +257,12 @@ namespace Laborant
                 currentVisitID = -1;
                 currentLabTestID = 0;
 
-                Lab_LabTestsList.UnselectAll();
+                lab_LabTestsList.UnselectAll();
 
                 //Dezaktywacja przycisków
-                Lab_Save.IsEnabled = false;
-                Lab_Accept.IsEnabled = false;
-                Lab_Cancel.IsEnabled = false;
+                lab_Execute.IsEnabled = false;
+                lab_Accept.IsEnabled = false;
+                lab_Cancel.IsEnabled = false;
             }
             else if (save == false)
                 MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -272,47 +281,47 @@ namespace Laborant
         void ListBoxSelectionChange(object sender, RoutedEventArgs e)
         {
             //Zeby nie robilo sie bez potrzeby
-            if (Lab_LabTestsList.SelectedIndex < 0)
+            if (lab_LabTestsList.SelectedIndex < 0)
                 return;
 
             //Aktywacja kontrolek
             if (currentState == 0) // Jeśli stan jest "zlecone"
             {
-                Lab_Save.IsEnabled = true;
-                Lab_Cancel.IsEnabled = true;
-                Lab_Accept.IsEnabled = false;
-                Lab_LabTestResult.IsEnabled = true;
-                Lab_LabCancelInfo.IsEnabled = false;
+                lab_Execute.IsEnabled = true;
+                lab_Cancel.IsEnabled = true;
+                lab_Accept.IsEnabled = false;
+                lab_LabTestResult.IsEnabled = true;
+                lab_LabCancelInfo.IsEnabled = false;
             }
             else if ((currentState == 2) && (db.HeadLab == true)) // Jeśli stan jest "wykonane" i jesteśmy kierownikiem
             {
-                Lab_Cancel.IsEnabled = true;
-                Lab_Save.IsEnabled = false;
-                Lab_Accept.IsEnabled = true;
-                Lab_LabTestResult.IsEnabled = false;
-                Lab_LabCancelInfo.IsEnabled = true;
+                lab_Cancel.IsEnabled = true;
+                lab_Execute.IsEnabled = false;
+                lab_Accept.IsEnabled = true;
+                lab_LabTestResult.IsEnabled = false;
+                lab_LabCancelInfo.IsEnabled = true;
             }
             else
             {
-                Lab_Save.IsEnabled = false;
-                Lab_Cancel.IsEnabled = false;
-                Lab_Accept.IsEnabled = false;
-                Lab_LabTestResult.IsEnabled = false;
-                Lab_LabCancelInfo.IsEnabled = false;
+                lab_Execute.IsEnabled = false;
+                lab_Cancel.IsEnabled = false;
+                lab_Accept.IsEnabled = false;
+                lab_LabTestResult.IsEnabled = false;
+                lab_LabCancelInfo.IsEnabled = false;
             }
 
             // Wyszukanie szczegółów konkretnego badania
-            currentLabTest = Lab_LabTestsList.SelectedIndex;
+            currentLabTest = lab_LabTestsList.SelectedIndex;
             currentVisitID = visitIDs[currentLabTest];
             currentLabTestID = labTestIDs[currentLabTest];
 
-            ListBoxItem item = (ListBoxItem)Lab_LabTestsList.Items.GetItemAt(currentLabTest);
+            ListBoxItem item = (ListBoxItem)lab_LabTestsList.Items.GetItemAt(currentLabTest);
             string temp = (string)item.Content;
 
             string[] labTest = temp.Split(new char[] { ' ' }, 3, StringSplitOptions.RemoveEmptyEntries);
 
-            Lab_LabTestOrderDate.Text = labTest[0] + " " + labTest[1];
-            Lab_LabTestName.Text = labTest[2];
+            lab_LabTestOrderDate.Text = labTest[0] + " " + labTest[1];
+            lab_LabTestName.Text = labTest[2];
 
             List<string> labTestDetails = db.GetLabTestDetails(currentVisitID, currentLabTestID);
 
@@ -320,23 +329,23 @@ namespace Laborant
             {
                 if (labTestDetails.Count > 0)
                 {
-                    Lab_LabTestDescription.Text = labTestDetails[0];
-                    Lab_LabTestDoctorName.Text = labTestDetails[1] + " " + labTestDetails[2];
+                    lab_LabTestDescription.Text = labTestDetails[0];
+                    lab_LabTestDoctorName.Text = labTestDetails[1] + " " + labTestDetails[2];
 
                     if (labTestDetails[3] == null)
-                        Lab_LabTestResult.Text = "";
+                        lab_LabTestResult.Text = "";
                     else
-                        Lab_LabTestResult.Text = labTestDetails[3];
+                        lab_LabTestResult.Text = labTestDetails[3];
 
                     if (labTestDetails[4] == null)
-                        Lab_LabCancelInfo.Text = "";
+                        lab_LabCancelInfo.Text = "";
                     else
-                        Lab_LabCancelInfo.Text = labTestDetails[4];
+                        lab_LabCancelInfo.Text = labTestDetails[4];
 
                     if (labTestDetails[5] == null)
-                        Lab_LabTestExecuteDate.Text = "";
+                        lab_LabTestExecuteDate.Text = "";
                     else
-                        Lab_LabTestExecuteDate.Text = labTestDetails[5];
+                        lab_LabTestExecuteDate.Text = labTestDetails[5];
 
                 }
                 else
@@ -346,7 +355,7 @@ namespace Laborant
                 MessageBox.Show("Wystąpił błąd podczas pobierania szczegółów badania laboratoryjnego.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
-        // KONIEC OBSLUGI KONTROLEK
+        
 
         /// <summary>
         /// Metoda obsługująca wyświetalanie okna dialogowego odpowiedzialnego za logowanie do systemu.
@@ -393,7 +402,7 @@ namespace Laborant
                     ListBoxItem item = new ListBoxItem();
                     item.Content = t.opis;
                     item.Margin = new Thickness(0.0, 0.0, 10.0, 0.0);
-                    Lab_LabTestsList.Items.Add(item);
+                    lab_LabTestsList.Items.Add(item);
 
                     // Dodanie ID badania i wizyty do odpowiednich list
                     visitIDs.Add(t.id_wiz);
@@ -402,36 +411,42 @@ namespace Laborant
             }
             else
             {
-                Lab_LabTestsList.IsEnabled = false;
-                Lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-                Lab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak badań odpowiadających podanym kryteriom!");
+                lab_LabTestsList.IsEnabled = false;
+                lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
+                lab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak badań odpowiadających podanym kryteriom!");
 
                 if (tests == null)
                     MessageBox.Show("Wystąpił błąd podczas pobierania listy badań.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
+
+
         /// <summary>
-        /// Czyści kontrolki
+        /// Czyści kontrolki.
         /// </summary>
         private void ClearControlls()
         {
-            Lab_LabTestOrderDate.Text = "";
-            Lab_LabTestExecuteDate.Text = "";
-            Lab_LabTestName.Text = "";
-            Lab_LabTestDoctorName.Text = "";
-            Lab_LabTestDescription.Text = "";
-            Lab_LabTestResult.Text = "";
-            Lab_LabCancelInfo.Text = "";
+            lab_LabTestOrderDate.Text = "";
+            lab_LabTestExecuteDate.Text = "";
+            lab_LabTestName.Text = "";
+            lab_LabTestDoctorName.Text = "";
+            lab_LabTestDescription.Text = "";
+            lab_LabTestResult.Text = "";
+            lab_LabCancelInfo.Text = "";
 
-            Lab_Accept.IsEnabled = false;
-            Lab_Cancel.IsEnabled = false;
-            Lab_Save.IsEnabled = false;
-            Lab_LabCancelInfo.IsEnabled = false;
-            Lab_LabTestResult.IsEnabled = false;
+            lab_Accept.IsEnabled = false;
+            lab_Cancel.IsEnabled = false;
+            lab_Execute.IsEnabled = false;
+            lab_LabCancelInfo.IsEnabled = false;
+            lab_LabTestResult.IsEnabled = false;
         }
 
-        private void helpMenuItem_Click(object sender, RoutedEventArgs e)
+
+        /// <summary>
+        /// Wyświetla pomoc z pliku .chm.
+        /// </summary>
+        private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.Help.ShowHelp(null, "Laborant - pomoc.chm");
         }
