@@ -762,9 +762,9 @@ namespace Rejestratorka
             DataTable patientsTable = new DataTable();
             Dictionary<int, PatientData> patients;
 
-            
-                
-            patients = db.GetPatients(null, null, null);                       
+
+
+            patients = db.GetPatients("", "", null);                       
             patientsIdList = new List<int>();
 
             //kolumny tabeli:
