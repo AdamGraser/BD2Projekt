@@ -190,7 +190,7 @@ namespace DBClient
 
             try
             {
-                if (patientName.Length > 0 || patientName.Length > 0)
+                if (patientName.Length > 0 || patientName.Length > 0 && visitDate != null)
                 {
                     //Utworzenie zapytania.
                     var query = from Wizyta in db.Wizytas
@@ -212,12 +212,34 @@ namespace DBClient
                         visitsList.Add(vis.id, vis.dataRej.ToString() + "  " + vis.nazwisko + " " + vis.imie);
                     }
                 }
-                else
+                else if (visitDate != null)
                 {
                     //Utworzenie zapytania.
                     var query = from Wizyta in db.Wizytas
                                 join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
                                 where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Wizyta.Data_rej.Date == visitDate.Value)
+                                orderby Wizyta.Data_rej descending
+                                select new
+                                {
+                                    id = Wizyta.Id_wiz,
+                                    dataRej = Wizyta.Data_rej,
+                                    nazwisko = Pacjent.Nazwisko,
+                                    imie = Pacjent.Imie
+                                };
+
+                    //Wykonanie zapytania, rekord po rekordzie.
+                    foreach (var vis in query)
+                    {
+                        //Łączenie dat, imion i nazwisk, zapisywanie ich.
+                        visitsList.Add(vis.id, vis.dataRej.ToString() + "  " + vis.nazwisko + " " + vis.imie);
+                    }
+                }
+                else
+                {
+                    //Utworzenie zapytania.
+                    var query = from Wizyta in db.Wizytas
+                                join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
+                                where (Wizyta.Id_lek == id_lek && Wizyta.Stan == visitStatus && Pacjent.Imie.ToLower().StartsWith(patientName.ToLower()) && Pacjent.Nazwisko.ToLower().StartsWith(patientSurname.ToLower()))
                                 orderby Wizyta.Data_rej descending
                                 select new
                                 {
@@ -274,6 +296,7 @@ namespace DBClient
             {
                 //Utworzenie zapytania.
                 var query = from Sl_badan in db.Sl_badans
+                            where Sl_badan.Lab == true
                             select new
                             {
                                 nazwa = Sl_badan.Nazwa,
@@ -306,6 +329,62 @@ namespace DBClient
             }
 
             return labTests;
+        }
+
+
+
+        /// <summary>
+        /// Pobiera z tabeli Sl_badan nazwy i opisy wszystkich badań fizykalnych.
+        /// </summary>
+        /// <returns>Zwraca listę nazw i opisów oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>
+        public List<string> GetPhyTestsNames()
+        {
+            List<string> phyTests = new List<string>();
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {
+                //Utworzenie zapytania.
+                var query = from Sl_badan in db.Sl_badans
+                            where Sl_badan.Lab == false
+                            select new
+                            {
+                                nazwa = Sl_badan.Nazwa,
+                                opis = Sl_badan.Opis
+                            };
+
+                //Wykonanie zapytania, rekord po rekordzie.
+                foreach (var test in query)
+                {
+                    //Łączenie nazw i opisów badań, zapisywanie ich.
+                    if (test.opis != null)
+                        phyTests.Add(test.nazwa + " " + test.opis);
+                    else
+                        phyTests.Add(test.nazwa);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+
+                phyTests = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+
+            return phyTests;
         }
 
 
@@ -756,5 +835,7 @@ namespace DBClient
 
             return diagnosis;
         }
+
+        
     }
 }

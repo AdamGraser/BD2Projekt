@@ -114,7 +114,7 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <ComboBox Grid.Row="0" Grid.Column="0" x:Name="LabTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26"/>
-                                                <Label Grid.Row="0" Grid.Column="1" Content="Opis" Margin="5,0,0,0" />
+                                                <Label Grid.Row="0" Grid.Column="1" Content="Uwagi" Margin="5,0,0,0" />
                                                 <TextBox Grid.Row="0" Grid.Column="2" x:Name="LabTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"/>
                                             </Grid>
                                             <Button x:Name="orderLaboratoryTestButton" Content="Zleć nowe badanie lab." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="orderLaboratoryTest_Click" />
@@ -130,7 +130,7 @@
                                             <ColumnDefinition Width="auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Row="0" Grid.Column="0" Content="Zleć badania fiz." Margin="0,0,0,5" />
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Wykonaj badania fiz." Margin="0,0,0,5" />
                                         <StackPanel Grid.Row="0" Grid.Column="1" x:Name="PhysicalTests">
                                             <Grid>
                                                 <Grid.RowDefinitions>
@@ -142,7 +142,7 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <ComboBox Grid.Row="0" Grid.Column="0" x:Name="PhyTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26"/>
-                                                <Label Grid.Row="0" Grid.Column="1" Content="Opis" Margin="5,0,0,0" />
+                                                <Label Grid.Row="0" Grid.Column="1" Content="Wynik" Margin="5,0,0,0" />
                                                 <TextBox Grid.Row="0" Grid.Column="2" x:Name="PhyTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"/>
                                             </Grid>
                                             <Button x:Name="savePhysicalTestButton" Content="Zapisz nowe badanie fiz." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="savePhysicalTestButton_Click" />
@@ -166,7 +166,7 @@
                         <ColumnDefinition Width="13*"/>
                         <ColumnDefinition Width="497*"/>
                     </Grid.ColumnDefinitions>
-                    <Viewer:CrystalReportsViewer HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="595"/>
+                    <!--<Viewer:CrystalReportsViewer HorizontalAlignment="Left" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="595"/>-->
                 </Grid>
             </TabItem>
         </TabControl>

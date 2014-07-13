@@ -43,7 +43,7 @@ namespace Lekarz
                     db = new DBClient.DBClient();
 
                     currentLabRow = 0;
-                    currentPhyRow = 0;                    
+                    currentPhyRow = 0;
 
                     GetDataFromDB();
 
@@ -70,6 +70,30 @@ namespace Lekarz
                             MessageBox.Show("Wystąpił błąd podczas pobierania listy badań laboratoryjnych.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                     // <-- Tworzenie listy badań laboratoryjnych.
+
+                    // --> Tworzenie listy badań fizykalnych.
+                    List<string> phyTestsNames = db.GetPhyTestsNames();
+
+                    if (phyTestsNames != null && phyTestsNames.Count > 0)
+                    {
+                        foreach (string l in phyTestsNames)
+                        {
+                            PhyTestsList.Items.Add(new ComboBoxItem().Content = l);
+                        }
+                    }
+                    else
+                    {
+                        PhyTestsList.IsEnabled = false;
+
+                        PhyTestDesc.Text = "Brak badań w bazie danych";
+                        PhyTestDesc.IsEnabled = false;
+
+                        savePhysicalTestButton.IsEnabled = false;
+
+                        if (labTestsNames == null)
+                            MessageBox.Show("Wystąpił błąd podczas pobierania listy badań fizykalnych.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    // <-- Tworzenie listy badań fizykalnych.
 
                     visitDate.SelectedDate = DateTime.Today;
                     break;
@@ -337,7 +361,7 @@ namespace Lekarz
         /// </summary>
         private void GetDataFromDB()
         {
-            DateTime vD = (visitDate.SelectedDate == null ? DateTime.Today : visitDate.SelectedDate.Value);
+            DateTime? vD = visitDate.SelectedDate;
             
             Dictionary<int, string> visits = db.GetVisits(patientNameTextBox.Text, patientSurnameTextBox.Text, (byte)visitStatusComboBox.SelectedIndex, vD);
 
@@ -429,6 +453,7 @@ namespace Lekarz
                     findVisitButton.IsEnabled = false;
                     clearFilterButton.IsEnabled = false;
                 }
+                InvalidateVisual();
             }
         }
         
