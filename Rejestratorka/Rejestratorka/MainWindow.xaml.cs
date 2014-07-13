@@ -39,18 +39,18 @@ namespace Rejestratorka
         /// </summary>
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
 
-           while (true)
-           {
+            while (true)
+            {
                 if (LogIn() == true)
                 {
                     db = new DBClient.DBClient();
                     GetDataFromDB();
-                    ClearPatientsDataGrid();
+                    FillPatientsDataGrid();
                     visitTime.TimeInterval = new TimeSpan(0, 30, 0);
                     break;
-                }                
+                }
             }
         }
 
@@ -575,7 +575,7 @@ namespace Rejestratorka
                         doctorsList.Items[i] = new ComboBoxItem().Content = newItem;
                     }
                 }
-            }
+            }           
         }
 
 
@@ -747,6 +747,72 @@ namespace Rejestratorka
         }
 
 
+        /// <summary>
+        /// Wypełnia tabelę w karcie "Rejestracja wizyty" danymi wszystkich pacjentów.
+        /// </summary>
+        void FillPatientsDataGrid()
+        {
+            patientsDataGrid.Columns.Clear();
+            if (patientsDataGrid.ItemsSource != null)
+            {
+                DataView src = (DataView)patientsDataGrid.ItemsSource;
+                src.Dispose();
+                patientsDataGrid.ItemsSource = null;
+            }
+            DataTable patientsTable = new DataTable();
+            Dictionary<int, PatientData> patients;
+
+            
+                
+            patients = db.GetPatients(null, null, null);                       
+            patientsIdList = new List<int>();
+
+            //kolumny tabeli:
+            DataColumn nameColumn = new DataColumn("Imię", typeof(string));
+            DataColumn surnameColumn = new DataColumn("Nazwisko", typeof(string));
+            DataColumn dateOfBirthColum = new DataColumn("Data urodzenia", typeof(string));
+            DataColumn peselColumn = new DataColumn("PESEL", typeof(string));
+            DataColumn genderColumn = new DataColumn("Płeć", typeof(string));
+            DataColumn streetColumn = new DataColumn("Ulica", typeof(string));
+            DataColumn numberOfHouseColumn = new DataColumn("Numer domu", typeof(string));
+            DataColumn numberOfFlatColumn = new DataColumn("Numer mieszkania", typeof(string));
+            DataColumn postCodeColumn = new DataColumn("Kod pocztowy", typeof(string));
+            DataColumn cityColumn = new DataColumn("Miejscowość", typeof(string));
+            patientsTable.Columns.AddRange(new DataColumn[] {nameColumn, surnameColumn, dateOfBirthColum,
+                    peselColumn, genderColumn, streetColumn, numberOfHouseColumn, numberOfFlatColumn,
+                    postCodeColumn, cityColumn});
+
+            //wiersze:
+            foreach (KeyValuePair<int, PatientData> patientData in patients)
+            {
+                DataRow newRow = patientsTable.NewRow();
+                newRow["Imię"] = patientData.Value.PatientName;
+                newRow["Nazwisko"] = patientData.Value.PatientSurname;
+                newRow["Data urodzenia"] = patientData.Value.PatientDateOfBirth;
+                newRow["PESEL"] = patientData.Value.PatientPesel;
+                newRow["Płeć"] = patientData.Value.PatientGender;
+                newRow["Ulica"] = patientData.Value.PatientStreet;
+                newRow["Numer domu"] = patientData.Value.PatientNumberOfHouse;
+                newRow["Numer mieszkania"] = patientData.Value.PatientNumberOfFlat;
+                newRow["Kod pocztowy"] = patientData.Value.PatientPostCode;
+                newRow["Miejscowość"] = patientData.Value.PatientCity;
+                patientsTable.Rows.Add(newRow);
+                patientsIdList.Add(patientData.Key);
+            }
+
+            if (patientsTable.DefaultView.Count > 0)
+            {
+                patientsDataGrid.ItemsSource = patientsTable.DefaultView;
+            }
+            else
+            {
+                //dodawanie nagłówków do pustej tabeli:
+                ClearPatientsDataGrid();
+            }
+
+        }
+
+
 
 
         /// <summary>
@@ -759,7 +825,7 @@ namespace Rejestratorka
             patientNameTextBox1.Text = "";
             patientSurnameTextBox1.Text = "";
             peselTextBox.Text = "";
-            ClearPatientsDataGrid();
+            FillPatientsDataGrid();
             findPatientButton.IsEnabled = false;
         }
 
@@ -793,10 +859,11 @@ namespace Rejestratorka
                 findPatientButton.IsEnabled = true;
                 clearFilterButton1.IsEnabled = true;
             }
-            else if (peselTextBox.Text.Length == 0)
+            else if (peselTextBox.Text == "___________")
             {
                 findPatientButton.IsEnabled = false;
                 clearFilterButton1.IsEnabled = false;
+                FillPatientsDataGrid();
             }
         }
 
@@ -811,7 +878,7 @@ namespace Rejestratorka
         {
             if (findPatientButton != null && clearFilterButton1 != null)
             {
-                if (peselTextBox.Text.Length > 0)
+                if (peselTextBox.Text != "___________")
                 {                    
                     findPatientButton.IsEnabled = true;                    
                     clearFilterButton1.IsEnabled = true;
@@ -820,6 +887,7 @@ namespace Rejestratorka
                 {                   
                    findPatientButton.IsEnabled = false;                    
                    clearFilterButton1.IsEnabled = false;
+                   FillPatientsDataGrid();
                 }
             }
         }
@@ -943,7 +1011,7 @@ namespace Rejestratorka
             {
                 findVisitButton.IsEnabled = false;
                 clearFilterButton2.IsEnabled = false;
-            } 
+            }            
         }
 
         
@@ -969,5 +1037,7 @@ namespace Rejestratorka
                 }
             }
         }
+
+       
     }
 }

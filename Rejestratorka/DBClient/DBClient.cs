@@ -261,9 +261,12 @@ namespace DBClient
 
 
         /// <summary>
-        /// Pobiera z tabeli Pacjent imiona i nazwiska wszystkich pacjentów.
+        /// Pobiera z tabeli Pacjent imiona i nazwiska pacjentów o danych odpowiadających podanym parametrom.
         /// </summary>
-        /// <returns>Zwraca listę imion i nazwisk oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>
+        /// <param name="name">Imię pacjenta</param>
+        /// <param name="surname">nazwisko pacjenta</param>
+        /// <param name="pesel">PESEL pacjenta</param>
+        /// <returns>Zwraca listę imion i nazwisk oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>      
         public Dictionary<int, PatientData> GetPatients(string name, string surname, long? pesel)
         {
             Dictionary<int, PatientData> patients = new Dictionary<int, PatientData>();
@@ -376,8 +379,7 @@ namespace DBClient
                 else
                 {
                     //Utworzenie zapytania.
-                    var query = from Pacjent in db.Pacjents
-                                where Pacjent.Imie.ToLower().StartsWith(name.ToLower()) && Pacjent.Nazwisko.ToLower().StartsWith(surname.ToLower()) && Pacjent.Pesel >= pesel
+                    var query = from Pacjent in db.Pacjents                                
                                 select new
                                 {
                                     id = Pacjent.Id_pac,

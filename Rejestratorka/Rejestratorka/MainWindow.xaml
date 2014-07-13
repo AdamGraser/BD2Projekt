@@ -100,8 +100,8 @@
                             </StackPanel>
                             <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
                                 <Label Content="Data wizyty:" Width="100" />
-                                <DatePicker Name="visitDate2" Width="300" Height="28" SelectedDateChanged="visitDate2_SelectedDateChanged" TabIndex="4" IsTabStop="True"></DatePicker>
-                            </StackPanel>
+                                <DatePicker Name="visitDate2" Width="300" Height="28" SelectedDateChanged="visitDate2_SelectedDateChanged" TabIndex="4" IsTabStop="True"/>
+                                </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"  Margin="20,10,0,20">
                                 <Button x:Name="findVisitButton" Content="Szukaj" Width="90" Height="28" Click="findVisitButton_Click" IsEnabled="False" TabIndex="5" />
                                 <Button x:Name="clearFilterButton2" Content="Wyczyść filtr" Width="90" Height="28" Margin="10,0,0,0" Click="clearFilterButton2_Click" IsEnabled="False" IsTabStop="False" />
