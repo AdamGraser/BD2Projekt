@@ -45,6 +45,8 @@ namespace Lekarz
                     currentLabRow = 0;
                     currentPhyRow = 0;
 
+                    visitDate.SelectedDate = DateTime.Today;
+
                     GetDataFromDB();
 
                     // --> Tworzenie listy badań laboratoryjnych.
@@ -95,7 +97,6 @@ namespace Lekarz
                     }
                     // <-- Tworzenie listy badań fizykalnych.
 
-                    visitDate.SelectedDate = DateTime.Today;
                     break;
                 }
             }
@@ -361,9 +362,7 @@ namespace Lekarz
         /// </summary>
         private void GetDataFromDB()
         {
-            DateTime? vD = visitDate.SelectedDate;
-            
-            Dictionary<int, string> visits = db.GetVisits(patientNameTextBox.Text, patientSurnameTextBox.Text, (byte)visitStatusComboBox.SelectedIndex, vD);
+            Dictionary<int, string> visits = db.GetVisits(patientNameTextBox.Text, patientSurnameTextBox.Text, (byte)visitStatusComboBox.SelectedIndex, visitDate.SelectedDate);
 
             if (visitsList.Items != null)
             {
@@ -472,8 +471,13 @@ namespace Lekarz
                     if (findVisitButtonClicked == false)
                     {
                         findVisitButton.IsEnabled = false;
+                        clearFilterButton.IsEnabled = false;
                     }
-                    clearFilterButton.IsEnabled = false;
+                    else
+                    {
+                        findVisitButton.IsEnabled = true;
+                        clearFilterButton.IsEnabled = true;
+                    }
                 }
             }
         }

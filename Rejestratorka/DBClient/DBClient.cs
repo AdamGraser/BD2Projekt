@@ -186,8 +186,8 @@ namespace DBClient
             db.Transaction = transaction;
 
             try
-            {                             
-                numberOfVisits = (from Wizyta in db.Wizytas                            
+            {
+                numberOfVisits = (from Wizyta in db.Wizytas
                             where (Wizyta.Stan == 0 && Wizyta.Id_lek == doctorID && Wizyta.Data_rej.Date == date.GetValueOrDefault().Date)
                             select Wizyta.Id_wiz).Count();
             }
@@ -279,12 +279,12 @@ namespace DBClient
             db.Transaction = transaction;
 
             try
-            {                        
+            {
                 if (pesel != null && name.Length == 0 && surname.Length == 0)
                 {
                     double temp = (long)pesel / 10000000000;
                     ++temp;
-                    
+
                     //Utworzenie zapytania.
                     var query = from Pacjent in db.Pacjents
                                 where Pacjent.Pesel >= pesel && Pacjent.Pesel < (long)temp * 10000000000
@@ -335,6 +335,7 @@ namespace DBClient
                     //Utworzenie zapytania.
                     var query = from Pacjent in db.Pacjents
                                 where Pacjent.Imie.ToLower().StartsWith(name.ToLower()) && Pacjent.Nazwisko.ToLower().StartsWith(surname.ToLower())
+                                orderby Pacjent.Nazwisko
                                 select new
                                 {
                                     id = Pacjent.Id_pac,
@@ -379,7 +380,8 @@ namespace DBClient
                 else
                 {
                     //Utworzenie zapytania.
-                    var query = from Pacjent in db.Pacjents                                
+                    var query = from Pacjent in db.Pacjents
+                                orderby Pacjent.Nazwisko
                                 select new
                                 {
                                     id = Pacjent.Id_pac,
@@ -471,7 +473,7 @@ namespace DBClient
 
                 //Wykonanie zapytania, rekord po rekordzie.
                 foreach (var lek in query)
-                {                    
+                {
                     doctorsList.Add(lek.id, lek.imie + " " + lek.nazwisko);
                 }
             }
@@ -511,8 +513,8 @@ namespace DBClient
             db.Transaction = transaction;
 
             try
-            {               
-                //Utworzenie zapytania.               
+            {
+                //Utworzenie zapytania.
                 var query = from Wizyta in db.Wizytas
                             join Pacjent in db.Pacjents on Wizyta.Id_pac equals Pacjent.Id_pac
                             join Lekarz in db.Lekarzs on Wizyta.Id_lek equals Lekarz.Id_lek
@@ -557,7 +559,7 @@ namespace DBClient
                             break;
                     }
                     visitsList.Add(vis.id, visData);
-                }                                                           
+                }
             }
             catch (Exception e)
             {
@@ -880,7 +882,6 @@ namespace DBClient
             pac.Ulica = street;
             pac.Kod_pocz = postCode;
             pac.Miasto = city;
-            
 
             db.Pacjents.InsertOnSubmit(pac);
 

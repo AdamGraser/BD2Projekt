@@ -170,12 +170,17 @@ namespace DBClient
 
         /// <summary>
         /// Pobiera z tabeli Wizyta i Pacjent daty wizyt oraz imiona i nazwiska pacjentów, dla których te wizyty zostały zarejestrowane.
-        /// Dotyczy to tylko wizyt nieodbytych, które jeszcze mogą się odbyć (Wizyta.Stan == null &amp;&amp; Wizyta.Data_rej &lt; DateTime.today)
         /// </summary>
-        /// <param name="patientName"></param>
-        /// <param name="patientSurname"></param>
-        /// <param name="visitDate"></param>
-        /// <param name="visitStatus"></param>
+        /// <param name="patientName">Imię/początek imienia pacjentów - kryterium wyszukiwania</param>
+        /// <param name="patientSurname">Nazwisko/początek nazwiska - kryterium wyszukiwania</param>
+        /// <param name="visitDate">Data odbycia się wizyty - kryterium wyszukiwania</param>
+        /// <param name="visitStatus">
+        /// Stan wizyty - kryterium wyszukiwania. Dostępne stany:
+        /// * Zarejestrowana
+        /// * Realizowana
+        /// * Anulowana
+        /// * Zakończona
+        /// </param>
         /// <returns>Zwraca listę dat, imion i nazwisk oddzielonych spacjami lub null, jeśli wystąpił błąd.</returns>
         public Dictionary<int, string> GetVisits(string patientName, string patientSurname, byte visitStatus, DateTime? visitDate)
         {
@@ -190,7 +195,7 @@ namespace DBClient
 
             try
             {
-                if (patientName.Length > 0 || patientName.Length > 0 && visitDate != null)
+                if ((patientName.Length > 0 || patientSurname.Length > 0) && visitDate != null)
                 {
                     //Utworzenie zapytania.
                     var query = from Wizyta in db.Wizytas
