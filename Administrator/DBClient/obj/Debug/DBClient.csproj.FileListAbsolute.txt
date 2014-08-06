@@ -38,3 +38,8 @@ C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\bin\Debug\DBClient
 C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
 C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\obj\Debug\DBClient.dll
 C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\DBClient\bin\Debug\DBClient.dll
+C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\DBClient\bin\Debug\DBClient.pdb
+C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\DBClient\obj\Debug\DBClient.dll
+C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\DBClient\obj\Debug\DBClient.pdb

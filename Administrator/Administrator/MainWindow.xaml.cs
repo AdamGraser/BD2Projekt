@@ -261,7 +261,7 @@ namespace Administrator
 
                 if (temp != null)
                 {
-                    if( temp.haslo == r.haslo && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa)
+                    if( temp.haslo.Length == r.haslo.Length && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa)
                     {
                         rejToBeRemoved.Add(temp);
                     }
@@ -273,7 +273,7 @@ namespace Administrator
                 LekarzData temp = leklist.Find(x => x.id_lek == r.id_lek);
                 if (temp != null)
                 {
-                    if( temp.haslo == r.haslo && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa && temp.kod_spec == r.kod_spec)
+                    if( temp.haslo.Length == r.haslo.Length && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa && temp.kod_spec == r.kod_spec)
                     {
                         lekToBeRemoved.Add(temp);
                     }
@@ -285,7 +285,7 @@ namespace Administrator
                 LaborantData temp = lablist.Find(x => x.id_lab == r.id_lab);
                 if (temp != null)
                 {
-                    if( temp.haslo == r.haslo && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa && temp.kier == r.kier)
+                    if( temp.haslo.Length == r.haslo.Length && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa && temp.kier == r.kier)
                     {
                         labToBeRemoved.Add(temp);
                     }
@@ -405,47 +405,41 @@ namespace Administrator
             badmodlist.Clear();
             specmodlist.Clear();
 
+            DataView src;
             if (RejestratorkaGrid.ItemsSource != null)
             {
-                RejestratorkaGrid.Items.Clear();
+                src = (DataView)RejestratorkaGrid.ItemsSource;
+                src.Dispose();
                 RejestratorkaGrid.ItemsSource = null;
             }
 
             if (LaborantGrid.ItemsSource != null)
             {
-                LaborantGrid.Items.Clear();
+                src = (DataView)LaborantGrid.ItemsSource;
+                src.Dispose();
                 LaborantGrid.ItemsSource = null;
             }
 
             if (LekarzGrid.ItemsSource != null)
             {
-                LekarzGrid.Items.Clear();
+                src = (DataView)LekarzGrid.ItemsSource;
+                src.Dispose();
                 LekarzGrid.ItemsSource = null;
             }
 
             if (Sl_badGrid.ItemsSource != null)
             {
-                Sl_badGrid.Items.Clear();
+                src = (DataView)Sl_badGrid.ItemsSource;
+                src.Dispose();
                 Sl_badGrid.ItemsSource = null;
             }
 
             if (Sl_specGrid.ItemsSource != null)
             {
-                Sl_specGrid.Items.Clear();
+                src = (DataView)Sl_specGrid.ItemsSource;
+                src.Dispose();
                 Sl_specGrid.ItemsSource = null;
             }
-
-            rejlist = null;
-            leklist = null;
-            lablist = null;
-            badlist = null;
-            speclist = null;
-
-            rejmodlist = null;
-            lekmodlist = null;
-            labmodlist = null;
-            badmodlist = null;
-            specmodlist = null;
             
             while (true)
             {

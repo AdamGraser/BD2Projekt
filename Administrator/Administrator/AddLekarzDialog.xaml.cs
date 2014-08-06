@@ -86,7 +86,7 @@ namespace Administrator
         private bool IsFormCompleted()
         {
             if (imieTextBox.Text != "" && nazwiskoTextBox.Text != ""
-                && loginTextBox.Text != "" && pwdTextBox.Password != "" && DeactivateBox.Text != "" && specjalizacjaBox.SelectedIndex != -1)
+                && loginTextBox.Text != "" && pwdTextBox.Password != "" && specjalizacjaBox.SelectedIndex != -1)
                 return true;
             return false;
         }

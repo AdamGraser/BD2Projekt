@@ -280,7 +280,7 @@ namespace DBClient
                 rej.Imie = nowe_imie;
                 rej.Nazwisko = nowe_nazwisko;
                 rej.Login = nowy_login;
-                rej.Haslo = _hash.ToString();
+                rej.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
                 rej.Wygasa = nowe_wygasa;
             }
 
@@ -537,7 +537,7 @@ namespace DBClient
                 lab.Imie = nowe_imie;
                 lab.Nazwisko = nowe_nazwisko;
                 lab.Login = nowy_login;
-                lab.Haslo = _hash.ToString();
+                lab.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
                 lab.Wygasa = nowe_wygasa;
                 lab.Kier = kier;
             }
@@ -796,7 +796,7 @@ namespace DBClient
                 lek.Imie = nowe_imie;
                 lek.Nazwisko = nowe_nazwisko;
                 lek.Login = nowy_login;
-                lek.Haslo = _hash.ToString();
+                lek.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
                 lek.Wygasa = nowe_wygasa;
                 lek.Kod_spec = kod_spec;
             }
