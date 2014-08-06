@@ -23,3 +23,18 @@ C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\bin\Debug\DBC
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\obj\Debug\DBClient.dll
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\DBClient\obj\Debug\DBClient.dll
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\DBClient\bin\Debug\DBClient.dll
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\DBClient\bin\Debug\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\DBClient\bin\Debug\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\DBClient\bin\Debug\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\DBClient\obj\Debug\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\DBClient\obj\Debug\DBClient.pdb
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\bin\Debug\DBClient.dll
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\bin\Debug\DBClient.pdb
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\obj\Debug\DBClient.csprojResolveAssemblyReference.cache
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\obj\Debug\DBClient.dll
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\DBClient\obj\Debug\DBClient.pdb

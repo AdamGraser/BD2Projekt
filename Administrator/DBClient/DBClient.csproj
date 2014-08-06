@@ -41,8 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBClient.cs" />
+    <Compile Include="LaborantData.cs" />
+    <Compile Include="LekarzData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Przychodnia.cs" />
+    <Compile Include="RejestratorkaData.cs" />
+    <Compile Include="Sl_badData.cs" />
+    <Compile Include="Sl_specData.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

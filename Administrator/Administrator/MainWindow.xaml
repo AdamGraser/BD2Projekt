@@ -1,32 +1,126 @@
-﻿<Window x:Class="Administrator.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Administrator.MainWindow"
         Title="Administrator" Height="350" Width="525">
+
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <MenuItem Name="logoutMenuItem" Header="Wyloguj się" Click="logoutMenuItem_Click" />
+            <MenuItem Name="AddEntryItem" Header="Nowy" Click="AddEntryItem_Click" />
+            <MenuItem Name="SaveChangesItem" Header="Zapisz zmiany" Click="SaveChangesItem_Click" />
             <MenuItem Header="Pomoc">
                 <MenuItem Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click" />
             </MenuItem>
         </Menu>
+
         <TabControl DockPanel.Dock="Top">
-            <TabItem Header="Rejestratorka" >
-                
+            <TabItem Header="Rejestratorka" Name="RejestratorkaTabItem">
+                <DataGrid x:Name="RejestratorkaGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding id_rej}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Nazwisko" Binding="{Binding nazwisko}"/>
+                        <DataGridTextColumn Header="Imie" Binding="{Binding imie}"/>
+                        <DataGridTextColumn Header="Login" Binding="{Binding login}"/>
+                        <DataGridTextColumn Header="Haslo" Binding="{Binding haslo}"/>
+                        <DataGridTemplateColumn Header="Wygasa" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding wygasa}" BorderThickness="0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Aktywny" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding aktywny}" IsEnabled="False"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
-            <TabItem Header="Lekarz" >
-                
+            <TabItem Header="Lekarz" Name="LekarzTabItem" >
+                <DataGrid x:Name="LekarzGrid" AutoGenerateColumns="False" SelectionMode="Single" CellEditEnding="LekarzGrid_CellEditEnding">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding id_lek}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Nazwisko" Binding="{Binding nazwisko}"/>
+                        <DataGridTextColumn Header="Imie" Binding="{Binding imie}"/>
+                        <DataGridTextColumn Header="Login" Binding="{Binding login}"/>
+                        <DataGridTextColumn Header="Haslo" Binding="{Binding haslo}"/>
+                        <DataGridTextColumn Header="Specjalizacja" Binding="{Binding kod_spec}"/>
+                        <DataGridTemplateColumn Header="Wygasa" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding wygasa}" BorderThickness="0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Aktywny" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding aktywny}" IsEnabled="False"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
-            <TabItem Header="Laborant">
-                
+            <TabItem Header="Laborant" Name="LaborantTabItem">
+                <DataGrid x:Name="LaborantGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding id_lab}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Nazwisko" Binding="{Binding nazwisko}"/>
+                        <DataGridTextColumn Header="Imie" Binding="{Binding imie}"/>
+                        <DataGridTextColumn Header="Login" Binding="{Binding login}"/>
+                        <DataGridTextColumn Header="Haslo" Binding="{Binding haslo}"/>
+                        <DataGridTemplateColumn Header="Kierownik">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding kier, Mode=TwoWay}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Wygasa" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding wygasa}" BorderThickness="0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Aktywny" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding aktywny}" IsEnabled="False"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
-            <TabItem Header="Kierownik laboratorium">
-                
+            <TabItem Header="Słownik badań" Name="BadaniaTabItem">
+                <DataGrid x:Name="Sl_badGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Kod" Binding="{Binding kod}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Nazwa" Binding="{Binding nazwa}"/>
+                        <DataGridTextColumn Header="Opis" Binding="{Binding opis}"/>
+                        <DataGridTemplateColumn Header="Lab">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding lab, Mode=TwoWay}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
-            <TabItem Header="Słownik badań">
-                
-            </TabItem>
-            <TabItem Header="Słownik specjalizacji">
-                
+            <TabItem Header="Słownik specjalizacji" Name="SpecTabItem">
+                <DataGrid x:Name="Sl_specGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Kod Specjalizacji" Binding="{Binding kod_spec}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Nazwa" Binding="{Binding nazwa}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
         </TabControl>
     </DockPanel>

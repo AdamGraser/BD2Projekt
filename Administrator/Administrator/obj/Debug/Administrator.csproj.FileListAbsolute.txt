@@ -55,3 +55,90 @@ C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debu
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.g.resources
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.Properties.Resources.resources
 C:\Users\Michal\Documents\GitHub\BD2Projekt\Administrator\Administrator\obj\Debug\Administrator.csproj.GenerateResource.Cache
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\bin\Debug\Administrator.exe.config
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\Administrator.exe
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\Administrator.pdb
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\Administrator.csprojResolveAssemblyReference.cache
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AboutDialog.baml
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddRejestratorkaDialog.baml
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\LoginWindow.baml
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\MainWindow.baml
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AboutDialog.g.cs
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddRejestratorkaDialog.g.cs
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\LoginWindow.g.cs
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\MainWindow.g.cs
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\App.g.cs
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\Administrator_MarkupCompile.cache
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\Administrator.g.resources
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\Administrator.Properties.Resources.resources
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\Administrator.csproj.GenerateResource.Cache
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\bin\Debug\Administrator.exe
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\bin\Debug\Administrator.pdb
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\bin\Debug\DBClient.dll
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\bin\Debug\DBClient.pdb
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddBadDialog.baml
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddLaborantDialog.baml
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddLekarzDialog.baml
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddSpecDialog.baml
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddBadDialog.g.cs
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddLaborantDialog.g.cs
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddLekarzDialog.g.cs
+C:\Users\Dowlasz\Desktop\BD nowe\BD2Projekt-master\Administrator\Administrator\obj\Debug\AddSpecDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\bin\Debug\Administrator.exe.config
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\Administrator.exe
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\Administrator.pdb
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\bin\Debug\Administrator.exe
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\bin\Debug\Administrator.pdb
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\bin\Debug\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\bin\Debug\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\Administrator.csprojResolveAssemblyReference.cache
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AboutDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddBadDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddLaborantDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddLekarzDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddRejestratorkaDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddSpecDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\LoginWindow.baml
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\MainWindow.baml
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AboutDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddBadDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddLaborantDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddLekarzDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddRejestratorkaDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\AddSpecDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\LoginWindow.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\MainWindow.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\App.g.cs
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\Administrator_MarkupCompile.cache
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\Administrator.g.resources
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\Administrator.Properties.Resources.resources
+E:\Adam\House of dog\studia\bd-projekt\master\Administrator\Administrator\obj\Debug\Administrator.csproj.GenerateResource.Cache
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\bin\Debug\Administrator.exe.config
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\Administrator.exe
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\Administrator.pdb
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\bin\Debug\Administrator.exe
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\bin\Debug\Administrator.pdb
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\bin\Debug\DBClient.dll
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\bin\Debug\DBClient.pdb
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\Administrator.csprojResolveAssemblyReference.cache
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AboutDialog.baml
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddBadDialog.baml
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddLaborantDialog.baml
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddLekarzDialog.baml
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddRejestratorkaDialog.baml
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddSpecDialog.baml
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\LoginWindow.baml
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\MainWindow.baml
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AboutDialog.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddBadDialog.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddLaborantDialog.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddLekarzDialog.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddRejestratorkaDialog.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\AddSpecDialog.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\LoginWindow.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\MainWindow.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\App.g.cs
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\Administrator_MarkupCompile.cache
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\Administrator.g.resources
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\Administrator.Properties.Resources.resources
+C:\Users\Dowlasz\Desktop\Administrator\Administrator\Administrator\obj\Debug\Administrator.csproj.GenerateResource.Cache

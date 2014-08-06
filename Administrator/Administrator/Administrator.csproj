@@ -57,6 +57,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="AddBadDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddLaborantDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddLekarzDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddRejestratorkaDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AddSpecDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -67,6 +87,21 @@
     </Page>
     <Compile Include="AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddBadDialog.xaml.cs">
+      <DependentUpon>AddBadDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddLaborantDialog.xaml.cs">
+      <DependentUpon>AddLaborantDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddLekarzDialog.xaml.cs">
+      <DependentUpon>AddLekarzDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddRejestratorkaDialog.xaml.cs">
+      <DependentUpon>AddRejestratorkaDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddSpecDialog.xaml.cs">
+      <DependentUpon>AddSpecDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
