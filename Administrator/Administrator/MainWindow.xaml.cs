@@ -150,7 +150,7 @@ namespace Administrator
                 if (dialogResult == true)
                 {
                     
-                    if ( db.AddRejestratorka(dialog.login,dialog.haslo,(DateTime)dialog.wygasa,dialog.imie,dialog.nazwisko) )
+                    if (db.AddRejestratorka(dialog.login, dialog.haslo, dialog.wygasa, dialog.imie, dialog.nazwisko))
                     {
                         System.Windows.MessageBox.Show("Rejestratorka została pomyślnie dodany do bazy danych.", "Dodanie nowej rejestratorki", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -169,7 +169,7 @@ namespace Administrator
                 if (dialogResult == true)
                 {
 
-                    if (db.AddLekarz(dialog.login, dialog.haslo, (DateTime)dialog.wygasa, dialog.imie, dialog.nazwisko,dialog.kod_spec))
+                    if (db.AddLekarz(dialog.login, dialog.haslo, dialog.wygasa, dialog.imie, dialog.nazwisko,dialog.kod_spec))
                     {
                         System.Windows.MessageBox.Show("Lekarz został pomyślnie dodany do bazy danych.", "Dodanie nowego lekarza", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -188,7 +188,7 @@ namespace Administrator
                 if (dialogResult == true)
                 {
 
-                    if (db.AddLaborant(dialog.login, dialog.haslo, (DateTime)dialog.wygasa, dialog.imie, dialog.nazwisko, (bool)dialog.kier))
+                    if (db.AddLaborant(dialog.login, dialog.haslo, dialog.wygasa, dialog.imie, dialog.nazwisko, (bool)dialog.kier))
                     {
                         System.Windows.MessageBox.Show("Laborant został pomyślnie dodany do bazy danych.", "Dodanie nowego laboranta", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -405,41 +405,20 @@ namespace Administrator
             badmodlist.Clear();
             specmodlist.Clear();
 
-            DataView src;
             if (RejestratorkaGrid.ItemsSource != null)
-            {
-                src = (DataView)RejestratorkaGrid.ItemsSource;
-                src.Dispose();
                 RejestratorkaGrid.ItemsSource = null;
-            }
 
             if (LaborantGrid.ItemsSource != null)
-            {
-                src = (DataView)LaborantGrid.ItemsSource;
-                src.Dispose();
                 LaborantGrid.ItemsSource = null;
-            }
 
             if (LekarzGrid.ItemsSource != null)
-            {
-                src = (DataView)LekarzGrid.ItemsSource;
-                src.Dispose();
                 LekarzGrid.ItemsSource = null;
-            }
 
             if (Sl_badGrid.ItemsSource != null)
-            {
-                src = (DataView)Sl_badGrid.ItemsSource;
-                src.Dispose();
                 Sl_badGrid.ItemsSource = null;
-            }
 
             if (Sl_specGrid.ItemsSource != null)
-            {
-                src = (DataView)Sl_specGrid.ItemsSource;
-                src.Dispose();
                 Sl_specGrid.ItemsSource = null;
-            }
             
             while (true)
             {

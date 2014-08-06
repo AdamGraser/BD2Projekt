@@ -25,7 +25,7 @@
                         <DataGridTemplateColumn Header="Wygasa" Width="120">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <DatePicker SelectedDate="{Binding wygasa}" BorderThickness="0" />
+                                    <DatePicker SelectedDate="{Binding wygasa, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

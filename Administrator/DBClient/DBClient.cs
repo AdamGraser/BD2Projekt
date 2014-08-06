@@ -258,9 +258,6 @@ namespace DBClient
         {
             bool retval = true;
 
-            HashAlgorithm sha = HashAlgorithm.Create("SHA512");
-            byte[] _hash = sha.ComputeHash(System.Text.Encoding.ASCII.GetBytes(nowe_haslo));
-
             //Łączenie się z bazą danych.
             connection.Open();
 
@@ -273,15 +270,22 @@ namespace DBClient
                         where Rejestratorka.Id_rej == id
                         select Rejestratorka;
 
-            //Wykonanie zapytania w pętli foreach.
+            //ID jest unikatowe, pętla wykona się tylko raz.
             foreach (Przychodnia.Rejestratorka rej in query)
             {
                 //Dokonanie żądanych zmian.
                 rej.Imie = nowe_imie;
                 rej.Nazwisko = nowe_nazwisko;
                 rej.Login = nowy_login;
-                rej.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
                 rej.Wygasa = nowe_wygasa;
+
+                if (nowe_haslo.Length > 0)
+                {
+                    HashAlgorithm sha = HashAlgorithm.Create("SHA512");
+                    byte[] _hash = sha.ComputeHash(System.Text.Encoding.ASCII.GetBytes(nowe_haslo));
+                    
+                    rej.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
+                }
             }
 
             try
@@ -515,9 +519,6 @@ namespace DBClient
         {
             bool retval = true;
 
-            HashAlgorithm sha = HashAlgorithm.Create("SHA512");
-            byte[] _hash = sha.ComputeHash(System.Text.Encoding.ASCII.GetBytes(nowe_haslo));
-
             //Łączenie się z bazą danych.
             connection.Open();
 
@@ -530,16 +531,23 @@ namespace DBClient
                         where Laborant.Id_lab == id
                         select Laborant;
 
-            //Wykonanie zapytania w pętli foreach.
+            //ID jest unikatowe, pętla wykona się tylko raz.
             foreach (Przychodnia.Laborant lab in query)
             {
                 //Dokonanie żądanych zmian.
                 lab.Imie = nowe_imie;
                 lab.Nazwisko = nowe_nazwisko;
                 lab.Login = nowy_login;
-                lab.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
                 lab.Wygasa = nowe_wygasa;
                 lab.Kier = kier;
+
+                if (nowe_haslo.Length > 0)
+                {
+                    HashAlgorithm sha = HashAlgorithm.Create("SHA512");
+                    byte[] _hash = sha.ComputeHash(System.Text.Encoding.ASCII.GetBytes(nowe_haslo));
+                    
+                    lab.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
+                }
             }
 
             try
@@ -774,9 +782,6 @@ namespace DBClient
         {
             bool retval = true;
 
-            HashAlgorithm sha = HashAlgorithm.Create("SHA512");
-            byte[] _hash = sha.ComputeHash(System.Text.Encoding.ASCII.GetBytes(nowe_haslo));
-
             //Łączenie się z bazą danych.
             connection.Open();
 
@@ -789,16 +794,23 @@ namespace DBClient
                         where Lekarz.Id_lek == id
                         select Lekarz;
 
-            //Wykonanie zapytania w pętli foreach.
+            //ID jest unikatowe, pętla wykona się tylko raz.
             foreach (Przychodnia.Lekarz lek in query)
             {
                 //Dokonanie żądanych zmian.
                 lek.Imie = nowe_imie;
                 lek.Nazwisko = nowe_nazwisko;
                 lek.Login = nowy_login;
-                lek.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
                 lek.Wygasa = nowe_wygasa;
                 lek.Kod_spec = kod_spec;
+
+                if (nowe_haslo.Length > 0)
+                {
+                    HashAlgorithm sha = HashAlgorithm.Create("SHA512");
+                    byte[] _hash = sha.ComputeHash(System.Text.Encoding.ASCII.GetBytes(nowe_haslo));
+                    
+                    lek.Haslo = System.Text.Encoding.ASCII.GetString(_hash);
+                }
             }
 
             try
