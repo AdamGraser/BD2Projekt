@@ -27,6 +27,9 @@ namespace Lekarz
         int currentPhyRow;     // przechowuje nr wiersza listy wykonanych badań fizykalnych, do którego wstawiona zostanie pozycja opisująca najnowsze, dopiero co wykonane badanie
         bool findVisitButtonClicked = false;
         int selectedVisitStatus;
+        PacjentWizytyBadania dataSet;
+        PacjentWizytyBadaniaTableAdapters.PacjentWizytyBadaniaTableAdapter tableAdapter;
+        PacjentHistoria report;
 
 
         /// <summary>
@@ -35,6 +38,7 @@ namespace Lekarz
         public MainWindow()
         {
             InitializeComponent();
+            reportViewer.Owner = this;
 
             while (true)
             {
@@ -96,6 +100,62 @@ namespace Lekarz
                             MessageBox.Show("Wystąpił błąd podczas pobierania listy badań fizykalnych.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                     // <-- Tworzenie listy badań fizykalnych.
+
+                    /*tableAdapter.Fill(dataSet._PacjentWizytyBadania);
+
+                    CrystalDecisions.CrystalReports.Engine.ReportDocument doc = new CrystalDecisions.CrystalReports.Engine.ReportDocument();
+                    doc.Load("E:\\Adam\\House of dog\\studia\\bd-projekt\\Lekarz\\Lekarz\\PacjentHistoria.rpt");*/
+                    
+                    //report = new PacjentHistoria();
+                    //dataSet = new PacjentWizytyBadania();
+                    //tableAdapter = new PacjentWizytyBadaniaTableAdapters.PacjentWizytyBadaniaTableAdapter();
+                    //tableAdapter.Connection = new System.Data.SqlClient.SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
+                    
+                    //tableAdapter.Fill(report.pacjentWizytyBadania._PacjentWizytyBadania, 1);
+                    //report.pacjentWizytyBadaniaTableAdapter.Connection = new System.Data.SqlClient.SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
+                    //report.pacjentWizytyBadaniaTableAdapter.Fill(report.pacjentWizytyBadania._PacjentWizytyBadania, 1);
+
+                    //report.SetDataSource(tableAdapter.GetData(1) as System.Data.DataTable);
+                    
+                    //reportViewer.ViewerCore.ReportSource = report;
+
+                    /*testReport = new Test();
+                    dataSet = new PacjentWizytyBadania();
+                    //dataSet.WriteXml("E:\\PacjentWizytyBadania.xml", System.Data.XmlWriteMode.WriteSchema);
+                    tableAdapter = new PacjentWizytyBadaniaTableAdapters.PacjentWizytyBadaniaTableAdapter();
+                    System.Data.SqlClient.SqlConnection conn = tableAdapter.Connection;
+                    tableAdapter.Fill(dataSet._PacjentWizytyBadania, 1);
+                    //testReport.pacjentWizytyBadania = new PacjentWizytyBadania();
+                    //tableAdapter.Fill(testReport.pacjentWizytyBadania._PacjentWizytyBadania, 1);
+
+                    //tableAdapter.Connection = new System.Data.SqlClient.SqlConnection("Data Source=BODACH\\SQLEXPRESS;Initial Catalog=Przychodnia;User ID=sa");
+                    //testReport.SetDataSource(tableAdapter.GetData(1) as System.Data.DataTable);
+                    testReport.SetDataSource(dataSet);
+                    //testReport.SetDatabaseLogon("sa", "Gresiulina", "BODACH\\SQLEXPRESS", "Przychodnia");
+
+                    reportViewer.ViewerCore.ReportSource = testReport;*/
+
+                    // WORKAROUND -->
+                    System.Reflection.FieldInfo tooltipField = typeof(SAPBusinessObjects.WPF.Viewer.DocumentView).GetField("m_tooltip", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+                    if (tooltipField != null)
+                    {
+                        System.Reflection.FieldInfo reportAlbumField = typeof(SAPBusinessObjects.WPF.Viewer.ViewerCore).GetField("reportAlbum", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+
+                        if (reportAlbumField != null)
+                        {
+                            if (reportViewer.ViewerCore.ViewCount > 0)
+                            {
+                                SAPBusinessObjects.WPF.Viewer.DocumentView currentView = ((SAPBusinessObjects.WPF.Viewer.ReportAlbum)reportAlbumField.GetValue(reportViewer.ViewerCore)).ReportViews[0];
+
+                                if (tooltipField.GetValue(currentView) == null)
+                                    tooltipField.SetValue(currentView, new System.Windows.Controls.ToolTip());
+                            }
+
+                        }
+
+                    }
+                    // <-- WORKAROUND
 
                     break;
                 }
@@ -205,13 +265,14 @@ namespace Lekarz
                     visitsList.SelectedIndex = -1;
                     cancelVisitButton.IsEnabled = false;
                     saveVisitButton.IsEnabled = false;
+                    RapTab.IsEnabled = false;
                     todayButton.IsEnabled = true;
 
                     if (visitsList.Items.Count == 0)
                     {
                         visitsList.Items.Add(new ListBoxItem().Content = "Brak wizyt!");
                     }
-                    else if (findVisitButtonClicked)
+                    else
                     {
                         clearFilterButton.IsEnabled = true;
                         visitsList.IsEnabled = true;
@@ -410,7 +471,7 @@ namespace Lekarz
                 phyTest.Text = PhyTestDesc.Text;
                 phyTest.TextWrapping = TextWrapping.Wrap;
 
-                LaboratoryTests.Children.Insert(currentPhyRow, phyTest);
+                PhysicalTests.Children.Insert(currentPhyRow, phyTest);
 
                 ++currentPhyRow;
 
@@ -438,6 +499,7 @@ namespace Lekarz
         }
 
      
+
         private void visitDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             if (findVisitButton != null && clearFilterButton != null)
@@ -456,6 +518,7 @@ namespace Lekarz
             }
         }
         
+
 
         private void visitStatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -488,6 +551,7 @@ namespace Lekarz
         {
             cancelVisitButton.IsEnabled = true;
             saveVisitButton.IsEnabled = true;
+            RapTab.IsEnabled = true;
             beginVisitButton.IsEnabled = false;
             clearFilterButton.IsEnabled = false;
             findVisitButton.IsEnabled = false;
@@ -530,6 +594,7 @@ namespace Lekarz
                     visitsList.SelectedIndex = -1;
                     cancelVisitButton.IsEnabled = false;
                     saveVisitButton.IsEnabled = false;
+                    RapTab.IsEnabled = false;
 
                     if (visitsList.Items.Count == 0)
                     {
@@ -618,13 +683,54 @@ namespace Lekarz
 
 
         /// <summary>
-        /// Obsługa zdarzenia kliknięcia przycisku "Dziś". Ustawia dzisiejszą datę jako datę odbycia się wizyty w filtrze.
+        /// Obsługa zdarzenia kliknięcia przycisku "Dziś".
+        /// Ustawia dzisiejszą datę jako datę odbycia się wizyty w filtrze.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void todayButton_Click(object sender, RoutedEventArgs e)
         {
             visitDate.SelectedDate = DateTime.Today;
+        }
+
+
+
+        /// <summary>
+        /// Obsługa zdarzenia kliknięcia przycisku "Historia wizyt pacjenta".
+        /// Ładuje dane o wizytach i badaniach wskazanego pacjenta do raportu, odświeża widok przeglądarki raportów.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void visitsHistory_Click(object sender, RoutedEventArgs e)
+        {
+            //raz, że jest to logiczne, a dwa, że przed wyświetleniem 1-go raportu, jeszcze przed ustawieniem ReportSource przeglądarce, trzeba "fizycznie" ją wyświetlić
+            RapTab.Focus();
+            
+            if (reportViewer.ViewerCore.ReportSource == null)
+            {
+                //utworzenie raportu
+                report = new PacjentHistoria();
+                //utworzenie struktury zbioru danych
+                dataSet = new PacjentWizytyBadania();
+                //utworzenie adaptera ładującego dane do tabeli w data secie
+                tableAdapter = new PacjentWizytyBadaniaTableAdapters.PacjentWizytyBadaniaTableAdapter();
+
+                //wypełnienie tabeli data setu danymi o wizytach i badaniach pacjenta o podanym ID
+                tableAdapter.Fill(dataSet._PacjentWizytyBadania, db.GetPatientId(visitsIdList[visitsList.SelectedIndex]));
+
+                //ustawienie naszego data setu z wypełnioną tabelą jako źródło raportu
+                report.SetDataSource(dataSet);
+
+                //ustawienie naszego raportu jako źródłowego w przeglądarce
+                reportViewer.ViewerCore.ReportSource = report;
+            }
+            else
+            {
+                tableAdapter.Fill(dataSet._PacjentWizytyBadania, db.GetPatientId(visitsIdList[visitsList.SelectedIndex]));
+
+                //odświeżenie raportu w przeglądarce
+                reportViewer.ViewerCore.RefreshReport();
+            }
         }        
     }
 }

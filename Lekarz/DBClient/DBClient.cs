@@ -31,7 +31,7 @@ namespace DBClient
         public DBClient()
         {
             //Utworzenie połączenia do bazy danych.
-            connection = new SqlConnection(@"Server=\SQLEXPRESS; uid=sa; pwd=; Database=Przychodnia");
+            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
 
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
@@ -841,6 +841,56 @@ namespace DBClient
             return diagnosis;
         }
 
-        
+
+
+        /// <summary>
+        /// Pobiera z bazy danych ID pacjenta, dla którego zarejestrowana została wskazana wizyta.
+        /// </summary>
+        /// <param name="id_wiz">ID wizyty</param>
+        /// <returns>
+        /// Zwraca ID pacjenta, dla którego zarejestrowana została wskazana wizyta,
+        /// 0 jeśli nie odnaleziono w bazie wizyty o podanym ID,
+        /// -1 w przypadku wystąpienia błędu.
+        /// </returns>
+        public int GetPatientId(int id_wiz)
+        {
+            int id_pac = 0;
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {
+                var query = from Wizyta in db.Wizytas
+                            where Wizyta.Id_wiz == id_wiz
+                            select Wizyta.Id_pac;
+
+                //Pobranie i zapisanie ID pacjenta.
+                foreach (int i in query)
+                {
+                    id_pac = i;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+
+                id_pac = -1;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+
+            return id_pac;
+        }
     }
 }
