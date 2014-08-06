@@ -85,6 +85,7 @@ namespace Rejestratorka
                 if (db.IsAccountExpired)
                 {
                     System.Windows.MessageBox.Show("Konto zostało zablokowane.", "Brak uprawnień", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    db.ResetClient();
                     DialogResult = false;
                 }
                 else
