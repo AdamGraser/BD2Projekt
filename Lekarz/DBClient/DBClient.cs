@@ -31,7 +31,7 @@ namespace DBClient
         public DBClient()
         {
             //Utworzenie połączenia do bazy danych.
-            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
+            connection = new SqlConnection(@"Server=\SQLEXPRESS; uid=sa; pwd=; Database=Przychodnia");
 
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
@@ -283,12 +283,12 @@ namespace DBClient
 
 
         /// <summary>
-        /// Pobiera z tabeli Sl_badan nazwy i opisy wszystkich badań laboratoryjnych.
+        /// Pobiera z tabeli Sl_badan wszystkie badania laboratoryjne.
         /// </summary>
-        /// <returns>Zwraca listę nazw i opisów oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>
-        public List<string> GetLabTestsNames()
+        /// <returns>Zwraca listę par &lt;kod, nazwa opis&gt; lub null, jeśli wystąpił błąd.</returns>
+        public Dictionary<short, string> GetLabTests()
         {
-            List<string> labTests = new List<string>();
+            Dictionary<short, string> labTests = new Dictionary<short, string>();
 
             //Łączenie się z bazą danych.
             connection.Open();
@@ -302,20 +302,16 @@ namespace DBClient
                 //Utworzenie zapytania.
                 var query = from Sl_badan in db.Sl_badans
                             where Sl_badan.Lab == true
-                            select new
-                            {
-                                nazwa = Sl_badan.Nazwa,
-                                opis = Sl_badan.Opis
-                            };
+                            select Sl_badan;
 
                 //Wykonanie zapytania, rekord po rekordzie.
                 foreach (var test in query)
                 {
                     //Łączenie nazw i opisów badań, zapisywanie ich.
-                    if(test.opis != null)
-                        labTests.Add(test.nazwa + " " + test.opis);
+                    if(test.Opis != null)
+                        labTests.Add(test.Kod, test.Nazwa + " " + test.Opis);
                     else
-                        labTests.Add(test.nazwa);
+                        labTests.Add(test.Kod, test.Nazwa);
                 }
             }
             catch (Exception e)
@@ -339,12 +335,12 @@ namespace DBClient
 
 
         /// <summary>
-        /// Pobiera z tabeli Sl_badan nazwy i opisy wszystkich badań fizykalnych.
+        /// Pobiera z tabeli Sl_badan wszystkie badania fizykalne.
         /// </summary>
-        /// <returns>Zwraca listę nazw i opisów oddzielonych spacją lub null, jeśli wystąpił błąd.</returns>
-        public List<string> GetPhyTestsNames()
+        /// <returns>Zwraca listę par &lt;kod, nazwa opis&gt; lub null, jeśli wystąpił błąd.</returns>
+        public Dictionary<short, string> GetPhyTests()
         {
-            List<string> phyTests = new List<string>();
+            Dictionary<short, string> phyTests = new Dictionary<short, string>();
 
             //Łączenie się z bazą danych.
             connection.Open();
@@ -358,20 +354,16 @@ namespace DBClient
                 //Utworzenie zapytania.
                 var query = from Sl_badan in db.Sl_badans
                             where Sl_badan.Lab == false
-                            select new
-                            {
-                                nazwa = Sl_badan.Nazwa,
-                                opis = Sl_badan.Opis
-                            };
+                            select Sl_badan;
 
                 //Wykonanie zapytania, rekord po rekordzie.
                 foreach (var test in query)
                 {
                     //Łączenie nazw i opisów badań, zapisywanie ich.
-                    if (test.opis != null)
-                        phyTests.Add(test.nazwa + " " + test.opis);
+                    if (test.Opis != null)
+                        phyTests.Add(test.Kod, test.Nazwa + " " + test.Opis);
                     else
-                        phyTests.Add(test.nazwa);
+                        phyTests.Add(test.Kod, test.Nazwa);
                 }
             }
             catch (Exception e)
@@ -579,8 +571,12 @@ namespace DBClient
         /// <param name="data_zle">Czas zlecenia badania.</param>
         /// <param name="opis">Opis (dodatkowe informacje) badania do wykonania.</param>
         /// <param name="kod">Kod badania w słowniku badań.</param>
+        /// <param name="lab">
+        /// Determinuje czy badanie jest laboratoryjne (true) czy fizykalne (false).
+        /// Badania fizykalne: data zlecenia jest jednocześnie datą wykonania badania, opis to wynik.
+        /// </param>
         /// <returns>Wartość true jeśli nowy rekord został pomyślnie dodany do tabeli. W razie wystąpienia błędu zwraca wartość false.</returns>
-        public bool AddTest(int id_wiz, byte id_bad, DateTime data_zle, string opis, short kod)
+        public bool AddTest(int id_wiz, byte id_bad, DateTime data_zle, string opis, short kod, bool lab)
         {
             bool retval = true;
 
@@ -597,8 +593,16 @@ namespace DBClient
             bad.Id_bad = id_bad;
             bad.Id_wiz = id_wiz;
             bad.Data_zle = data_zle;
-            bad.Opis = opis;
             bad.Kod = kod;
+
+            if (lab)
+                bad.Opis = opis;
+            else
+            {
+                bad.Opis = "";
+                bad.Wynik = opis;
+                bad.Data_wyk_bad = data_zle;
+            }
 
             //Przygotowanie wszystkiego do wysłania.
             db.Badanies.InsertOnSubmit(bad);

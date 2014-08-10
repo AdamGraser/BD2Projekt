@@ -67,7 +67,7 @@
                                         <!-- Pierwsza kolumna -->
                                         <Label Grid.Row="0" Grid.Column="0" Content="Data odbycia wizyty" Margin="0,0,0,5" />
                                         <Label Grid.Row="1" Grid.Column="0" Content="Nazwisko i imię" Margin="0,0,0,5" />
-                                        <Button Grid.Row="2" Grid.Column="0" Height="30" Name="visitsHistory" Padding="3,0,3,0" Margin="0,5,0,5" Content="Historia wizyt pacjenta" Click="visitsHistory_Click" />
+                                        <Button Grid.Row="2" Grid.Column="0" Height="30" Name="visitsHistory" Padding="3,0,3,0" Margin="0,5,0,5" Content="Historia wizyt pacjenta" Click="visitsHistory_Click" IsEnabled="False" />
                                         <Label Grid.Row="3" Grid.Column="0" Content="Opis" Margin="0,0,0,5" />
 
 
@@ -113,7 +113,13 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
 
-                                                <ComboBox Grid.Row="0" Grid.Column="0" x:Name="LabTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26"/>
+                                                <ComboBox Grid.Row="0" Grid.Column="0" x:Name="LabTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Value}"/>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
                                                 <Label Grid.Row="0" Grid.Column="1" Content="Uwagi" Margin="5,0,0,0" />
                                                 <TextBox Grid.Row="0" Grid.Column="2" x:Name="LabTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"/>
                                             </Grid>
@@ -141,9 +147,15 @@
                                                     <ColumnDefinition Width="auto" />
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
-                                                <ComboBox Grid.Row="0" Grid.Column="0" x:Name="PhyTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26"/>
+                                                <ComboBox Grid.Row="0" Grid.Column="0" x:Name="PhyTestsList" Width="150" MinHeight="26" Height="26" MaxHeight="26">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Value}"/>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
                                                 <Label Grid.Row="0" Grid.Column="1" Content="Wynik" Margin="5,0,0,0" />
-                                                <TextBox Grid.Row="0" Grid.Column="2" x:Name="PhyTestDesc" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"/>
+                                                <TextBox Grid.Row="0" Grid.Column="2" x:Name="PhyTestResult" Width="auto" Height="auto" SpellCheck.IsEnabled="True" Language="pl-PL" TextWrapping="Wrap"/>
                                             </Grid>
                                             <Button x:Name="savePhysicalTestButton" Content="Zapisz nowe badanie fiz." Padding="4,0,4,0" Height="26" Margin="0,5,0,0" HorizontalAlignment="Center" Click="savePhysicalTestButton_Click" />
                                         </StackPanel>
