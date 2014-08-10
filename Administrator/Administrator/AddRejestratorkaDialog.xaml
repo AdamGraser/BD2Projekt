@@ -3,41 +3,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Dodawanie nowej rejestratorki" Height="240" Width="300" ResizeMode="NoResize" WindowStyle="ToolWindow">
-    <DockPanel Background="#FFE5E4E2">
-        <Grid DockPanel.Dock="Top" Margin="10,10,10,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+    <Grid Background="#FFE5E4E2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <Label Content="Login:" Grid.Row="0" Grid.Column="0" />
-            <TextBox x:Name="loginTextBox" Height="24" Width="164" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" TabIndex="0" TextChanged="BoxChanged"/>
+        <Label Content="Login:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBox x:Name="loginTextBox" Height="24" Width="164" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" TabIndex="0" TextChanged="BoxChanged"/>
 
-            <Label Content="Hasło:" Grid.Row="1" Grid.Column="0" />
-            <PasswordBox x:Name="pwdTextBox" Height="24" Width="164" Grid.Row="1" Grid.Column="1" TabIndex="1" PasswordChanged="BoxChanged"/>
+        <Label Content="Hasło:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+        <PasswordBox x:Name="pwdTextBox" Height="24" Width="164" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" TabIndex="1" PasswordChanged="BoxChanged"/>
 
-            <Label Content="Wygasa:" Grid.Row="2" Grid.Column="0" />
-            <DatePicker x:Name="DeactivateBox" Grid.Row="2" Grid.Column="1" Width="164" IsTabStop="True" TabIndex="2"/>
+        <Label Content="Powtórz hasło:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+        <PasswordBox Name="rptPwdTextBox" Height="24" Width="164" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" TabIndex="2" PasswordChanged="BoxChanged"/>
 
-            <Label Content="Imie:" Grid.Row="3" Grid.Column="0" />
-            <TextBox x:Name="imieTextBox" Height="24" Width="164" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" TabIndex="3" TextChanged="BoxChanged"/>
+        <Label Content="Wygasa:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+        <DatePicker x:Name="DeactivateBox" Grid.Row="3" Grid.Column="1" Width="164" VerticalAlignment="Center" IsTabStop="True" TabIndex="3"/>
 
-            <Label Content="Nazwisko:" Grid.Row="4" Grid.Column="0" />
-            <TextBox x:Name="nazwiskoTextBox" Height="24" Width="164" Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" TabIndex="4" TextChanged="BoxChanged"/>
+        <Label Content="Imie:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBox x:Name="imieTextBox" Height="24" Width="164" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" TabIndex="4" TextChanged="BoxChanged"/>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                <Button x:Name="okButton" Content="OK" Width="75" Click="okButton_Click" IsDefault="True" IsEnabled="False" TabIndex="5" Margin="0,0,20,0" />
-                <Button x:Name="cancelButton" Content="Anuluj" Width="75" Click="cancelButton_Click" IsCancel="True" TabIndex="6" />
-            </StackPanel>
-        </Grid>
-        
-    </DockPanel>
+        <Label Content="Nazwisko:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
+        <TextBox x:Name="nazwiskoTextBox" Height="24" Width="164" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" TabIndex="5" TextChanged="BoxChanged"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="24">
+            <Button x:Name="okButton" Content="OK" Width="75" Click="okButton_Click" IsDefault="True" IsEnabled="False" TabIndex="6" Margin="0,0,20,0" />
+            <Button x:Name="cancelButton" Content="Anuluj" Width="75" Click="cancelButton_Click" IsCancel="True" TabIndex="7" />
+        </StackPanel>
+    </Grid>
 </Window>

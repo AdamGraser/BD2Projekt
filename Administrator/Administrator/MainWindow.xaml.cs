@@ -26,18 +26,20 @@ namespace Administrator
     public partial class MainWindow : Window
     {
 
-        private DBClient.DBClient db;
-        List<RejestratorkaData> rejlist;
+        DBClient.DBClient db;
+
+        List<RejestratorkaData> rejlist;    //źródła danych (elementy tych list są modyfikowane)
         List<LekarzData> leklist;
         List<LaborantData> lablist;
         List<Sl_badData> badlist;
         List<Sl_specData> speclist;
 
-        List<RejestratorkaData> rejmodlist;
+        List<RejestratorkaData> rejmodlist; //dane sprzed modyfikacji
         List<LekarzData> lekmodlist;
         List<LaborantData> labmodlist;
         List<Sl_badData> badmodlist;
         List<Sl_specData> specmodlist;
+
 
 
         public MainWindow()
@@ -457,19 +459,32 @@ namespace Administrator
             return false;
         }
         
-        private void LekarzGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        private void Grid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            if ( (string)e.Column.Header == "Specjalizacja")
+            if ((string)e.Column.Header == "Hasło")
             {
-                TextBox box = e.EditingElement as TextBox;
-                string toCheck = box.Text;
-                int result;
-                if(int.TryParse(toCheck,out result) == false)
+                TextBox textBox = e.EditingElement as TextBox;
+                string newPwd = textBox.Text;
+
+                if (newPwd.Length > 0)
                 {
-                    MessageBox.Show("Wartość musi być wartością numeryczną!");
-                    e.Cancel = true;
+                    ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
+                    bool? dialogResult = dialog.ShowDialog();
+
+                    if (dialogResult != true)
+                        textBox.Clear();
+                    else if (newPwd != dialog.password)
+                    {
+                        MessageBox.Show("Podane w okienku hasło różni się od hasła wpisanego w komórce tabeli.", "Niezgodność haseł", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        textBox.Clear();
+                    }
                 }
             }
+        }
+
+        private void DiscardChangesItem_Click(object sender, RoutedEventArgs e)
+        {
+            getDataFromdb();
         }
     }
 }

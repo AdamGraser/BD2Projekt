@@ -8,14 +8,14 @@ namespace DBClient
 {
     public class LekarzData
     {
-        public LekarzData(int id_lek, string nazwisko, string imie, string login, string haslo, DateTime? wygasa, short kod_spec)
+        public LekarzData(int id_lek, string nazwisko, string imie, string login, string haslo, DateTime aktywny, DateTime? wygasa, short kod_spec)
         {
             this.id_lek = id_lek;
             this.nazwisko = nazwisko;
             this.imie = imie;
             this.login = login;
             this.haslo = haslo;
-            this.aktywny = DateTime.Now;
+            this.aktywny = aktywny;
             this.wygasa = wygasa;
             this.kod_spec = kod_spec;
         }

@@ -171,3 +171,15 @@ C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\Administrator\obj\De
 C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\Administrator\obj\Debug\Administrator.g.resources
 C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\Administrator\obj\Debug\Administrator.Properties.Resources.resources
 C:\Users\Dowlasz\Desktop\PULPIT\Administrator\Administrator\Administrator\obj\Debug\Administrator.csproj.GenerateResource.Cache
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddBadDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddLaborantDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddLekarzDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddRejestratorkaDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddSpecDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddBadDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddLaborantDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddLekarzDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddRejestratorkaDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\AddSpecDialog.g.cs
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\ConfirmPasswordDialog.baml
+E:\Adam\House of dog\studia\bd-projekt\Administrator\Administrator\obj\Debug\ConfirmPasswordDialog.g.cs

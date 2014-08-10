@@ -8,14 +8,14 @@ namespace DBClient
 {
     public class LaborantData
     {
-        public LaborantData(int id_lab, string nazwisko, string imie, string login, string haslo, DateTime? wygasa, bool kier)
+        public LaborantData(int id_lab, string nazwisko, string imie, string login, string haslo, DateTime aktywny, DateTime? wygasa, bool kier)
         {
             this.id_lab = id_lab;
             this.nazwisko = nazwisko;
             this.imie = imie;
             this.login = login;
             this.haslo = haslo;
-            this.aktywny = DateTime.Now;
+            this.aktywny = aktywny;
             this.wygasa = wygasa;
             this.kier = kier;
         }

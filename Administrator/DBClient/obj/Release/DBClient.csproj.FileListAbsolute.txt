@@ -1,0 +1,5 @@
+E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\bin\Release\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\bin\Release\DBClient.pdb
+E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\obj\Release\DBClient.csprojResolveAssemblyReference.cache
+E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\obj\Release\DBClient.dll
+E:\Adam\House of dog\studia\bd-projekt\Administrator\DBClient\obj\Release\DBClient.pdb

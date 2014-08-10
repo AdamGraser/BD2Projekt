@@ -85,8 +85,8 @@ namespace Administrator
         /// <returns>true jeżeli formularz jest wypełniony prawidłowo, false w przeciwnym przypadku.</returns>
         private bool IsFormCompleted()
         {
-            if (imieTextBox.Text != "" && nazwiskoTextBox.Text != ""
-                && loginTextBox.Text != "" && pwdTextBox.Password != "" && specjalizacjaBox.SelectedIndex != -1)
+            if (imieTextBox.Text.Length > 0 && nazwiskoTextBox.Text.Length > 0
+                && loginTextBox.Text.Length > 0 && pwdTextBox.Password.Length > 0 && rptPwdTextBox.Password.Length > 0 && specjalizacjaBox.SelectedIndex != -1)
                 return true;
             return false;
         }
@@ -125,8 +125,18 @@ namespace Administrator
         /// <param name="e"></param>
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            Close();
+            if (pwdTextBox.Password != rptPwdTextBox.Password)
+            {
+                MessageBox.Show("Pola \"Hasło\" i \"Powtórz hasło\" różnią się!", "Niezgodność haseł", MessageBoxButton.OK, MessageBoxImage.Warning);
+                pwdTextBox.Clear();
+                rptPwdTextBox.Clear();
+                pwdTextBox.Focus();
+            }
+            else
+            {
+                this.DialogResult = true;
+                Close();
+            }
         }
     }
 }

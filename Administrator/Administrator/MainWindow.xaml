@@ -8,6 +8,7 @@
             <MenuItem Name="logoutMenuItem" Header="Wyloguj się" Click="logoutMenuItem_Click" />
             <MenuItem Name="AddEntryItem" Header="Nowy" Click="AddEntryItem_Click" />
             <MenuItem Name="SaveChangesItem" Header="Zapisz zmiany" Click="SaveChangesItem_Click" />
+            <MenuItem Name="DiscardChangesItem" Header="Odrzuć zmiany" Click="DiscardChangesItem_Click"/>
             <MenuItem Header="Pomoc">
                 <MenuItem Name="aboutMenuItem" Header="O programie" Click="aboutMenuItem_Click" />
             </MenuItem>
@@ -15,13 +16,13 @@
 
         <TabControl DockPanel.Dock="Top">
             <TabItem Header="Rejestratorka" Name="RejestratorkaTabItem">
-                <DataGrid x:Name="RejestratorkaGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                <DataGrid x:Name="RejestratorkaGrid" AutoGenerateColumns="False" SelectionMode="Single" CellEditEnding="Grid_CellEditEnding">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding id_rej}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Nazwisko" Binding="{Binding nazwisko}"/>
-                        <DataGridTextColumn Header="Imie" Binding="{Binding imie}"/>
+                        <DataGridTextColumn Header="Imię" Binding="{Binding imie}"/>
                         <DataGridTextColumn Header="Login" Binding="{Binding login}"/>
-                        <DataGridTextColumn Header="Haslo" Binding="{Binding haslo}"/>
+                        <DataGridTextColumn Header="Hasło" Binding="{Binding haslo}"/>
                         <DataGridTemplateColumn Header="Wygasa" Width="120">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -40,14 +41,20 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Lekarz" Name="LekarzTabItem" >
-                <DataGrid x:Name="LekarzGrid" AutoGenerateColumns="False" SelectionMode="Single" CellEditEnding="LekarzGrid_CellEditEnding">
+                <DataGrid x:Name="LekarzGrid" AutoGenerateColumns="False" SelectionMode="Single" CellEditEnding="Grid_CellEditEnding">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding id_lek}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Nazwisko" Binding="{Binding nazwisko}"/>
-                        <DataGridTextColumn Header="Imie" Binding="{Binding imie}"/>
+                        <DataGridTextColumn Header="Imię" Binding="{Binding imie}"/>
                         <DataGridTextColumn Header="Login" Binding="{Binding login}"/>
-                        <DataGridTextColumn Header="Haslo" Binding="{Binding haslo}"/>
-                        <DataGridTextColumn Header="Specjalizacja" Binding="{Binding kod_spec}"/>
+                        <DataGridTextColumn Header="Hasło" Binding="{Binding haslo}"/>
+                        <DataGridTemplateColumn Header="Specjalizacja" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox SelectedIndex="{Binding kod_spec}" ItemsSource="{Binding ElementName=Sl_specGrid, Path=ItemsSource}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Wygasa" Width="120">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -66,13 +73,13 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Laborant" Name="LaborantTabItem">
-                <DataGrid x:Name="LaborantGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                <DataGrid x:Name="LaborantGrid" AutoGenerateColumns="False" SelectionMode="Single" CellEditEnding="Grid_CellEditEnding">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding id_lab}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Nazwisko" Binding="{Binding nazwisko}"/>
-                        <DataGridTextColumn Header="Imie" Binding="{Binding imie}"/>
+                        <DataGridTextColumn Header="Imię" Binding="{Binding imie}"/>
                         <DataGridTextColumn Header="Login" Binding="{Binding login}"/>
-                        <DataGridTextColumn Header="Haslo" Binding="{Binding haslo}"/>
+                        <DataGridTextColumn Header="Hasło" Binding="{Binding haslo}"/>
                         <DataGridTemplateColumn Header="Kierownik">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

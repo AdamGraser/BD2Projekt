@@ -8,14 +8,14 @@ namespace DBClient
 {
     public class RejestratorkaData
     {
-        public RejestratorkaData(int id_rej, string nazwisko, string imie, string login, string haslo, DateTime? wygasa)
+        public RejestratorkaData(int id_rej, string nazwisko, string imie, string login, string haslo, DateTime aktywny, DateTime? wygasa)
         {
             this.id_rej = id_rej;
             this.nazwisko = nazwisko;
             this.imie = imie;
             this.login = login;
             this.haslo = haslo;
-            this.aktywny = DateTime.Now;
+            this.aktywny = aktywny;
             this.wygasa = wygasa;
         }
         public RejestratorkaData(RejestratorkaData previous)

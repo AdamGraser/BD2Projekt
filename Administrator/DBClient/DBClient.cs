@@ -381,7 +381,7 @@ namespace DBClient
                 foreach (var p in query)
                 {
                     //Zapisanie wyników w odpowiednich elementach.
-                    RejestratorkaData rejestratorkaData = new RejestratorkaData(p.id, p.nazwisko, p.imie, p.login, "", p.wygasa);
+                    RejestratorkaData rejestratorkaData = new RejestratorkaData(p.id, p.nazwisko, p.imie, p.login, "", p.aktywny, p.wygasa);
                     rejestratorkas.Add(rejestratorkaData);
                 }
             }
@@ -644,7 +644,7 @@ namespace DBClient
                 foreach (var p in query)
                 {
                     //Zapisanie wyników w odpowiednich elementach.
-                    LaborantData labData = new LaborantData(p.id, p.nazwisko, p.imie, p.login, "", p.wygasa, p.kier);
+                    LaborantData labData = new LaborantData(p.id, p.nazwisko, p.imie, p.login, "", p.aktywny, p.wygasa, p.kier);
                     laborants.Add(labData);
                 }
             }
@@ -708,7 +708,7 @@ namespace DBClient
             lek.Login = login;
             lek.Wygasa = wygasa;
             lek.Aktywny = aktywny;
-            lek.Kod_spec = kod_spec;
+            lek.Kod_spec = (short)(kod_spec + 1);
 
             db.Lekarzs.InsertOnSubmit(lek);
 
@@ -802,7 +802,7 @@ namespace DBClient
                 lek.Nazwisko = nowe_nazwisko;
                 lek.Login = nowy_login;
                 lek.Wygasa = nowe_wygasa;
-                lek.Kod_spec = kod_spec;
+                lek.Kod_spec = (short)(kod_spec + 1);
 
                 if (nowe_haslo.Length > 0)
                 {
@@ -907,7 +907,7 @@ namespace DBClient
                 foreach (var p in query)
                 {
                     //Zapisanie wyników w odpowiednich elementach.
-                    LekarzData lekarzData = new LekarzData(p.id, p.nazwisko, p.imie, p.login, "", p.wygasa, p.kod_spec);
+                    LekarzData lekarzData = new LekarzData(p.id, p.nazwisko, p.imie, p.login, "", p.aktywny, p.wygasa, (short)(p.kod_spec - 1));
                     lekarzs.Add(lekarzData);
                 }
             }
@@ -1127,7 +1127,6 @@ namespace DBClient
 
                 //Utworzenie zapytania.
                 var query = from Sl_badan in db.Sl_badans
-                            orderby Sl_badan.Kod
                             select Sl_badan;
 
 
@@ -1348,7 +1347,6 @@ namespace DBClient
 
                 //Utworzenie zapytania.
                 var query = from Sl_specjalizacji in db.Sl_specjalizacjis
-                            orderby Sl_specjalizacji.Kod_spec
                             select Sl_specjalizacji;
 
 
