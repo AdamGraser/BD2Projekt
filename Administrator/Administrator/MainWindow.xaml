@@ -87,7 +87,6 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-
                         <DataGridTemplateColumn Header="Wygasa" Width="120">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -106,7 +105,7 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Słownik badań" Name="BadaniaTabItem">
-                <DataGrid x:Name="Sl_badGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                <DataGrid x:Name="Sl_badGrid" AutoGenerateColumns="False" SelectionMode="Single" CellEditEnding="Grid_CellEditEnding">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Kod" Binding="{Binding kod}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Nazwa" Binding="{Binding nazwa}"/>
@@ -122,7 +121,7 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Słownik specjalizacji" Name="SpecTabItem">
-                <DataGrid x:Name="Sl_specGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                <DataGrid x:Name="Sl_specGrid" AutoGenerateColumns="False" SelectionMode="Single" CellEditEnding="Grid_CellEditEnding">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Kod Specjalizacji" Binding="{Binding kod_spec}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Nazwa" Binding="{Binding nazwa}"/>

@@ -255,7 +255,8 @@ namespace Administrator
             List<Sl_badData> badToBeRemoved = new List<Sl_badData>();
             List<Sl_specData> specToBeRemoved = new List<Sl_specData>();
 
-            //szukanie wierwszy takich samych (nie zmodyfikowanych)
+            //szukanie wierszy takich samych (niezmodyfikowanych, przy czym wyczyszczenie pól wymaganych również oznacza brak modyfikacji
+            //tak jak i opis badania dłuższy niż 50 znaków uznawany jest za niezmodyfikowany)
 
             foreach (RejestratorkaData r in rejmodlist)
             {
@@ -263,7 +264,11 @@ namespace Administrator
 
                 if (temp != null)
                 {
-                    if( temp.haslo.Length == r.haslo.Length && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa)
+                    if (temp.haslo.Length == r.haslo.Length &&
+                        (temp.imie == r.imie || temp.imie.Length == 0) &&
+                        (temp.nazwisko == r.nazwisko || temp.nazwisko.Length == 0) &&
+                        (temp.login == r.login || temp.login.Length == 0) &&
+                        temp.wygasa == r.wygasa)
                     {
                         rejToBeRemoved.Add(temp);
                     }
@@ -273,9 +278,14 @@ namespace Administrator
             foreach (LekarzData r in lekmodlist)
             {
                 LekarzData temp = leklist.Find(x => x.id_lek == r.id_lek);
+
                 if (temp != null)
                 {
-                    if( temp.haslo.Length == r.haslo.Length && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa && temp.kod_spec == r.kod_spec)
+                    if (temp.haslo.Length == r.haslo.Length &&
+                        (temp.imie == r.imie || temp.imie.Length == 0) &&
+                        (temp.nazwisko == r.nazwisko || temp.nazwisko.Length == 0) &&
+                        (temp.login == r.login || temp.login.Length == 0) &&
+                        temp.wygasa == r.wygasa && temp.kod_spec == r.kod_spec)
                     {
                         lekToBeRemoved.Add(temp);
                     }
@@ -285,9 +295,14 @@ namespace Administrator
             foreach (LaborantData r in labmodlist)
             {
                 LaborantData temp = lablist.Find(x => x.id_lab == r.id_lab);
+
                 if (temp != null)
                 {
-                    if( temp.haslo.Length == r.haslo.Length && temp.imie == r.imie && temp.nazwisko == r.nazwisko && temp.login == r.login && temp.wygasa == r.wygasa && temp.kier == r.kier)
+                    if (temp.haslo.Length == r.haslo.Length &&
+                        (temp.imie == r.imie || temp.imie.Length == 0) &&
+                        (temp.nazwisko == r.nazwisko || temp.nazwisko.Length == 0) &&
+                        (temp.login == r.login || temp.login.Length == 0) &&
+                        temp.wygasa == r.wygasa && temp.kier == r.kier)
                     {
                         labToBeRemoved.Add(temp);
                     }
@@ -297,9 +312,10 @@ namespace Administrator
             foreach (Sl_badData r in badmodlist)
             {
                 Sl_badData temp = badlist.Find(x => x.kod == r.kod);
+
                 if (temp != null)
                 {
-                    if(temp.lab == r.lab && temp.nazwa == r.nazwa && temp.opis == r.opis)
+                    if (temp.lab == r.lab && (temp.nazwa == r.nazwa || temp.nazwa.Length == 0) && (temp.opis == r.opis || temp.opis.Length > 50))
                     {
                         badToBeRemoved.Add(temp);
                     }
@@ -309,9 +325,10 @@ namespace Administrator
             foreach (Sl_specData r in specmodlist)
             {
                 Sl_specData temp = speclist.Find(x => x.kod_spec == r.kod_spec);
+
                 if (temp != null)
                 {
-                    if(temp.nazwa == r.nazwa)
+                    if (temp.nazwa == r.nazwa || temp.nazwa.Length == 0)
                     {
                         specToBeRemoved.Add(temp);
                     }
@@ -320,7 +337,7 @@ namespace Administrator
 
             //usuwanie wierszy niezmodyfikowanych z list pozmienianych
 
-            foreach( RejestratorkaData r in rejToBeRemoved)
+            foreach(RejestratorkaData r in rejToBeRemoved)
             {
                 rejlist.Remove(r);
             }
@@ -480,7 +497,64 @@ namespace Administrator
                     }
                 }
             }
+            else if ((string)e.Column.Header == "Nazwisko")
+            {
+                TextBox textBox = e.EditingElement as TextBox;
+                string newValue = textBox.Text;
+
+                if (newValue.Length > 50)
+                {
+                    MessageBox.Show("Nazwisko nie może być dłuższe niż 50 znaków.", "Przekroczono limit znaków", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    textBox.Clear();
+                }
+            }
+            else if ((string)e.Column.Header == "Imię")
+            {
+                TextBox textBox = e.EditingElement as TextBox;
+                string newValue = textBox.Text;
+
+                if (newValue.Length > 25)
+                {
+                    MessageBox.Show("Imię nie może być dłuższe niż 25 znaków.", "Przekroczono limit znaków", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    textBox.Clear();
+                }
+            }
+            else if ((string)e.Column.Header == "Login")
+            {
+                TextBox textBox = e.EditingElement as TextBox;
+                string newValue = textBox.Text;
+
+                if (newValue.Length > 10)
+                {
+                    MessageBox.Show("Login nie może być dłuższy niż 10 znaków.", "Przekroczono limit znaków", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    textBox.Clear();
+                }
+            }
+            else if ((string)e.Column.Header == "Nazwa")
+            {
+                TextBox textBox = e.EditingElement as TextBox;
+                string newValue = textBox.Text;
+
+                if (newValue.Length > 50)
+                {
+                    MessageBox.Show("Nazwa nie może być dłuższa niż 50 znaków.", "Przekroczono limit znaków", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    textBox.Clear();
+                }
+            }
+            else if ((string)e.Column.Header == "Opis")
+            {
+                TextBox textBox = e.EditingElement as TextBox;
+                string newValue = textBox.Text;
+
+                if (newValue.Length > 50)
+                {
+                    MessageBox.Show("Opis nie może być dłuższy niż 50 znaków.", "Przekroczono limit znaków", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    e.Cancel = true;
+                }
+            }
         }
+
+
 
         private void DiscardChangesItem_Click(object sender, RoutedEventArgs e)
         {

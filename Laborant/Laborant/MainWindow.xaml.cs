@@ -250,6 +250,9 @@ namespace Laborant
                 visitIDs.RemoveAt(currentLabTest);
                 labTestIDs.RemoveAt(currentLabTest);
 
+                if (lab_LabTestsList.Items.Count == 0)
+                    lab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak badań!");
+
                 //Usuwanie szczegółowych informacji o zapisanym badaniu i usunięcie wyników tego badania.
                 ClearControlls();
 
@@ -265,7 +268,7 @@ namespace Laborant
                 lab_Cancel.IsEnabled = false;
             }
             else if (save == false)
-                MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku badania laboratoryjnego i nie został on zapisany.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
             else
                 MessageBox.Show("Wystąpił błąd podczas próby zapisu wyniku - prawdopodobnie stan badania został zmieniony przez innego laboranta", "Zmieniony rekord", MessageBoxButton.OK, MessageBoxImage.Warning);
 
@@ -412,7 +415,6 @@ namespace Laborant
             else
             {
                 lab_LabTestsList.IsEnabled = false;
-                lab_LabTestsList.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
                 lab_LabTestsList.Items.Add(new ListBoxItem().Content = "Brak badań odpowiadających podanym kryteriom!");
 
                 if (tests == null)

@@ -76,11 +76,11 @@
 
                         <!-- Piąty wiersz -->
                         <Label Content="Wynik:" Grid.Row="4" Grid.Column="0" Width="auto" MinHeight="26" Height="auto" Margin="0,0,5,5"/>
-                        <TextBox x:Name="lab_LabTestResult" ToolTip="Wynik badania" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" IsEnabled="False" TextWrapping="Wrap"/>
+                        <TextBox x:Name="lab_LabTestResult" ToolTip="Wynik badania" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" MaxLength="255" IsEnabled="False" TextWrapping="Wrap"/>
                         
                         <!-- Szósty wiersz -->
                         <Label Content="Uwagi kierownika:" Grid.Row="5" Grid.Column="0" Width="auto" MinHeight="26" Height="auto" Margin="0,0,5,5"/>
-                        <TextBox x:Name="lab_LabCancelInfo" ToolTip="Wynik badania" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" IsEnabled="False" TextWrapping="Wrap"/>
+                        <TextBox x:Name="lab_LabCancelInfo" ToolTip="Wynik badania" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" MaxLength="255" IsEnabled="False" TextWrapping="Wrap"/>
                     </Grid>
                     
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center" Width="auto">

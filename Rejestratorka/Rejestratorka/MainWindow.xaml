@@ -19,11 +19,11 @@
                                 <Label Content="Filtr:"/>
                                 <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
                                     <Label Content="Imię:" Width="100"/>
-                                    <TextBox x:Name="patientNameTextBox1"  Width="300" Height="28" TabIndex="0" TextChanged="PatientFilterTextBox_TextChanged"></TextBox>
+                                    <TextBox x:Name="patientNameTextBox1" MaxLength="25" Width="300" Height="28" TabIndex="0" TextChanged="PatientFilterTextBox_TextChanged"></TextBox>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
                                     <Label Content="Nazwisko:" Width="100"/>
-                                    <TextBox x:Name="patientSurnameTextBox1"  Width="300" Height="28" TabIndex="1" TextChanged="PatientFilterTextBox_TextChanged"></TextBox>
+                                    <TextBox x:Name="patientSurnameTextBox1" MaxLength="50" Width="300" Height="28" TabIndex="1" TextChanged="PatientFilterTextBox_TextChanged"></TextBox>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
                                     <Label Content="PESEL:" Width="100"/>
@@ -79,11 +79,11 @@
                             <Label Content="Filtr:"/>
                             <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
                                 <Label Content="Imię:" Width="100"/>
-                                <TextBox x:Name="patientNameTextBox2" Width="300" Height="28" TextChanged="VisitFilterTextBox_TextChanged" TabIndex="0"></TextBox>
+                                <TextBox x:Name="patientNameTextBox2" MaxLength="25" Width="300" Height="28" TextChanged="VisitFilterTextBox_TextChanged" TabIndex="0"></TextBox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="20,10,0,0">
                                 <Label Content="Nazwisko:" Width="100"/>
-                                <TextBox x:Name="patientSurnameTextBox2" Width="300" Height="28" TabIndex="1" TextChanged="VisitFilterTextBox_TextChanged"></TextBox>
+                                <TextBox x:Name="patientSurnameTextBox2" MaxLength="50" Width="300" Height="28" TabIndex="1" TextChanged="VisitFilterTextBox_TextChanged"></TextBox>
                             </StackPanel>
                             <StackPanel Margin="20,10,20,0" Orientation="Horizontal">
                                 <Label Content="Lekarz:" Width="100" />

@@ -31,7 +31,7 @@ namespace DBClient
         public DBClient()
         {
             //Utworzenie połączenia do bazy danych.
-            connection = new SqlConnection(@"Server=\SQLEXPRESS; uid=sa; pwd=; Database=Przychodnia");
+            connection = new SqlConnection(@"Server=BODACH\SQLEXPRESS; uid=sa; pwd=Gresiulina; Database=Przychodnia");
 
             //Utworzenie obiektu reprezentującego bazę danych, który zawiera encje odpowiadające tabelom w bazie.
             db = new Przychodnia.Przychodnia(connection);
@@ -843,6 +843,63 @@ namespace DBClient
             }
 
             return diagnosis;
+        }
+
+
+
+        /// <summary>
+        /// Pobiera z bazy danych podstawowe informacje o laboratoryjnych i fizykalnych badaniach, zleconych/wykonanych w trakcie wskazanej wizyty.
+        /// </summary>
+        /// <param name="id_wiz">ID wizyty, dla której lista badań ma być pobrana.</param>
+        /// <returns>Zwraca listę badań dla danej wizyty (może być pusta) lub null w przypadku błędu.</returns>
+        public List<BadanieInfo> GetVisitTests(int id_wiz)
+        {
+            List<BadanieInfo> visitsTests = new List<BadanieInfo>();
+
+            //Łączenie się z bazą danych.
+            connection.Open();
+
+            //Rozpoczęcie transakcji z bazą danych, do wykorzystania przez LINQ to SQL.
+            transaction = connection.BeginTransaction(IsolationLevel.RepeatableRead);
+            db.Transaction = transaction;
+
+            try
+            {
+                //Utworzenie zapytania.
+                var query = from Badanie in db.Badanies
+                            join Sl_badan in db.Sl_badans on Badanie.Kod equals Sl_badan.Kod
+                            where Badanie.Id_wiz == id_wiz
+                            select new
+                            {
+                                lab = Sl_badan.Lab,
+                                kod = Badanie.Kod,
+                                data_zle = Badanie.Data_zle,
+                                opis = Badanie.Opis,
+                                wynik = Badanie.Wynik
+                            };
+
+                //Pobranie i zapisanie informacji o kolejnych badaniach (o ile jakieś istnieją).
+                foreach (var bad in query)
+                {
+                    visitsTests.Add(new BadanieInfo(bad.lab, bad.kod, bad.data_zle, bad.opis, bad.wynik));
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Source);
+                Console.WriteLine(e.HelpLink);
+                Console.WriteLine(e.StackTrace);
+
+                visitsTests = null;
+            }
+            finally
+            {
+                //Zakończenie transakcji, zamknięcie połączenia z bazą danych, zwolnienie zasobów (po obu stronach).
+                connection.Close();
+            }
+
+            return visitsTests;
         }
 
 

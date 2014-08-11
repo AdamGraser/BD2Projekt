@@ -92,56 +92,6 @@ namespace Lekarz
                             MessageBox.Show("Wystąpił błąd podczas pobierania listy badań fizykalnych.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
 
-                    /*
-                    // --> Tworzenie listy badań laboratoryjnych.
-                    List<string> labTestsNames = db.GetLabTestsNames();
-
-                    if (labTestsNames != null && labTestsNames.Count > 0)
-                    {
-                        foreach (string l in labTestsNames)
-                        {
-                            LabTestsList.Items.Add(new ComboBoxItem().Content = l);
-                        }
-                    }
-                    else
-                    {
-                        LabTestsList.IsEnabled = false;
-
-                        LabTestDesc.Text = "Brak badań w bazie danych";
-                        LabTestDesc.IsEnabled = false;
-
-                        orderLaboratoryTestButton.IsEnabled = false;
-
-                        if (labTestsNames == null)
-                            MessageBox.Show("Wystąpił błąd podczas pobierania listy badań laboratoryjnych.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
-                    // <-- Tworzenie listy badań laboratoryjnych.
-
-                    // --> Tworzenie listy badań fizykalnych.
-                    List<string> phyTestsNames = db.GetPhyTestsNames();
-
-                    if (phyTestsNames != null && phyTestsNames.Count > 0)
-                    {
-                        foreach (string l in phyTestsNames)
-                        {
-                            PhyTestsList.Items.Add(new ComboBoxItem().Content = l);
-                        }
-                    }
-                    else
-                    {
-                        PhyTestsList.IsEnabled = false;
-
-                        PhyTestResult.Text = "Brak badań w bazie danych";
-                        PhyTestResult.IsEnabled = false;
-
-                        savePhysicalTestButton.IsEnabled = false;
-
-                        if (labTestsNames == null)
-                            MessageBox.Show("Wystąpił błąd podczas pobierania listy badań fizykalnych.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    }
-                    // <-- Tworzenie listy badań fizykalnych.
-                    */
-
                     break;
                 }
             }
@@ -247,6 +197,10 @@ namespace Lekarz
                     while (PhysicalTests.Children.Count > 2)
                         PhysicalTests.Children.RemoveAt(0);
 
+                    currentLabRow = 0;
+                    currentPhyRow = 0;
+                    currentTestId = 1;
+
                     diagnosisExpander.IsEnabled = false;
                     diagnosisExpander.IsExpanded = false;
                     laboratoryTestsExpander.IsEnabled = false;
@@ -287,7 +241,7 @@ namespace Lekarz
 
 
         /// <summary>
-        /// Metoda obsługująca zmianę selekcji wizyty w listboksie.
+        /// Metoda obsługująca zmianę zaznaczenia na liście wizyt.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -298,23 +252,31 @@ namespace Lekarz
                 if (selectedVisitStatus == 0)
                 {
                     beginVisitButton.IsEnabled = true;
+                    beginVisitButton.Content = "Rozpocznij wizytę";
                 }
                 else
                 {
-                    beginVisitButton.IsEnabled = false;
-                    visitDescription.IsEnabled = false;
-                    visitDescription.Text = db.GetVisitDescription(visitsIdList[visitsList.SelectedIndex]);
-                    diagnosis.IsEnabled = false;
-                    diagnosis.Text = db.GetVisitDiagnosis(visitsIdList[visitsList.SelectedIndex]);
+                    if (selectedVisitStatus == 1)
+                    {
+                        beginVisitButton.IsEnabled = true;
+                        beginVisitButton.Content = "Kontynuuj wizytę";
+                    }
+                    else
+                    {
+                        beginVisitButton.IsEnabled = false;
 
-                    VisitExpander.IsEnabled = true;
-                    VisitExpander.IsExpanded = true;
+                        visitDescription.IsEnabled = false;
+                        visitDescription.Text = db.GetVisitDescription(visitsIdList[visitsList.SelectedIndex]);
+                        VisitExpander.IsEnabled = true;
+                        VisitExpander.IsExpanded = true;
 
-                    if (selectedVisitStatus != 1)
+                        diagnosis.IsEnabled = false;
+                        diagnosis.Text = db.GetVisitDiagnosis(visitsIdList[visitsList.SelectedIndex]);
                         diagnosisExpander.IsEnabled = true;
 
-                    laboratoryTestsExpander.IsEnabled = false;
-                    physicalTestsExpander.IsEnabled = false;
+                        laboratoryTestsExpander.IsEnabled = false;
+                        physicalTestsExpander.IsEnabled = false;
+                    }
                 }
 
                 ListBoxItem item = (ListBoxItem)visitsList.SelectedItem;
@@ -578,7 +540,7 @@ namespace Lekarz
         {
             if (findVisitButton != null && clearFilterButton != null)
             {
-                if (visitStatusComboBox.SelectedIndex != 0)
+                if (visitStatusComboBox.SelectedIndex > 0)
                 {
                     findVisitButton.IsEnabled = true;
                     clearFilterButton.IsEnabled = true;
@@ -603,31 +565,147 @@ namespace Lekarz
 
         private void beginVisitButton_Click(object sender, RoutedEventArgs e)
         {
-            cancelVisitButton.IsEnabled = true;
-            saveVisitButton.IsEnabled = true;
-            RapTab.IsEnabled = true;
-            beginVisitButton.IsEnabled = false;
-            clearFilterButton.IsEnabled = false;
-            findVisitButton.IsEnabled = false;
-            todayButton.IsEnabled = false;
-            visitsList.IsEnabled = false;
-
-            if (db.ChangeVisitState(visitsIdList[visitsList.SelectedIndex], 1))
+            if (selectedVisitStatus == 0)
             {
-                visitDescription.IsEnabled = true;
-                diagnosis.IsEnabled = true;
-                   
+                if (db.ChangeVisitState(visitsIdList[visitsList.SelectedIndex], 1))
+                {
+                    cancelVisitButton.IsEnabled = true;
+                    saveVisitButton.IsEnabled = true;
+                    RapTab.IsEnabled = true;
+                    beginVisitButton.IsEnabled = false;
+                    clearFilterButton.IsEnabled = false;
+                    findVisitButton.IsEnabled = false;
+                    todayButton.IsEnabled = false;
+                    visitsList.IsEnabled = false;
 
-                diagnosisExpander.IsEnabled = true;
-                laboratoryTestsExpander.IsEnabled = true;
-                physicalTestsExpander.IsEnabled = true;
-                VisitExpander.IsEnabled = true;
-                VisitExpander.IsExpanded = true;
-                visitsHistory.IsEnabled = true;
+                    visitDescription.IsEnabled = true;
+                    diagnosis.IsEnabled = true;
+
+                    diagnosisExpander.IsEnabled = true;
+                    laboratoryTestsExpander.IsEnabled = true;
+                    physicalTestsExpander.IsEnabled = true;
+                    VisitExpander.IsEnabled = true;
+                    VisitExpander.IsExpanded = true;
+                    visitsHistory.IsEnabled = true;
+                }
+                else
+                    MessageBox.Show("Wystąpił błąd podczas zmiany stanu wizyty i nie został on zmieniony.", "Błąd rozpoczęcia wizyty", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            else
+            else if (selectedVisitStatus == 1)
             {
-                MessageBox.Show("Wystąpił błąd podczas zmiany stanu wizyty i nie został on zmieniony.", "Błąd akceptacji wizyty", MessageBoxButton.OK, MessageBoxImage.Error);
+                List<BadanieInfo> visitsTests = db.GetVisitTests(visitsIdList[visitsList.SelectedIndex]);
+
+                if (visitsTests != null)
+                {
+                    cancelVisitButton.IsEnabled = true;
+                    saveVisitButton.IsEnabled = true;
+                    RapTab.IsEnabled = true;
+                    beginVisitButton.IsEnabled = false;
+                    clearFilterButton.IsEnabled = false;
+                    findVisitButton.IsEnabled = false;
+                    todayButton.IsEnabled = false;
+                    visitsList.IsEnabled = false;
+
+                    visitDescription.IsEnabled = true;
+                    diagnosis.IsEnabled = true;
+
+                    currentTestId = (byte)(visitsTests.Count + 1);
+
+                    foreach (BadanieInfo bad in visitsTests)
+                    {
+                        if (bad.lab) //badanie laboratoryjne
+                        {
+                            Grid savedLabTest = new Grid();
+                            RowDefinition row = new RowDefinition();
+                            row.Height = GridLength.Auto;
+                            savedLabTest.RowDefinitions.Add(row);
+                            ColumnDefinition col1 = new ColumnDefinition();
+                            col1.Width = new GridLength(0.4, GridUnitType.Star);
+                            ColumnDefinition col2 = new ColumnDefinition();
+                            col2.Width = GridLength.Auto;
+                            ColumnDefinition col3 = new ColumnDefinition();
+                            col3.Width = new GridLength(0.6, GridUnitType.Star);
+                            savedLabTest.ColumnDefinitions.Add(col1);
+                            savedLabTest.ColumnDefinitions.Add(col2);
+                            savedLabTest.ColumnDefinitions.Add(col3);
+
+                            TextBlock labTest = new TextBlock();
+                            labTest.Text = labTests[bad.kod];
+                            labTest.TextWrapping = TextWrapping.Wrap;
+                            Grid.SetRow(labTest, 0);        //globalne statyczne właściwości, lol
+                            Grid.SetColumn(labTest, 0);     //ponoć powinno się to robić przed dodawaniem elementu do siatki, żeby się nic nie posypało
+                            savedLabTest.Children.Add(labTest); //i tak też czynię
+
+                            TextBlock labTestTime = new TextBlock();
+                            labTestTime.Text = bad.data_zle.ToString();
+                            labTestTime.Margin = new Thickness(5.0, 0.0, 5.0, 0.0);
+                            Grid.SetRow(labTestTime, 0);
+                            Grid.SetColumn(labTestTime, 1);
+                            savedLabTest.Children.Add(labTestTime);
+
+                            TextBlock labTestDesc = new TextBlock();
+                            labTestDesc.Text = bad.opis;
+                            labTestDesc.TextWrapping = TextWrapping.Wrap;
+                            Grid.SetRow(labTestDesc, 0);
+                            Grid.SetColumn(labTestDesc, 2);
+                            savedLabTest.Children.Add(labTestDesc);
+
+                            LaboratoryTests.Children.Insert(currentLabRow, savedLabTest);
+
+                            ++currentLabRow;
+                        }
+                        else         //badanie fizykalne
+                        {
+                            Grid savedPhyTest = new Grid();
+                            RowDefinition row = new RowDefinition();
+                            row.Height = GridLength.Auto;
+                            savedPhyTest.RowDefinitions.Add(row);
+                            ColumnDefinition col1 = new ColumnDefinition();
+                            col1.Width = new GridLength(0.4, GridUnitType.Star);
+                            ColumnDefinition col2 = new ColumnDefinition();
+                            col2.Width = GridLength.Auto;
+                            ColumnDefinition col3 = new ColumnDefinition();
+                            col3.Width = new GridLength(0.6, GridUnitType.Star);
+                            savedPhyTest.ColumnDefinitions.Add(col1);
+                            savedPhyTest.ColumnDefinitions.Add(col2);
+                            savedPhyTest.ColumnDefinitions.Add(col3);
+
+                            TextBlock phyTest = new TextBlock();
+                            phyTest.Text = phyTests[bad.kod];
+                            phyTest.TextWrapping = TextWrapping.Wrap;
+                            Grid.SetRow(phyTest, 0);        //globalne statyczne właściwości, lol
+                            Grid.SetColumn(phyTest, 0);     //ponoć powinno się to robić przed dodawaniem elementu do siatki, żeby się nic nie posypało
+                            savedPhyTest.Children.Add(phyTest); //i tak też czynię
+
+                            TextBlock phyTestTime = new TextBlock();
+                            phyTestTime.Text = bad.data_zle.ToString();
+                            phyTestTime.Margin = new Thickness(5.0, 0.0, 5.0, 0.0);
+                            Grid.SetRow(phyTestTime, 0);
+                            Grid.SetColumn(phyTestTime, 1);
+                            savedPhyTest.Children.Add(phyTestTime);
+
+                            TextBlock phyTestResult = new TextBlock();
+                            phyTestResult.Text = bad.wynik;
+                            phyTestResult.TextWrapping = TextWrapping.Wrap;
+                            Grid.SetRow(phyTestResult, 0);
+                            Grid.SetColumn(phyTestResult, 2);
+                            savedPhyTest.Children.Add(phyTestResult);
+
+                            PhysicalTests.Children.Insert(currentPhyRow, savedPhyTest);
+
+                            ++currentPhyRow;
+                        }
+                    }
+
+                    diagnosisExpander.IsEnabled = true;
+                    laboratoryTestsExpander.IsEnabled = true;
+                    physicalTestsExpander.IsEnabled = true;
+                    VisitExpander.IsEnabled = true;
+                    VisitExpander.IsExpanded = true;
+                    visitsHistory.IsEnabled = true;
+                }
+                else
+                    MessageBox.Show("Wystąpił błąd podczas pobierania z bazy danych badań dla tej wizyty.", "Błąd pobierania badań", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -660,6 +738,10 @@ namespace Lekarz
 
                     while (PhysicalTests.Children.Count > 2)
                         PhysicalTests.Children.RemoveAt(0);
+
+                    currentLabRow = 0;
+                    currentPhyRow = 0;
+                    currentTestId = 1;
 
                     diagnosisExpander.IsEnabled = false;
                     diagnosisExpander.IsExpanded = false;

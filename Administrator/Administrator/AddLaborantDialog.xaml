@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Content="Login:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox x:Name="loginTextBox" Height="24" Width="164" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" TabIndex="0" TextChanged="BoxChanged"/>
+        <TextBox x:Name="loginTextBox" Height="24" Width="164" MaxLength="10" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" TabIndex="0" TextChanged="BoxChanged"/>
 
         <Label Content="Hasło:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
         <PasswordBox x:Name="pwdTextBox" Height="24" Width="164" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" TabIndex="1" PasswordChanged="BoxChanged"/>
@@ -32,10 +32,10 @@
         <DatePicker x:Name="DeactivateBox" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Width="164" IsTabStop="True" TabIndex="3"/>
 
         <Label Content="Imie:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox x:Name="imieTextBox" Height="24" Width="164" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" TabIndex="4" TextChanged="BoxChanged"/>
+        <TextBox x:Name="imieTextBox" Height="24" Width="164" MaxLength="25" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" TabIndex="4" TextChanged="BoxChanged"/>
 
         <Label Content="Nazwisko:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox x:Name="nazwiskoTextBox" Height="24" Width="164" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" TabIndex="5" TextChanged="BoxChanged"/>
+        <TextBox x:Name="nazwiskoTextBox" Height="24" Width="164" MaxLength="50" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" TabIndex="5" TextChanged="BoxChanged"/>
 
         <Label Content="Kierownik:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center"/>
         <CheckBox x:Name="kierCheckBox" Height="15" Width="15" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" TabIndex="6" />

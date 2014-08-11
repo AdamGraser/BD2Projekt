@@ -14,7 +14,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Content="Nazwa:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" />
-        <TextBox x:Name="nazwaTextBox" Height="24" Width="164" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" TabIndex="0" TextChanged="BoxChanged"/>
+        <TextBox x:Name="nazwaTextBox" Height="24" Width="164" MaxLength="50" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" TabIndex="0" TextChanged="BoxChanged"/>
         
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="24">
             <Button x:Name="okButton" Content="OK" Width="75" Click="okButton_Click" IsDefault="True" IsEnabled="False" TabIndex="1" Margin="0,0,20,0" />

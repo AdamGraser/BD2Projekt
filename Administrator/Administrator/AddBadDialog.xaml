@@ -16,10 +16,10 @@
         </Grid.ColumnDefinitions>
 
         <Label Content="Nazwa:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox x:Name="nazwaTextBox" Height="24" Width="164" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" TabIndex="0" TextChanged="BoxChanged" />
+        <TextBox x:Name="nazwaTextBox" Height="24" Width="164" MaxLength="50" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" TabIndex="0" TextChanged="BoxChanged" />
 
         <Label Content="Opis:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-        <TextBox x:Name="opisTextBox" Height="24" Width="164" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" TabIndex="1" />
+        <TextBox x:Name="opisTextBox" Height="24" Width="164" MaxLength="50" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" TabIndex="1" />
 
         <Label Content="Laboratoryjne?" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
         <CheckBox x:Name="labCheckBox" Height="15" Width="15" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" TabIndex="2" />
